@@ -1,6 +1,6 @@
-transit
+transit 2
 =======
 
-Android CTA Bus/Train Tracker 
+Android CTA Bus/Train Tracker v2
 
 wei
