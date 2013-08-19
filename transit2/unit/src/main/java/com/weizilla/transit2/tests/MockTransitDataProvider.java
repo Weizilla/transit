@@ -1,4 +1,4 @@
-package transit2;
+package com.weizilla.transit2.tests;
 
 import com.weizilla.transit2.Prediction;
 import com.weizilla.transit2.TransitDataProvider;

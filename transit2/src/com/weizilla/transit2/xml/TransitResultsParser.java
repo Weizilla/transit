@@ -1,10 +1,8 @@
 package com.weizilla.transit2.xml;
 
-import android.util.Xml;
-import org.xmlpull.v1.XmlPullParser;
-
-import java.io.InputStream;
-import java.util.List;
+import com.weizilla.transit2.Prediction;
+import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.core.Persister;
 
 /**
  * TODO auto-generated header
@@ -16,23 +14,36 @@ import java.util.List;
 public class TransitResultsParser {
     private static final String NS = null;
 
-    public List parse(InputStream in) throws Exception
+    public void parse() throws Exception
     {
-        try
-        {
-            XmlPullParser parser = Xml.newPullParser();
-            parser.setFeature(XmlPullParser.FEATURE_PROCESS_NAMESPACES, false);
-            parser.setInput(in, null);
-            parser.nextTag();
-            return readFeed(parser);
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            in.close();
+        //TODO
+        Serializer seralizer = new Persister();
+        String input = "<prd>\n" +
+                "\t\t\t\t\t<tmstmp>20130818 17:23</tmstmp>\n" +
+                "\t\t\t\t\t<typ>A</typ>\n" +
+                "\t\t\t\t\t<stpnm>Clark &amp; Schubert</stpnm>\n" +
+                "\t\t\t\t\t<stpid>1916</stpid>\n" +
+                "\t\t\t\t\t<vid>1859</vid>\n" +
+                "\t\t\t\t\t\n" +
+                "\t\t\t\t\t \t\t\t\t\t\n" +
+                "\t\t\t\t\t<dstp>6114</dstp>\n" +
+                "\t\t\t\t\t<rt>36</rt>\n" +
+                "\t\t\t\t\t<rtdir>Northbound</rtdir>\n" +
+                "\t\t        \t<des>Devon/Clark</des>\n" +
+                "\t\t        \t<prdtm>20130818 17:31</prdtm>\n" +
+                "\t\t        \t\n" +
+                "\t\t\t\t</prd>\t\t";
+        Prediction prediction = seralizer.read(Prediction.class, input);
+        System.out.println(prediction);
+    }
+
+    //TODO remove
+    public static void main(String[] args)
+    {
+        try {
+            new TransitResultsParser().parse();
+        } catch (Exception e) {
+            e.printStackTrace();  //TODO auto-generated
         }
     }
 }
