@@ -3,6 +3,7 @@ package com.weizilla.transit2;
 import android.util.Log;
 import com.weizilla.transit2.data.BustimeResponse;
 import com.weizilla.transit2.data.Prediction;
+import com.weizilla.transit2.data.Route;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -14,26 +15,49 @@ import java.util.List;
  * TODO auto-generated header
  *
  * @author wei
- *         Date: 8/18/13
- *         Time: 5:40 PM
+ * Date: 8/18/13
+ * Time: 5:40 PM
  */
 public class TransitService {
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
+    private Serializer serializer = new Persister();
 
     public List<Prediction> getPredictions(List<Integer> stops, List<Integer> routes)
     {
+        List<Prediction> results = Collections.emptyList();
         InputStream inputStream = dataProvider.getPredictions(stops, routes);
-        Serializer seralizer = new Persister();
-        try {
-            BustimeResponse response = seralizer.read(BustimeResponse.class, inputStream);
-            return response.getPredictions();
-        } catch (Exception e) {
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            results = response.getPredictions();
+        }
+        catch (Exception e)
+        {
             //TODO find logging framework that works in junit and android
             e.printStackTrace();
         }
 
-        return Collections.emptyList();
+        return results;
+    }
+
+    public List<Route> getRoutes()
+    {
+        List<Route> results = Collections.emptyList();
+        InputStream inputStream = dataProvider.getRoutes();
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            results = response.getRoutes();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+
+        return results;
     }
 
     public void setDataProvider(TransitDataProvider dataProvider) {

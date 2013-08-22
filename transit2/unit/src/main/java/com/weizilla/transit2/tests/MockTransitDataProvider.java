@@ -13,8 +13,8 @@ import java.util.List;
  * Returns sample xml
  *
  * @author wei
- *         Date: 8/18/13
- *         Time: 5:32 PM
+ * Date: 8/18/13
+ * Time: 5:32 PM
  */
 public class MockTransitDataProvider implements TransitDataProvider {
 
@@ -23,9 +23,14 @@ public class MockTransitDataProvider implements TransitDataProvider {
         return readSampleFile("predictions_s1916.xml");
     }
 
+    @Override
+    public InputStream getRoutes() {
+        return readSampleFile("routes.xml");
+    }
+
     private static InputStream readSampleFile(String filename)
     {
-        InputStream in = this.getClass().getClassLoader().getResourceAsStream(filename);
+        InputStream in = MockTransitDataProvider.class.getClassLoader().getResourceAsStream(filename);
         return in;
     }
 

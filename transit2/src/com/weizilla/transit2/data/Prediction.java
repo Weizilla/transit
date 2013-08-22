@@ -7,8 +7,8 @@ import org.simpleframework.xml.Root;
  * contains information about a single prediction
  *
  * @author wei
- *         Date: 8/18/13
- *         Time: 5:42 PM
+ * Date: 8/18/13
+ * Time: 5:42 PM
  */
 @Root(name="prd")
 public class Prediction {
