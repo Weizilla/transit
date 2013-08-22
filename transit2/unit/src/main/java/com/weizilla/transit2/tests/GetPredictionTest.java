@@ -1,7 +1,9 @@
 package com.weizilla.transit2.tests;
 
-import com.weizilla.transit2.Prediction;
+import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.TransitDataProvider;
+import com.weizilla.transit2.TransitService;
+import com.weizilla.transit2.data.Prediction;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -18,18 +20,20 @@ import static org.junit.Assert.assertFalse;
  */
 
 public class GetPredictionTest {
-    private TransitDataProvider provider;
+    private TransitService transitService;
 
     @Before
     public void setUp()
     {
-        provider = new MockTransitDataProvider();
+        transitService = new TransitService();
+        TransitDataProvider provider = new MockTransitDataProvider();
+        transitService.setDataProvider(provider);
     }
 
     @Test
     public void testGettingSampleData()
     {
-        List<Prediction> predictions = provider.getPredictions(null, null);
+        List<Prediction> predictions = transitService.getPredictions(null, null);
         assertFalse(predictions.isEmpty());
     }
 }

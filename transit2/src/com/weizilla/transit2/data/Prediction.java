@@ -1,4 +1,4 @@
-package com.weizilla.transit2;
+package com.weizilla.transit2.data;
 
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;

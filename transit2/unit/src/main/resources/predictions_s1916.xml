@@ -1,68 +1,55 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<bustime-response>	
-			
-				<prd>
-					<tmstmp>20130818 17:23</tmstmp>
-					<typ>A</typ>
-					<stpnm>Clark &amp; Schubert</stpnm>
-					<stpid>1916</stpid>
-					<vid>1859</vid>
-					
-					 					
-					<dstp>6114</dstp>
-					<rt>36</rt>
-					<rtdir>Northbound</rtdir>
-		        	<des>Devon/Clark</des>
-		        	<prdtm>20130818 17:31</prdtm>
-		        	
-				</prd>			
-			
-				<prd>
-					<tmstmp>20130818 17:23</tmstmp>
-					<typ>A</typ>
-					<stpnm>Clark &amp; Schubert</stpnm>
-					<stpid>1916</stpid>
-					<vid>1861</vid>
-					
-					 					
-					<dstp>9607</dstp>
-					<rt>36</rt>
-					<rtdir>Northbound</rtdir>
-		        	<des>Devon/Clark</des>
-		        	<prdtm>20130818 17:35</prdtm>
-		        	
-				</prd>			
-			
-				<prd>
-					<tmstmp>20130818 17:23</tmstmp>
-					<typ>A</typ>
-					<stpnm>Clark &amp; Schubert</stpnm>
-					<stpid>1916</stpid>
-					<vid>4129</vid>
-					
-					 					
-					<dstp>9473</dstp>
-					<rt>22</rt>
-					<rtdir>Northbound</rtdir>
-		        	<des>Howard</des>
-		        	<prdtm>20130818 17:36</prdtm>
-		        	
-				</prd>			
-			
-				<prd>
-					<tmstmp>20130818 17:23</tmstmp>
-					<typ>A</typ>
-					<stpnm>Clark &amp; Schubert</stpnm>
-					<stpid>1916</stpid>
-					<vid>4074</vid>
-					
-					 					
-					<dstp>14728</dstp>
-					<rt>22</rt>
-					<rtdir>Northbound</rtdir>
-		        	<des>Howard</des>
-		        	<prdtm>20130818 17:43</prdtm>
-		        	
-				</prd>			
+<bustime-response>
+    <prd>
+        <tmstmp>20130818 17:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1916</stpid>
+        <vid>1859</vid>
+        <dstp>6114</dstp>
+        <rt>36</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Devon/Clark</des>
+        <prdtm>20130818 17:31</prdtm>
+    </prd>
 
-		</bustime-response>
+    <prd>
+        <tmstmp>20130818 17:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1916</stpid>
+        <vid>1861</vid>
+        <dstp>9607</dstp>
+        <rt>36</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Devon/Clark</des>
+        <prdtm>20130818 17:35</prdtm>
+    </prd>
+
+    <prd>
+        <tmstmp>20130818 17:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1916</stpid>
+        <vid>4129</vid>
+        <dstp>9473</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20130818 17:36</prdtm>
+    </prd>
+
+    <prd>
+        <tmstmp>20130818 17:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1916</stpid>
+        <vid>4074</vid>
+        <dstp>14728</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20130818 17:43</prdtm>
+    </prd>
+
+</bustime-response>

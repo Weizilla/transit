@@ -1,5 +1,8 @@
 package com.weizilla.transit2;
 
+import com.weizilla.transit2.data.Prediction;
+
+import java.io.InputStream;
 import java.util.List;
 
 /**
@@ -10,5 +13,5 @@ import java.util.List;
  *         Time: 5:41 PM
  */
 public interface TransitDataProvider {
-    public List<Prediction> getPredictions(List<Integer> stops, List<Integer> routes);
+    public InputStream getPredictions(List<Integer> stops, List<Integer> routes);
 }

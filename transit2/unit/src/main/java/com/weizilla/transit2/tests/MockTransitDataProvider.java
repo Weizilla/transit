@@ -1,6 +1,6 @@
 package com.weizilla.transit2.tests;
 
-import com.weizilla.transit2.Prediction;
+import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.TransitDataProvider;
 
 import java.io.BufferedReader;
@@ -19,36 +19,14 @@ import java.util.List;
 public class MockTransitDataProvider implements TransitDataProvider {
 
     @Override
-    public List<Prediction> getPredictions(List<Integer> stops, List<Integer> routes) {
-        return null;  //TODO auto-generated
+    public InputStream getPredictions(List<Integer> stops, List<Integer> routes) {
+        return readSampleFile("predictions_s1916.xml");
     }
 
-    private String readSampleFile(String filename)
+    private static InputStream readSampleFile(String filename)
     {
         InputStream in = this.getClass().getClassLoader().getResourceAsStream(filename);
-        String file = null;
-        try {
-            file = streamToString(in);
-            System.out.println(file);
-            return file;
-        } catch (IOException e) {
-            e.printStackTrace();  //TODO auto-generated
-        }
-        return null;
-    }
-
-    private String streamToString(InputStream inputStream) throws IOException
-    {
-        //TODO replace with apache io
-        StringBuffer buffer = new StringBuffer();
-        BufferedReader reader = new BufferedReader(new InputStreamReader(inputStream));
-        String line;
-        while ((line = reader.readLine()) != null)
-        {
-            buffer.append(line);
-        }
-
-        return buffer.toString();
+        return in;
     }
 
 }
