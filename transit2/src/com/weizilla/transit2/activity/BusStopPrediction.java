@@ -1,15 +1,12 @@
 package com.weizilla.transit2.activity;
 
 import android.app.Activity;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
-import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.util.ArrayList;
@@ -44,11 +41,16 @@ public class BusStopPrediction extends Activity {
 
     public void lookupPredictions(View view)
     {
-        EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
-        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
+//        EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
+//        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
+//
+//        LookupPredictionsTask lookupPredictionsTask = new LookupPredictionsTask();
+//        lookupPredictionsTask.execute(busStopId);
 
-        LookupPredictionsTask lookupPredictionsTask = new LookupPredictionsTask();
-        lookupPredictionsTask.execute(busStopId);
+        // mock code
+        predictionsDisplay.clear();
+        predictionsDisplay.add("TEST");
+        predictionsAdapter.notifyDataSetChanged();
     }
 
     public void setTransitDataProvider(TransitDataProvider transitDataProvider)
@@ -56,26 +58,26 @@ public class BusStopPrediction extends Activity {
         transitService.setDataProvider(transitDataProvider);
     }
 
-    private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
-    {
-        @Override
-        protected List<Prediction> doInBackground(Integer... params) {
-            return transitService.lookupPredictions(params[0]);
-        }
-
-        @Override
-        protected void onPostExecute(List<Prediction> predictions) {
-            super.onPostExecute(predictions);
-
-            predictionsDisplay.clear();
-
-            for (Prediction prediction : predictions)
-            {
-                predictionsDisplay.add(prediction.toString());
-            }
-
-            predictionsAdapter.notifyDataSetChanged();
-        }
-    }
+//    private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
+//    {
+//        @Override
+//        protected List<Prediction> doInBackground(Integer... params) {
+//            return transitService.lookupPredictions(params[0]);
+//        }
+//
+//        @Override
+//        protected void onPostExecute(List<Prediction> predictions) {
+//            super.onPostExecute(predictions);
+//
+//            predictionsDisplay.clear();
+//
+//            for (Prediction prediction : predictions)
+//            {
+//                predictionsDisplay.add(prediction.toString());
+//            }
+//
+//            predictionsAdapter.notifyDataSetChanged();
+//        }
+//    }
 }
 
