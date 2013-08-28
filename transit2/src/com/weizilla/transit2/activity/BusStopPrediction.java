@@ -4,6 +4,7 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.ArrayAdapter;
+import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
@@ -39,9 +40,9 @@ public class BusStopPrediction extends Activity {
         uiPredictionsDisplay.setAdapter(predictionsAdapter);
     }
 
-    public void lookupPredictions(View view)
+    public void retrievePredictions(View view)
     {
-//        EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
+        EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 //        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
 //
 //        LookupPredictionsTask lookupPredictionsTask = new LookupPredictionsTask();
@@ -49,7 +50,7 @@ public class BusStopPrediction extends Activity {
 
         // mock code
         predictionsDisplay.clear();
-        predictionsDisplay.add("TEST");
+        predictionsDisplay.add(busStopIdInput.getText().toString());
         predictionsAdapter.notifyDataSetChanged();
     }
 
