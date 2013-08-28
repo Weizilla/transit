@@ -1,9 +1,9 @@
 package com.weizilla.transit2;
 
-import android.util.Log;
 import com.weizilla.transit2.data.BustimeResponse;
 import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
@@ -23,7 +23,12 @@ public class TransitService {
     private TransitDataProvider dataProvider;
     private Serializer serializer = new Persister();
 
-    public List<Prediction> getPredictions(List<Integer> stops, List<Integer> routes)
+    public List<Prediction> lookupPredictions(int busStopId)
+    {
+        return lookupPredictions(Collections.singletonList(busStopId), Collections.<Integer>emptyList());
+    }
+
+    public List<Prediction> lookupPredictions(List<Integer> stops, List<Integer> routes)
     {
         List<Prediction> results = Collections.emptyList();
         InputStream inputStream = dataProvider.getPredictions(stops, routes);

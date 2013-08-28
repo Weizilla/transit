@@ -1,12 +1,8 @@
 package com.weizilla.transit2.tests;
 
-import com.weizilla.transit2.data.Prediction;
-import com.weizilla.transit2.TransitDataProvider;
+import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
-import java.io.BufferedReader;
-import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.List;
 
 /**

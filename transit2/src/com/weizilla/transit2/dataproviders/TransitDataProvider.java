@@ -1,6 +1,4 @@
-package com.weizilla.transit2;
-
-import com.weizilla.transit2.data.Prediction;
+package com.weizilla.transit2.dataproviders;
 
 import java.io.InputStream;
 import java.util.List;

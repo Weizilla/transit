@@ -1,17 +1,15 @@
 package com.weizilla.transit2.tests;
 
-import com.weizilla.transit2.data.Prediction;
-import com.weizilla.transit2.TransitDataProvider;
 import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
 
 /**
  * TODO auto-generated header
@@ -35,7 +33,7 @@ public class SampleDataTest {
     @Test
     public void testGettingPrediction()
     {
-        List<Prediction> predictions = transitService.getPredictions(null, null);
+        List<Prediction> predictions = transitService.lookupPredictions(null, null);
         assertEquals(4, predictions.size());
     }
 
