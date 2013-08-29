@@ -1,6 +1,7 @@
 package com.weizilla.transit2.activity;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -48,9 +49,7 @@ public class BusStopPrediction extends Activity {
         EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
         int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
 
-        List<Prediction> predictions = transitService.lookupPredictions(busStopId);
-        Log.i(TAG, "Found " + predictions.size() + " predictions");
-        updateUI(predictions);
+        new LookupPredictionsTask().execute(busStopId);
     }
 
     private void updateUI(List<Prediction> predictions)
@@ -71,26 +70,19 @@ public class BusStopPrediction extends Activity {
         transitService.setDataProvider(transitDataProvider);
     }
 
-//    private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
-//    {
-//        @Override
-//        protected List<Prediction> doInBackground(Integer... params) {
-//            return transitService.lookupPredictions(params[0]);
-//        }
-//
-//        @Override
-//        protected void onPostExecute(List<Prediction> predictions) {
-//            super.onPostExecute(predictions);
-//
-//            predictionsDisplay.clear();
-//
-//            for (Prediction prediction : predictions)
-//            {
-//                predictionsDisplay.add(prediction.toString());
-//            }
-//
-//            predictionsAdapter.notifyDataSetChanged();
-//        }
-//    }
+    private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
+    {
+        @Override
+        protected List<Prediction> doInBackground(Integer... params) {
+            return transitService.lookupPredictions(params[0]);
+        }
+
+        @Override
+        protected void onPostExecute(List<Prediction> predictions) {
+            super.onPostExecute(predictions);
+
+            updateUI(predictions);
+        }
+    }
 }
 
