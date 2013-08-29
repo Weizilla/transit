@@ -2,12 +2,14 @@ package com.weizilla.transit2.activity;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
+import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.util.ArrayList;
@@ -21,6 +23,7 @@ import java.util.List;
  * Time: 7:26 PM
  */
 public class BusStopPrediction extends Activity {
+    private static final String TAG = "BusStopPrediction";
     private TransitService transitService;
     private List<String> predictionsDisplay;
     private String ctaApiKey;
@@ -43,14 +46,23 @@ public class BusStopPrediction extends Activity {
     public void retrievePredictions(View view)
     {
         EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
-//        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
-//
-//        LookupPredictionsTask lookupPredictionsTask = new LookupPredictionsTask();
-//        lookupPredictionsTask.execute(busStopId);
+        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
 
-        // mock code
+        List<Prediction> predictions = transitService.lookupPredictions(busStopId);
+        Log.i(TAG, "Found " + predictions.size() + " predictions");
+        updateUI(predictions);
+    }
+
+    private void updateUI(List<Prediction> predictions)
+    {
         predictionsDisplay.clear();
-        predictionsDisplay.add(busStopIdInput.getText().toString());
+
+        for (Prediction prediction : predictions)
+        {
+            predictionsDisplay.add(prediction.toString());
+            Log.d(TAG, "Adding Prediction: " + prediction.toString());
+        }
+
         predictionsAdapter.notifyDataSetChanged();
     }
 
