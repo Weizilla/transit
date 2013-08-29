@@ -1,16 +1,19 @@
 package com.weizilla.transit2.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Prediction;
+import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.util.ArrayList;
@@ -27,28 +30,31 @@ public class BusStopPrediction extends Activity {
     private static final String TAG = "BusStopPrediction";
     private TransitService transitService;
     private List<String> predictionsDisplay;
-    private String ctaApiKey;
     private ArrayAdapter<String> predictionsAdapter;
+    private EditText busStopIdInput;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         this.setContentView(R.layout.bus_prediction);
 
-        this.ctaApiKey = getString(R.string.ctaApiKey);
-
-        transitService = new TransitService();
+        busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 
         predictionsDisplay = new ArrayList<String>();
         predictionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, predictionsDisplay);
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
         uiPredictionsDisplay.setAdapter(predictionsAdapter);
+
+        transitService = new TransitService();
+
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        transitService.setDataProvider(new CTADataProvider(ctaApiKey));
+
     }
 
     public void retrievePredictions(View view)
     {
-        EditText busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
         int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
-
         new LookupPredictionsTask().execute(busStopId);
     }
 
@@ -63,6 +69,16 @@ public class BusStopPrediction extends Activity {
         }
 
         predictionsAdapter.notifyDataSetChanged();
+        
+        hideKeyboard();
+    }
+
+    private void hideKeyboard()
+    {
+        InputMethodManager imm = (InputMethodManager)getSystemService(
+                Context.INPUT_METHOD_SERVICE);
+
+        imm.hideSoftInputFromWindow(busStopIdInput.getWindowToken(), 0);
     }
 
     public void setTransitDataProvider(TransitDataProvider transitDataProvider)

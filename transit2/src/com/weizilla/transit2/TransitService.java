@@ -7,6 +7,7 @@ import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
 
+import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
 import java.util.List;
@@ -43,6 +44,14 @@ public class TransitService {
             //TODO find logging framework that works in junit and android
             e.printStackTrace();
         }
+        finally
+        {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // ignore
+            }
+        }
 
         return results;
     }
@@ -60,6 +69,13 @@ public class TransitService {
         catch (Exception e)
         {
             e.printStackTrace();
+        }
+        finally {
+            try {
+                inputStream.close();
+            } catch (IOException e) {
+                // ignore
+            }
         }
 
         return results;
