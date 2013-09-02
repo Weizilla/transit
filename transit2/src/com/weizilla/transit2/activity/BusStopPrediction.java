@@ -69,7 +69,7 @@ public class BusStopPrediction extends Activity {
         }
 
         predictionsAdapter.notifyDataSetChanged();
-        
+
         hideKeyboard();
     }
 

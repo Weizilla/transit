@@ -56,7 +56,7 @@ public class TransitService {
         return results;
     }
 
-    public List<Route> getRoutes()
+    public List<Route> lookupRoutes()
     {
         List<Route> results = Collections.emptyList();
         InputStream inputStream = dataProvider.getRoutes();

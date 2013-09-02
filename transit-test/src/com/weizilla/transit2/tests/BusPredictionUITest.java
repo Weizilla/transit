@@ -9,17 +9,19 @@ import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.activity.BusStopPrediction;
 
-public class WhiteBoxUITest extends ActivityInstrumentationTestCase2<BusStopPrediction>
+public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusStopPrediction>
 {
     private static final String BUS_STOP_ID = "123456";
     private Solo solo;
 
-    public WhiteBoxUITest() {
+    public BusPredictionUITest()
+    {
         super(BusStopPrediction.class);
     }
 
     @Override
-    public void setUp() throws Exception {
+    public void setUp() throws Exception
+    {
         super.setUp();
         BusStopPrediction activity = getActivity();
         activity.setTransitDataProvider(new MockTransitDataProvider());
@@ -27,7 +29,8 @@ public class WhiteBoxUITest extends ActivityInstrumentationTestCase2<BusStopPred
     }
 
     @Override
-    public void tearDown() throws Exception {
+    public void tearDown() throws Exception
+    {
         solo.finishOpenedActivities();
         super.tearDown();
     }

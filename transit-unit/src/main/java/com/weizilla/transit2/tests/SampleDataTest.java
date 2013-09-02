@@ -40,7 +40,7 @@ public class SampleDataTest {
     @Test
     public void testGettingRoutes()
     {
-        List<Route> routes = transitService.getRoutes();
+        List<Route> routes = transitService.lookupRoutes();
         assertEquals(126, routes.size());
     }
 }

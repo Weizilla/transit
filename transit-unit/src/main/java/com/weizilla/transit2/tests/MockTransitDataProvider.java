@@ -3,6 +3,7 @@ package com.weizilla.transit2.tests;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  * Date: 8/18/13
  * Time: 5:32 PM
  */
-public class MockTransitDataProvider implements TransitDataProvider {
+public class MockTransitDataProvider implements Serializable, TransitDataProvider {
 
     @Override
     public InputStream getPredictions(List<Integer> stops, List<Integer> routes) {

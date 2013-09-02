@@ -27,8 +27,8 @@ public class CTADataProvider implements TransitDataProvider
     }
 
     @Override
-    public InputStream getPredictions(List<Integer> stops, List<Integer> routes) {
-
+    public InputStream getPredictions(List<Integer> stops, List<Integer> routes)
+    {
         String stopsStr = TextUtils.join(",", stops);
         String urlString = "http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=" + apiKey + "&stpid=" + stopsStr;
         if (routes != null && ! routes.isEmpty())
@@ -37,35 +37,53 @@ public class CTADataProvider implements TransitDataProvider
             urlString += routesStr;
         }
 
-        InputStream is = null;
         try
         {
-            URL url = new URL(urlString);
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setReadTimeout(10000);
-            conn.setConnectTimeout(10000);
-            conn.setRequestMethod("GET");
-            conn.setDoInput(true);
-
-            // starts query
-            conn.connect();
-            int response = conn.getResponseCode();
-            Log.d("DownloadTask", "Response code: " + response);
-
-            is = conn.getInputStream();
-            return is;
+            return callCTAServer(urlString);
         }
         catch (IOException e)
         {
             Log.e(TAG, e.getMessage(), e);
         }
 
+        //TODO better error handling
         return null;
     }
 
     @Override
-    public InputStream getRoutes() {
-        throw new NoSuchMethodError(" not implemented");
+    public InputStream getRoutes()
+    {
+        String urlString = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key=" + apiKey;
+
+        try
+        {
+            return callCTAServer(urlString);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        //TODO better error handling
+        return null;
     }
 
+    private InputStream callCTAServer(String urlString) throws IOException
+    {
+        InputStream is;
+        URL url = new URL(urlString);
+        HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+        conn.setReadTimeout(10000);
+        conn.setConnectTimeout(10000);
+        conn.setRequestMethod("GET");
+        conn.setDoInput(true);
+
+        // starts query
+        conn.connect();
+        int response = conn.getResponseCode();
+        Log.d(TAG, "Response code: " + response);
+
+        is = conn.getInputStream();
+        return is;
+    }
 }
