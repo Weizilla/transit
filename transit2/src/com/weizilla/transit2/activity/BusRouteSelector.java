@@ -6,7 +6,9 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -26,8 +28,9 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 5:46 PM
  */
-public class BusRouteSelector extends Activity
+public class BusRouteSelector extends Activity implements AdapterView.OnItemClickListener
 {
+    public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusRouteSelector";
     private TransitService transitService;
     private List<String> routesDisplay;
@@ -47,6 +50,7 @@ public class BusRouteSelector extends Activity
         routesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, routesDisplay);
         ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
         uiRoutesDisplay.setAdapter(routesAdapter);
+        uiRoutesDisplay.setOnItemClickListener(this);
 
         transitService = new TransitService();
 
@@ -67,12 +71,15 @@ public class BusRouteSelector extends Activity
         retrieveRoutes();
     }
 
-
-
     private void retrieveRoutes()
     {
-
         new LookupRoutesTask().execute();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        String route = routesAdapter.getItem(position);
+        returnRoute(route);
     }
 
     private void updateUI(List<Route> routes)
@@ -90,17 +97,20 @@ public class BusRouteSelector extends Activity
         hideKeyboard();
     }
 
+    private void returnRoute(String route)
+    {
+        Intent result = new Intent();
+        result.putExtra(RETURN_INTENT_KEY, route);
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
     private void hideKeyboard()
     {
         InputMethodManager imm = (InputMethodManager)getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(busRouteInput.getWindowToken(), 0);
-    }
-
-    public void setTransitDataProvider(TransitDataProvider transitDataProvider)
-    {
-        this.transitService.setDataProvider(transitDataProvider);
     }
 
     private class LookupRoutesTask extends AsyncTask<Void, Void, List<Route>>

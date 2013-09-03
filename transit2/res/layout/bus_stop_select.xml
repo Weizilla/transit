@@ -25,4 +25,13 @@
         android:text="Stop:"
         />
 
+    <!-- TODO better name -->
+    <Button
+        android:id="@+id/uiSelectStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Select Stop..."
+        android:onClick="selectStopStep"
+        />
+
 </LinearLayout>
