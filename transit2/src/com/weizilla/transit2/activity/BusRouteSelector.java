@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * TODO auto-generated header
+ * selects a bus route
  *
  * @author wei
  *         Date: 9/2/13
