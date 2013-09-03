@@ -68,7 +68,42 @@ public class CTADataProvider implements TransitDataProvider
         return null;
     }
 
-    private InputStream callCTAServer(String urlString) throws IOException
+    @Override
+    public InputStream getDirections(String routeId)
+    {
+        String urlString = "http://www.ctabustracker.com/bustime/api/v1/getdirections?key=" + apiKey + "&rt=" + routeId;
+
+        try
+        {
+            return callCTAServer(urlString);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        //TODO better error handling
+        return null;
+    }
+
+    @Override
+    public InputStream getStops(String routeId, String direction)
+    {
+        String urlString = "http://www.ctabustracker.com/bustime/api/v1/getstops?key=" + apiKey + "&rt=" + routeId + "&dir=" + direction;
+        try
+        {
+            return callCTAServer(urlString);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        //TODO better error handling
+        return null;
+    }
+
+    private static InputStream callCTAServer(String urlString) throws IOException
     {
         InputStream is;
         URL url = new URL(urlString);

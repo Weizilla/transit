@@ -34,6 +34,7 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     private static final String TAG = "BusRouteSelector";
     private TransitService transitService;
     private List<String> routesDisplay;
+    private List<String> routeIds;
     private ArrayAdapter<String> routesAdapter;
     private EditText busRouteInput;
 
@@ -47,6 +48,7 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
 
         routesDisplay = new ArrayList<String>();
+        routeIds = new ArrayList<String>();
         routesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, routesDisplay);
         ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
         uiRoutesDisplay.setAdapter(routesAdapter);
@@ -78,17 +80,19 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String route = routesAdapter.getItem(position);
-        returnRoute(route);
+        String routeId = routeIds.get(position);
+        returnRoute(routeId);
     }
 
     private void updateUI(List<Route> routes)
     {
         routesDisplay.clear();
+        routeIds.clear();
 
         for (Route route : routes)
         {
             routesDisplay.add(route.toString());
+            routeIds.add(route.getId());
             Log.d(TAG, "Adding route: " + route.toString());
         }
 

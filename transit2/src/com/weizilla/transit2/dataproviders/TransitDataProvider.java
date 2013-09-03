@@ -14,4 +14,6 @@ public interface TransitDataProvider {
     public static final String KEY = TransitDataProvider.class.getName();
     public InputStream getPredictions(List<Integer> stops, List<Integer> routes);
     public InputStream getRoutes();
+    public InputStream getDirections(String routeId);
+    public InputStream getStops(String routeId, String direction);
 }
