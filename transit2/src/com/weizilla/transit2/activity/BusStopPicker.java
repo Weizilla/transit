@@ -14,7 +14,7 @@ import com.weizilla.transit2.R;
  *         Date: 9/2/13
  *         Time: 7:07 PM
  */
-public class BusStopSelector extends Activity
+public class BusStopPicker extends Activity
 {
     private TextView uiSelectedRoute;
     private TextView uiSelectedDirection;
@@ -76,8 +76,15 @@ public class BusStopSelector extends Activity
     private void startSelectStopActivity()
     {
         Intent intent = new Intent();
-        intent.setClass(this, BusStopSelector.class);
+        intent.setClass(this, BusStopPicker.class);
         startActivityForResult(intent, STOP_REQUEST);
+    }
+
+    private void startBusPredictionActivity()
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, BusStopPrediction.class);
+        startActivity(intent);
     }
 
     private void setSelectedRoute(String route)

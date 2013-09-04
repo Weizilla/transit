@@ -11,6 +11,8 @@ import org.simpleframework.xml.Root;
  */
 @Root
 public class Route {
+    public static final String KEY = Route.class.getName();
+
     @Element(name="rt")
     private String id;
 
