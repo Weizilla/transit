@@ -1,6 +1,7 @@
 package com.weizilla.transit2.tests;
 
 import com.weizilla.transit2.TransitService;
+import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.data.Route;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
@@ -42,5 +43,12 @@ public class SampleDataTest {
     {
         List<Route> routes = transitService.lookupRoutes();
         assertEquals(126, routes.size());
+    }
+
+    @Test
+    public void testGettingDirections()
+    {
+        List<Direction> directions = transitService.lookupDirections("route");
+        assertEquals(2, directions.size());
     }
 }

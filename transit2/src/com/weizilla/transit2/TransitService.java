@@ -1,6 +1,7 @@
 package com.weizilla.transit2;
 
 import com.weizilla.transit2.data.BustimeResponse;
+import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.data.Route;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
@@ -70,15 +71,49 @@ public class TransitService {
         {
             e.printStackTrace();
         }
-        finally {
-            try {
+        finally
+        {
+            try
+            {
                 inputStream.close();
-            } catch (IOException e) {
+            }
+            catch (IOException e)
+            {
                 // ignore
             }
         }
 
         return results;
+    }
+
+    public List<Direction> lookupDirections(String route)
+    {
+        List<Direction> directions = Collections.emptyList();
+
+        InputStream inputStream = dataProvider.getDirections(route);
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            directions = response.getDirections();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
+        }
+
+        return directions;
     }
 
     public void setDataProvider(TransitDataProvider dataProvider) {

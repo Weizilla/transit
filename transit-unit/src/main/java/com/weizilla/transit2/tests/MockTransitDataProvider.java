@@ -25,6 +25,12 @@ public class MockTransitDataProvider implements Serializable, TransitDataProvide
         return readSampleFile("routes.xml");
     }
 
+    @Override
+    public InputStream getDirections(String route)
+    {
+        return readSampleFile("directions_ew.xml");
+    }
+
     private static InputStream readSampleFile(String filename)
     {
         InputStream in = MockTransitDataProvider.class.getClassLoader().getResourceAsStream(filename);

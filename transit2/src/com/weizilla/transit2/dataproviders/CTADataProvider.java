@@ -68,6 +68,12 @@ public class CTADataProvider implements TransitDataProvider
         return null;
     }
 
+    @Override
+    public InputStream getDirections(String route)
+    {
+        throw new NoSuchMethodError();
+    }
+
     private InputStream callCTAServer(String urlString) throws IOException
     {
         InputStream is;
