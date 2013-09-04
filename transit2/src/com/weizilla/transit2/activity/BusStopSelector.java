@@ -13,6 +13,7 @@ import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.data.Stop;
 import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
@@ -46,9 +47,9 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         stops = new ArrayList<Stop>();
         stopsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 stopsDisplay);
-        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
-        uiRoutesDisplay.setAdapter(stopsAdapter);
-        uiRoutesDisplay.setOnItemClickListener(this);
+        ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
+        uiStopsDisplay.setAdapter(stopsAdapter);
+        uiStopsDisplay.setOnItemClickListener(this);
 
         transitService = new TransitService();
 
@@ -76,49 +77,50 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         new LookupStopTask().execute(route, direction);
     }
 
-    private void updateUI(List<Direction> retrievedDirections)
+    private void updateUI(List<Stop> retrievedStops)
     {
-        directionsDisplay.clear();
-        directions.clear();
+        stopsDisplay.clear();
+        stops.clear();
 
-        for (Direction direction : retrievedDirections)
+        for (Stop stop : retrievedStops)
         {
-            directionsDisplay.add(direction.toString());
-            directions.add(direction);
-            Log.d(TAG, "Adding direction: " + direction.toString());
+            stopsDisplay.add(stop.toString());
+            stops.add(stop);
+            Log.d(TAG, "Adding stop: " + stop.toString());
         }
 
-        directionsAdapter.notifyDataSetChanged();
+        stopsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Direction direction = directions.get(position);
-        returnDirection(direction);
+        Stop stop = stops.get(position);
+        returnStop(stop);
     }
 
-    private void returnDirection(Direction direction)
+    private void returnStop(Stop stop)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, direction.getName());
+        result.putExtra(RETURN_INTENT_KEY, stop.getId());
         setResult(RESULT_OK, result);
         finish();
     }
 
-    private class LookupDirectionTask extends AsyncTask<String, Void, List<Direction>>
+    private class LookupStopTask extends AsyncTask<String, Void, List<Stop>>
     {
 
         @Override
-        protected List<Direction> doInBackground(String... params) {
+        protected List<Stop> doInBackground(String... params) {
             String route = params[0];
-            return transitService.lookupDirections(route);
+            String direction = params[1];
+            return transitService.lookupStops(route, direction);
         }
 
         @Override
-        protected void onPostExecute(List<Direction> directions)
+        protected void onPostExecute(List<Stop> stops)
         {
-            super.onPostExecute(directions);
-            updateUI(directions);
+            super.onPostExecute(stops);
+            updateUI(stops);
         }
     }
 }

@@ -46,9 +46,9 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
         directions = new ArrayList<Direction>();
         directionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 directionsDisplay);
-        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
-        uiRoutesDisplay.setAdapter(directionsAdapter);
-        uiRoutesDisplay.setOnItemClickListener(this);
+        ListView uiDirectionsDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
+        uiDirectionsDisplay.setAdapter(directionsAdapter);
+        uiDirectionsDisplay.setOnItemClickListener(this);
 
         transitService = new TransitService();
 

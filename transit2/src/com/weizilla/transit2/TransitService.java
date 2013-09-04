@@ -1,9 +1,6 @@
 package com.weizilla.transit2;
 
-import com.weizilla.transit2.data.BustimeResponse;
-import com.weizilla.transit2.data.Direction;
-import com.weizilla.transit2.data.Prediction;
-import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.data.*;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.core.Persister;
@@ -24,6 +21,74 @@ public class TransitService {
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
     private Serializer serializer = new Persister();
+
+
+    public List<Route> lookupRoutes()
+    {
+        List<Route> results = Collections.emptyList();
+        InputStream inputStream = dataProvider.getRoutes();
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            results = response.getRoutes();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            closeStream(inputStream);
+        }
+
+        return results;
+    }
+
+    public List<Direction> lookupDirections(String route)
+    {
+        List<Direction> directions = Collections.emptyList();
+
+        InputStream inputStream = dataProvider.getDirections(route);
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            directions = response.getDirections();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            closeStream(inputStream);
+        }
+
+        return directions;
+    }
+
+    public List<Stop> lookupStops(String route, String direction)
+    {
+        List<Stop> stops = Collections.emptyList();
+
+        InputStream inputStream = dataProvider.getStops(route, direction);
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            stops = response.getStops();
+        }
+        catch (Exception e)
+        {
+            e.printStackTrace();
+        }
+        finally
+        {
+            closeStream(inputStream);
+        }
+
+        return stops;
+    }
 
     public List<Prediction> lookupPredictions(int busStopId)
     {
@@ -47,73 +112,21 @@ public class TransitService {
         }
         finally
         {
-            try {
-                inputStream.close();
-            } catch (IOException e) {
-                // ignore
-            }
+            closeStream(inputStream);
         }
 
         return results;
     }
 
-    public List<Route> lookupRoutes()
-    {
-        List<Route> results = Collections.emptyList();
-        InputStream inputStream = dataProvider.getRoutes();
-
+    private static void closeStream(InputStream inputStream) {
         try
         {
-            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
-            results = response.getRoutes();
+            inputStream.close();
         }
-        catch (Exception e)
+        catch (IOException e)
         {
-            e.printStackTrace();
+            // ignore
         }
-        finally
-        {
-            try
-            {
-                inputStream.close();
-            }
-            catch (IOException e)
-            {
-                // ignore
-            }
-        }
-
-        return results;
-    }
-
-    public List<Direction> lookupDirections(String route)
-    {
-        List<Direction> directions = Collections.emptyList();
-
-        InputStream inputStream = dataProvider.getDirections(route);
-
-        try
-        {
-            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
-            directions = response.getDirections();
-        }
-        catch (Exception e)
-        {
-            e.printStackTrace();
-        }
-        finally
-        {
-            try
-            {
-                inputStream.close();
-            }
-            catch (IOException e)
-            {
-                // ignore
-            }
-        }
-
-        return directions;
     }
 
     public void setDataProvider(TransitDataProvider dataProvider) {

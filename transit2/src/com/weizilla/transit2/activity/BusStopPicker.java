@@ -6,7 +6,9 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import com.weizilla.transit2.R;
+import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.data.Stop;
 
 /**
  * launches child activites for selecting route attributes and displays the currently selected ones
@@ -22,7 +24,7 @@ public class BusStopPicker extends Activity
     private TextView uiSelectedStop;
     private String selectedRoute;
     private String selectedDirection;
-    private String selectedStop;
+    private int selectedStop = -1;
 
     private static final int ROUTE_REQUEST = 1;
     private static final int DIRECTION_REQUEST = 2;
@@ -32,7 +34,7 @@ public class BusStopPicker extends Activity
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.setContentView(R.layout.bus_stop_select);
+        this.setContentView(R.layout.bus_stop_picker);
 
         this.uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
         this.uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
@@ -49,7 +51,7 @@ public class BusStopPicker extends Activity
         {
             startSelectDirectionActivity();
         }
-        else if (selectedStop == null)
+        else if (selectedStop == -1)
         {
             startSelectStopActivity();
         }
@@ -78,7 +80,9 @@ public class BusStopPicker extends Activity
     private void startSelectStopActivity()
     {
         Intent intent = new Intent();
-        intent.setClass(this, BusStopPicker.class);
+        intent.setClass(this, BusStopSelector.class);
+        intent.putExtra(Route.KEY, selectedRoute);
+        intent.putExtra(Direction.KEY, selectedDirection);
         startActivityForResult(intent, STOP_REQUEST);
     }
 
@@ -86,6 +90,7 @@ public class BusStopPicker extends Activity
     {
         Intent intent = new Intent();
         intent.setClass(this, BusStopPrediction.class);
+        intent.putExtra(Stop.KEY, selectedStop);
         startActivity(intent);
     }
 
@@ -101,7 +106,7 @@ public class BusStopPicker extends Activity
         this.uiSelectedDirection.setText("Direction: " + this.selectedDirection);
     }
 
-    private void setSelectedStop(String stop)
+    private void setSelectedStop(int stop)
     {
         this.selectedStop = stop;
         this.uiSelectedStop.setText("Stop: " + this.selectedStop);
@@ -127,9 +132,9 @@ public class BusStopPicker extends Activity
         }
         else if (requestCode == STOP_REQUEST)
         {
-            if (requestCode == RESULT_OK)
+            if (resultCode == RESULT_OK)
             {
-                String stop = data.getStringExtra(BusStopSelector.RETURN_INTENT_KEY);
+                int stop = data.getIntExtra(BusStopSelector.RETURN_INTENT_KEY, -1);
                 setSelectedStop(stop);
             }
         }

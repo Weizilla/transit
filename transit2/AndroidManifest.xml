@@ -21,6 +21,10 @@
 
         <activity android:name=".activity.BusDirectionSelector">
         </activity>
+
+        <activity android:name=".activity.BusStopSelector">
+        </activity>
+
     </application>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"/>
     <uses-permission android:name="android.permission.INTERNET"/>

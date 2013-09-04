@@ -4,6 +4,7 @@ import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Prediction;
 import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.data.Stop;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.junit.Before;
 import org.junit.Test;
@@ -48,7 +49,14 @@ public class SampleDataTest {
     @Test
     public void testGettingDirections()
     {
-        List<Direction> directions = transitService.lookupDirections("route");
+        List<Direction> directions = transitService.lookupDirections(null);
         assertEquals(2, directions.size());
+    }
+
+    @Test
+    public void testGettingStops()
+    {
+        List<Stop> stops = transitService.lookupStops(null, null);
+        assertEquals(85, stops.size());
     }
 }

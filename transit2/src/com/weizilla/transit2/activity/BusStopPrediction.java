@@ -2,6 +2,7 @@ package com.weizilla.transit2.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -13,6 +14,7 @@ import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Prediction;
+import com.weizilla.transit2.data.Stop;
 import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
@@ -50,6 +52,15 @@ public class BusStopPrediction extends Activity {
         String ctaApiKey = getString(R.string.ctaApiKey);
         transitService.setDataProvider(new CTADataProvider(ctaApiKey));
 
+        Intent intent = getIntent();
+        if (intent != null)
+        {
+            int stopId = intent.getIntExtra(Stop.KEY, -1);
+            if (stopId != -1)
+            {
+                busStopIdInput.setText(String.valueOf(stopId));
+            }
+        }
     }
 
     public void retrievePredictions(View view)

@@ -30,7 +30,7 @@ public class MockTransitDataProvider implements Serializable, TransitDataProvide
     @Override
     public InputStream getStops(String routeId, String direction)
     {
-        throw new NoSuchMethodError();
+        return readSampleFile("stops_n22.xml");
     }
 
     @Override
