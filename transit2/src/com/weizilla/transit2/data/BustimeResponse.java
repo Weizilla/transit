@@ -20,8 +20,17 @@ public class BustimeResponse {
     @ElementList(inline = true, required = false)
     private List<Route> routes;
 
-    public List<Prediction> getPredictions() {
+    @ElementList(inline = true, required = false)
+    private List<Direction> directions;
+
+    public List<Prediction> getPredictions()
+    {
         return predictions;
+    }
+
+    public List<Direction> getDirections()
+    {
+        return directions;
     }
 
     public List<Route> getRoutes()

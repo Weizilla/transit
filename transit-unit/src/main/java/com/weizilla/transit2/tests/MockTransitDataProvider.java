@@ -13,26 +13,30 @@ import java.util.List;
  * Date: 8/18/13
  * Time: 5:32 PM
  */
-public class MockTransitDataProvider implements Serializable, TransitDataProvider {
-
+public class MockTransitDataProvider implements Serializable, TransitDataProvider
+{
     @Override
-    public InputStream getPredictions(List<Integer> stops, List<Integer> routes) {
+    public InputStream getPredictions(List<Integer> stops, List<Integer> routes)
+    {
         return readSampleFile("predictions_s1916.xml");
     }
 
     @Override
-    public InputStream getRoutes() {
+    public InputStream getRoutes()
+    {
         return readSampleFile("routes.xml");
     }
 
     @Override
-    public InputStream getDirections(String routeId) {
+    public InputStream getStops(String routeId, String direction)
+    {
         throw new NoSuchMethodError();
     }
 
     @Override
-    public InputStream getStops(String routeId, String direction) {
-        throw new NoSuchMethodError();
+    public InputStream getDirections(String route)
+    {
+        return readSampleFile("directions_ew.xml");
     }
 
     private static InputStream readSampleFile(String filename)

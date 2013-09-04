@@ -2,10 +2,22 @@ package com.weizilla.transit2.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.widget.TextView;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.ListView;
 import com.weizilla.transit2.R;
+import com.weizilla.transit2.TransitService;
+import com.weizilla.transit2.data.Direction;
+import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.dataproviders.CTADataProvider;
+import com.weizilla.transit2.dataproviders.TransitDataProvider;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * launches child activites for selecting route attributes and displays the currently selected ones
@@ -14,103 +26,99 @@ import com.weizilla.transit2.R;
  *         Date: 9/2/13
  *         Time: 7:07 PM
  */
-public class BusStopSelector extends Activity
+public class BusStopSelector extends Activity implements AdapterView.OnItemClickListener
 {
-    private TextView uiSelectedRoute;
-    private TextView uiSelectedDirection;
-    private TextView uiSelectedStop;
-    private String selectedRoute;
-    private String selectedDirection;
-    private String selectedStop;
-
-    private static final int ROUTE_REQUEST = 1;
-    private static final int DIRECTION_REQUEST = 2;
-    private static final int STOP_REQUEST = 3;
+    public static final String RETURN_INTENT_KEY = BusStopSelector.class.getName() + ".intent.key";
+    private static final String TAG = "BusStopSelector";
+    private TransitService transitService;
+    private List<String> stopsDisplay;
+    private List<Stop> stops;
+    private ArrayAdapter<String> stopsAdapter;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.bus_stop_select);
 
-        this.uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
-        this.uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
-        this.uiSelectedStop = (TextView) findViewById(R.id.uiSelectedStop);
-    }
+        stopsDisplay = new ArrayList<String>();
+        stops = new ArrayList<Stop>();
+        stopsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
+                stopsDisplay);
+        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
+        uiRoutesDisplay.setAdapter(stopsAdapter);
+        uiRoutesDisplay.setOnItemClickListener(this);
 
-    public void selectStopStep(View view)
-    {
-        if (selectedRoute == null)
+        transitService = new TransitService();
+
+        String ctaApiKey = getString(R.string.ctaApiKey);
+
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        if (dataProvider != null)
         {
-            startSelectRouteActivity();
-        }
-        else if (selectedDirection == null)
-        {
-            startSelectDirectionActivity();
-        }
-        else if (selectedStop == null)
-        {
-            startSelectStopActivity();
+            transitService.setDataProvider(dataProvider);
         }
         else
         {
-            startBusPredictionActivity();
+            transitService.setDataProvider(new CTADataProvider(ctaApiKey));
         }
 
+        String route = intent.getStringExtra(Route.KEY);
+        String direction = intent.getStringExtra(Direction.KEY);
+        retrieveStops(route, direction);
     }
 
-    private void startSelectRouteActivity()
+    private void retrieveStops(String route, String direction)
     {
-        Intent intent = new Intent();
-        intent.setClass(this, BusRouteSelector.class);
-        startActivityForResult(intent, ROUTE_REQUEST);
+        new LookupStopTask().execute(route, direction);
     }
 
-    private void startSelectDirectionActivity()
+    private void updateUI(List<Direction> retrievedDirections)
     {
-        Intent intent = new Intent();
-        intent.setClass(this, BusDirectionSelector.class);
-        startActivityForResult(intent, DIRECTION_REQUEST);
-    }
+        directionsDisplay.clear();
+        directions.clear();
 
-    private void startSelectStopActivity()
-    {
-        Intent intent = new Intent();
-        intent.setClass(this, BusStopSelector.class);
-        startActivityForResult(intent, STOP_REQUEST);
-    }
+        for (Direction direction : retrievedDirections)
+        {
+            directionsDisplay.add(direction.toString());
+            directions.add(direction);
+            Log.d(TAG, "Adding direction: " + direction.toString());
+        }
 
-    private void setSelectedRoute(String route)
-    {
-        this.selectedRoute = route;
-        this.uiSelectedRoute.setText("Route: " + this.selectedRoute);
-    }
-
-    private void setSelectedDirection(String direction)
-    {
-        this.selectedDirection = direction;
-        this.uiSelectedDirection.setText("Direction: " + this.selectedDirection);
-    }
-
-    private void setSelectedStop(String stop)
-    {
-        this.selectedStop = stop;
-        this.uiSelectedStop.setText("Stop: " + this.selectedStop);
+        directionsAdapter.notifyDataSetChanged();
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == ROUTE_REQUEST)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                String route = data.getStringExtra(BusRouteSelector.RETURN_INTENT_KEY);
-                setSelectedRoute(route);
-            }
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        Direction direction = directions.get(position);
+        returnDirection(direction);
+    }
+
+    private void returnDirection(Direction direction)
+    {
+        Intent result = new Intent();
+        result.putExtra(RETURN_INTENT_KEY, direction.getName());
+        setResult(RESULT_OK, result);
+        finish();
+    }
+
+    private class LookupDirectionTask extends AsyncTask<String, Void, List<Direction>>
+    {
+
+        @Override
+        protected List<Direction> doInBackground(String... params) {
+            String route = params[0];
+            return transitService.lookupDirections(route);
         }
-        else
+
+        @Override
+        protected void onPostExecute(List<Direction> directions)
         {
-            super.onActivityResult(requestCode, resultCode, data);
+            super.onPostExecute(directions);
+            updateUI(directions);
         }
     }
 }

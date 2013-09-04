@@ -1,19 +1,17 @@
 package com.weizilla.transit2.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
+import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.data.Route;
 import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
@@ -48,7 +46,7 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
         directions = new ArrayList<Direction>();
         directionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
                 directionsDisplay);
-        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
+        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
         uiRoutesDisplay.setAdapter(directionsAdapter);
         uiRoutesDisplay.setOnItemClickListener(this);
 
@@ -74,18 +72,18 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
 
     private void retrieveDirections(String route)
     {
-        new LookupRoutesTask().execute(route);
+        new LookupDirectionTask().execute(route);
     }
 
-    private void updateUI(List<Direction> directions)
+    private void updateUI(List<Direction> retrievedDirections)
     {
         directionsDisplay.clear();
-        directionsValues.clear();
+        directions.clear();
 
-        for (Direction direction : directions)
+        for (Direction direction : retrievedDirections)
         {
             directionsDisplay.add(direction.toString());
-            directionsValues.add(direction);
+            directions.add(direction);
             Log.d(TAG, "Adding direction: " + direction.toString());
         }
 
@@ -94,19 +92,19 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String directionValue = directionsValues.get(position);
-        returnDirection(directionValue);
+        Direction direction = directions.get(position);
+        returnDirection(direction);
     }
 
-    private void returnDirection(String direction)
+    private void returnDirection(Direction direction)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, direction);
+        result.putExtra(RETURN_INTENT_KEY, direction.getName());
         setResult(RESULT_OK, result);
         finish();
     }
 
-    private class LookupDirectionTask extends AsyncTask<String, Void, List<Route>>
+    private class LookupDirectionTask extends AsyncTask<String, Void, List<Direction>>
     {
 
         @Override

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.TextView;
 import com.weizilla.transit2.R;
+import com.weizilla.transit2.data.Route;
 
 /**
  * launches child activites for selecting route attributes and displays the currently selected ones
@@ -70,6 +71,7 @@ public class BusStopPicker extends Activity
     {
         Intent intent = new Intent();
         intent.setClass(this, BusDirectionSelector.class);
+        intent.putExtra(Route.KEY, selectedRoute);
         startActivityForResult(intent, DIRECTION_REQUEST);
     }
 
@@ -113,6 +115,22 @@ public class BusStopPicker extends Activity
             {
                 String route = data.getStringExtra(BusRouteSelector.RETURN_INTENT_KEY);
                 setSelectedRoute(route);
+            }
+        }
+        else if (requestCode == DIRECTION_REQUEST)
+        {
+            if (resultCode == RESULT_OK)
+            {
+                String direction = data.getStringExtra(BusDirectionSelector.RETURN_INTENT_KEY);
+                setSelectedDirection(direction);
+            }
+        }
+        else if (requestCode == STOP_REQUEST)
+        {
+            if (requestCode == RESULT_OK)
+            {
+                String stop = data.getStringExtra(BusStopSelector.RETURN_INTENT_KEY);
+                setSelectedStop(stop);
             }
         }
         else
