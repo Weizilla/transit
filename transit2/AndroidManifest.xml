@@ -13,7 +13,7 @@
             </intent-filter>
         </activity>
 
-        <activity android:name=".activity.BusStopPrediction">
+        <activity android:name=".activity.BusPrediction">
         </activity>
 
         <activity android:name=".activity.BusRouteSelector">

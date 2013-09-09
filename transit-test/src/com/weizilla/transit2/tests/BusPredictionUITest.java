@@ -7,23 +7,23 @@ import android.widget.ListView;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit2.R;
-import com.weizilla.transit2.activity.BusStopPrediction;
+import com.weizilla.transit2.activity.BusPrediction;
 
-public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusStopPrediction>
+public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPrediction>
 {
     private static final String BUS_STOP_ID = "123456";
     private Solo solo;
 
     public BusPredictionUITest()
     {
-        super(BusStopPrediction.class);
+        super(BusPrediction.class);
     }
 
     @Override
     public void setUp() throws Exception
     {
         super.setUp();
-        BusStopPrediction activity = getActivity();
+        BusPrediction activity = getActivity();
         activity.setTransitDataProvider(new MockTransitDataProvider());
         solo = new Solo(getInstrumentation(), activity);
     }

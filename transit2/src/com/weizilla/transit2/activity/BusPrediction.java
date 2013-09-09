@@ -28,8 +28,8 @@ import java.util.List;
  * Date: 8/26/13
  * Time: 7:26 PM
  */
-public class BusStopPrediction extends Activity {
-    private static final String TAG = "BusStopPrediction";
+public class BusPrediction extends Activity {
+    private static final String TAG = "BusPrediction";
     private TransitService transitService;
     private List<String> predictionsDisplay;
     private ArrayAdapter<String> predictionsAdapter;

@@ -90,7 +90,7 @@ public class BusStopPicker extends Activity
     private void startBusPredictionActivity()
     {
         Intent intent = new Intent();
-        intent.setClass(this, BusStopPrediction.class);
+        intent.setClass(this, BusPrediction.class);
         intent.putExtra(Stop.KEY, selectedStop);
         startActivity(intent);
     }
