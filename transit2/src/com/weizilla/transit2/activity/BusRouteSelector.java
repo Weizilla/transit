@@ -9,7 +9,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
@@ -33,9 +32,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusRouteSelector";
     private TransitService transitService;
-    private List<String> routesDisplay;
-    private List<String> routeIds;
-    private ArrayAdapter<String> routesAdapter;
+    private List<Route> routes;
+    private BusRouteAdapter routesAdapter;
     private EditText busRouteInput;
 
     @Override
@@ -47,9 +45,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
         busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
 
-        routesDisplay = new ArrayList<String>();
-        routeIds = new ArrayList<String>();
-        routesAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, routesDisplay);
+        routes = new ArrayList<Route>();
+        routesAdapter = new BusRouteAdapter(this, routes);
         ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
         uiRoutesDisplay.setAdapter(routesAdapter);
         uiRoutesDisplay.setOnItemClickListener(this);
@@ -80,20 +77,19 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        String routeId = routeIds.get(position);
-        returnRoute(routeId);
+        Route route = routes.get(position);
+        returnRoute(route);
     }
 
     private void updateUI(List<Route> routes)
     {
-        routesDisplay.clear();
-        routeIds.clear();
+        //TODO is this necessary?
+        this.routes.clear();
+        this.routes.addAll(routes);
 
-        for (Route route : routes)
+        if (Log.isLoggable(TAG, Log.DEBUG))
         {
-            routesDisplay.add(route.toString());
-            routeIds.add(route.getId());
-            Log.d(TAG, "Adding route: " + route.toString());
+            Log.d(TAG, "Added " + routes.size() + " routes");
         }
 
         routesAdapter.notifyDataSetChanged();
@@ -101,10 +97,10 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         hideKeyboard();
     }
 
-    private void returnRoute(String route)
+    private void returnRoute(Route route)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, route);
+        result.putExtra(RETURN_INTENT_KEY, route.getId());
         setResult(RESULT_OK, result);
         finish();
     }

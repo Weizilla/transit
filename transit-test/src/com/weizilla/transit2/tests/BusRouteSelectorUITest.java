@@ -8,6 +8,8 @@ import com.weizilla.transit2.R;
 import com.weizilla.transit2.activity.BusRouteSelector;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
+import java.util.ArrayList;
+
 /**
  * tests the ui for the bus route selector
  *
@@ -47,18 +49,20 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
     public void testStartPopulatesList()
     {
         //TODO test  more routes
-        String[] expected = new String[]
+        String[][] expected =
         {
-            "Route{id='1', name='XXXBronzeville/Union Station'}",
+            {"1234", "XXXBronzeville/Union Station"}
         };
 
         solo.waitForView(R.id.uiBusRouteList);
         solo.scrollToTop();
         for (int i = 0; i < expected.length; i++)
         {
-            TextView textView = solo.clickInList(i + 1, 0).get(0);
-            solo.waitForView(textView);
-            assertEquals(expected[i], textView.getText().toString());
+            ArrayList<TextView> itemViews = solo.clickInList (i + 1, 0);
+            TextView idView = itemViews.get(0);
+            TextView nameView = itemViews.get(1);
+            assertEquals(expected[i][0], idView.getText().toString());
+            assertEquals(expected[i][1], nameView.getText().toString());
         }
     }
 }
