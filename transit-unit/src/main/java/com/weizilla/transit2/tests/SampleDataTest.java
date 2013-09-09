@@ -51,6 +51,7 @@ public class SampleDataTest {
     {
         List<Direction> directions = transitService.lookupDirections(null);
         assertEquals(2, directions.size());
+        assertEquals(Direction.Eastbound, directions.get(0));
     }
 
     @Test

@@ -68,13 +68,14 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         }
 
         String route = intent.getStringExtra(Route.KEY);
-        String direction = intent.getStringExtra(Direction.KEY);
+        //use better key
+        Direction direction = intent.getParcelableExtra("DIRECTION");
         retrieveStops(route, direction);
     }
 
-    private void retrieveStops(String route, String direction)
+    private void retrieveStops(String route, Direction direction)
     {
-        new LookupStopTask().execute(route, direction);
+        new LookupStopTask().execute(route, direction.name());
     }
 
     private void updateUI(List<Stop> retrievedStops)

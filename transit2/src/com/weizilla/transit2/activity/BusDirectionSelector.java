@@ -4,11 +4,9 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
+import android.os.Parcelable;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
+import android.widget.Button;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
 import com.weizilla.transit2.data.Direction;
@@ -16,8 +14,9 @@ import com.weizilla.transit2.data.Route;
 import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * selects a bus direction
@@ -26,14 +25,12 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 5:46 PM
  */
-public class BusDirectionSelector extends Activity implements AdapterView.OnItemClickListener
+public class BusDirectionSelector extends Activity
 {
     public static final String RETURN_INTENT_KEY = BusDirectionSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusDirectionSelector";
     private TransitService transitService;
-    private List<String> directionsDisplay;
-    private List<Direction> directions;
-    private ArrayAdapter<String> directionsAdapter;
+    private Map<Direction, Button> directionButtons;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -41,14 +38,7 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.bus_direction_select);
-
-        directionsDisplay = new ArrayList<String>();
-        directions = new ArrayList<Direction>();
-        directionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                directionsDisplay);
-        ListView uiDirectionsDisplay = (ListView) findViewById(R.id.uiBusDirectionList);
-        uiDirectionsDisplay.setAdapter(directionsAdapter);
-        uiDirectionsDisplay.setOnItemClickListener(this);
+        initButtons();
 
         transitService = new TransitService();
 
@@ -67,7 +57,29 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
         }
 
         String route = intent.getStringExtra(Route.KEY);
+        disableAllDirection();
         retrieveDirections(route);
+    }
+
+    private void initButtons()
+    {
+        directionButtons = new HashMap<Direction, Button>();
+        initButton(Direction.Northbound, R.id.uiBusDirNorth);
+        initButton(Direction.Southbound, R.id.uiBusDirSouth);
+        initButton(Direction.Eastbound, R.id.uiBusDirEast);
+        initButton(Direction.Westbound, R.id.uiBusDirWest);
+    }
+
+    private void initButton(final Direction direction, int resId)
+    {
+        Button dirButton = (Button) findViewById(resId);
+        directionButtons.put(direction, dirButton);
+        dirButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                returnDirection(direction);
+            }
+        });
     }
 
     private void retrieveDirections(String route)
@@ -77,29 +89,26 @@ public class BusDirectionSelector extends Activity implements AdapterView.OnItem
 
     private void updateUI(List<Direction> retrievedDirections)
     {
-        directionsDisplay.clear();
-        directions.clear();
-
+        disableAllDirection();
         for (Direction direction : retrievedDirections)
         {
-            directionsDisplay.add(direction.toString());
-            directions.add(direction);
-            Log.d(TAG, "Adding direction: " + direction.toString());
+            Button directionButton = directionButtons.get(direction);
+            directionButton.setEnabled(true);
         }
-
-        directionsAdapter.notifyDataSetChanged();
     }
 
-    @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-        Direction direction = directions.get(position);
-        returnDirection(direction);
+    private void disableAllDirection()
+    {
+        for (Button button : directionButtons.values())
+        {
+            button.setEnabled(false);
+        }
     }
 
     private void returnDirection(Direction direction)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, direction.getName());
+        result.putExtra(RETURN_INTENT_KEY, (Parcelable) direction);
         setResult(RESULT_OK, result);
         finish();
     }

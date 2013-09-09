@@ -2,11 +2,10 @@ package com.weizilla.transit2.tests;
 
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
-import android.widget.TextView;
+import android.widget.Button;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit2.activity.BusDirectionSelector;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
-import com.weizilla.transit2.R;
 
 /**
  * TODO auto-generated header
@@ -45,19 +44,17 @@ public class BusDirectionSelectorUITest extends ActivityInstrumentationTestCase2
 
     public void testStartPopulatesList()
     {
-        //TODO add more and get working with click handler
-        String[] expected = new String[]
-        {
-            "Direction{name='Eastbound'}",
-        };
+        Button northButton = solo.getButton("N");
+        assertFalse(northButton.isEnabled());
 
-        solo.waitForView(R.id.uiBusDirectionList);
-        solo.scrollToTop();
-        for (int i = 0; i < expected.length; i++)
-        {
-            TextView textView = solo.clickInList(i + 1, 0).get(0);
-            solo.waitForView(textView);
-            assertEquals(expected[i], textView.getText().toString());
-        }
+        Button eastButton = solo.getButton("E");
+        assertTrue(eastButton.isEnabled());
+
+        Button southButton = solo.getButton("S");
+        assertFalse(southButton.isEnabled());
+
+        Button westButton = solo.getButton("W");
+        assertTrue(westButton.isEnabled());
+
     }
 }

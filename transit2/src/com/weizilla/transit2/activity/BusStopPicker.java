@@ -3,6 +3,7 @@ package com.weizilla.transit2.activity;
 import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.view.View;
 import android.widget.TextView;
 import com.weizilla.transit2.R;
@@ -23,7 +24,7 @@ public class BusStopPicker extends Activity
     private TextView uiSelectedDirection;
     private TextView uiSelectedStop;
     private String selectedRoute;
-    private String selectedDirection;
+    private Direction selectedDirection;
     private int selectedStop = -1;
 
     private static final int ROUTE_REQUEST = 1;
@@ -82,7 +83,8 @@ public class BusStopPicker extends Activity
         Intent intent = new Intent();
         intent.setClass(this, BusStopSelector.class);
         intent.putExtra(Route.KEY, selectedRoute);
-        intent.putExtra(Direction.KEY, selectedDirection);
+        //TODO use better key
+        intent.putExtra("DIRECTION", (Parcelable) selectedDirection);
         startActivityForResult(intent, STOP_REQUEST);
     }
 
@@ -100,7 +102,7 @@ public class BusStopPicker extends Activity
         this.uiSelectedRoute.setText("Route: " + this.selectedRoute);
     }
 
-    private void setSelectedDirection(String direction)
+    private void setSelectedDirection(Direction direction)
     {
         this.selectedDirection = direction;
         this.uiSelectedDirection.setText("Direction: " + this.selectedDirection);
@@ -126,7 +128,7 @@ public class BusStopPicker extends Activity
         {
             if (resultCode == RESULT_OK)
             {
-                String direction = data.getStringExtra(BusDirectionSelector.RETURN_INTENT_KEY);
+                Direction direction = (Direction) data.getSerializableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
                 setSelectedDirection(direction);
             }
         }

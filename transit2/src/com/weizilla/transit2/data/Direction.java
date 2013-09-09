@@ -1,32 +1,44 @@
 package com.weizilla.transit2.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import org.simpleframework.xml.Root;
-import org.simpleframework.xml.Text;
 
 /**
- * TODO auto-generated header
+ * enumeration of direction
  *
  * @author wei
  *         Date: 9/3/13
  *         Time: 9:20 PM
  */
 @Root(name = "dir")
-public class Direction {
-    public static final String KEY = Direction.class.getName();
+public enum Direction implements Parcelable {
+    Northbound,
+    Eastbound,
+    Southbound,
+    Westbound;
 
-    @Text
-    private String name;
-
-    public String getName()
-    {
-        return name;
+    @Override
+    public int describeContents() {
+        return 0;
     }
 
     @Override
-    public String toString() {
-        return "Direction{" +
-                "name='" + name + '\'' +
-                '}';
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeInt(ordinal());
     }
+
+    public static final Creator<Direction> CREATOR = new Creator<Direction>() {
+        @Override
+        public Direction createFromParcel(Parcel source) {
+            int ordinal = source.readInt();
+            return Direction.values()[ordinal];
+        }
+
+        @Override
+        public Direction[] newArray(int size) {
+            return new Direction[size];
+        }
+    };
 
 }
