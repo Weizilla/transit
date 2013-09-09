@@ -1,5 +1,6 @@
 package com.weizilla.transit2.tests;
 
+import com.weizilla.transit2.data.Direction;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.io.InputStream;
@@ -28,7 +29,7 @@ public class MockTransitDataProvider implements Serializable, TransitDataProvide
     }
 
     @Override
-    public InputStream getStops(String routeId, String direction)
+    public InputStream getStops(String routeId, Direction direction)
     {
         return readSampleFile("stops_n22.xml");
     }

@@ -76,7 +76,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
         Route route = routes.get(position);
         returnRoute(route);
     }

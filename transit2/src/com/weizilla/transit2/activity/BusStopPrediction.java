@@ -55,10 +55,10 @@ public class BusStopPrediction extends Activity {
         Intent intent = getIntent();
         if (intent != null)
         {
-            int stopId = intent.getIntExtra(Stop.KEY, -1);
-            if (stopId != -1)
+            Stop stop = intent.getParcelableExtra(Stop.KEY);
+            if (stop != null)
             {
-                busStopIdInput.setText(String.valueOf(stopId));
+                busStopIdInput.setText(String.valueOf(stop.getId()));
             }
         }
     }

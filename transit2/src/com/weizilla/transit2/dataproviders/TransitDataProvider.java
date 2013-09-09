@@ -1,5 +1,7 @@
 package com.weizilla.transit2.dataproviders;
 
+import com.weizilla.transit2.data.Direction;
+
 import java.io.InputStream;
 import java.util.List;
 
@@ -14,6 +16,6 @@ public interface TransitDataProvider {
     public static final String KEY = TransitDataProvider.class.getName();
     public InputStream getPredictions(List<Integer> stops, List<Integer> routes);
     public InputStream getRoutes();
-    public InputStream getStops(String routeId, String direction);
+    public InputStream getStops(String routeId, Direction direction);
     public InputStream getDirections(String route);
 }

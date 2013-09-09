@@ -2,6 +2,7 @@ package com.weizilla.transit2.dataproviders;
 
 import android.text.TextUtils;
 import android.util.Log;
+import com.weizilla.transit2.data.Direction;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -87,9 +88,11 @@ public class CTADataProvider implements TransitDataProvider
     }
 
     @Override
-    public InputStream getStops(String routeId, String direction)
+    public InputStream getStops(String routeId, Direction direction)
     {
-        String urlString = "http://www.ctabustracker.com/bustime/api/v1/getstops?key=" + apiKey + "&rt=" + routeId + "&dir=" + direction;
+        String dirString = direction.toString();
+        String urlString = "http://www.ctabustracker.com/bustime/api/v1/getstops?key=" + apiKey
+                + "&rt=" + routeId + "&dir=" + dirString;
         try
         {
             return callCTAServer(urlString);

@@ -68,7 +68,7 @@ public class TransitService {
         return directions;
     }
 
-    public List<Stop> lookupStops(String route, String direction)
+    public List<Stop> lookupStops(String route, Direction direction)
     {
         List<Stop> stops = Collections.emptyList();
 

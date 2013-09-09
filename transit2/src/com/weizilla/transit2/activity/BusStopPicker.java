@@ -25,7 +25,7 @@ public class BusStopPicker extends Activity
     private TextView uiSelectedStop;
     private String selectedRoute;
     private Direction selectedDirection;
-    private int selectedStop = -1;
+    private Stop selectedStop;
 
     private static final int ROUTE_REQUEST = 1;
     private static final int DIRECTION_REQUEST = 2;
@@ -52,7 +52,7 @@ public class BusStopPicker extends Activity
         {
             startSelectDirectionActivity();
         }
-        else if (selectedStop == -1)
+        else if (selectedStop == null)
         {
             startSelectStopActivity();
         }
@@ -83,8 +83,7 @@ public class BusStopPicker extends Activity
         Intent intent = new Intent();
         intent.setClass(this, BusStopSelector.class);
         intent.putExtra(Route.KEY, selectedRoute);
-        //TODO use better key
-        intent.putExtra("DIRECTION", (Parcelable) selectedDirection);
+        intent.putExtra(Direction.KEY, (Parcelable) selectedDirection);
         startActivityForResult(intent, STOP_REQUEST);
     }
 
@@ -108,10 +107,10 @@ public class BusStopPicker extends Activity
         this.uiSelectedDirection.setText("Direction: " + this.selectedDirection);
     }
 
-    private void setSelectedStop(int stop)
+    private void setSelectedStop(Stop stop)
     {
         this.selectedStop = stop;
-        this.uiSelectedStop.setText("Stop: " + this.selectedStop);
+        this.uiSelectedStop.setText("Stop: " + this.selectedStop.getName());
     }
 
     @Override
@@ -128,7 +127,7 @@ public class BusStopPicker extends Activity
         {
             if (resultCode == RESULT_OK)
             {
-                Direction direction = (Direction) data.getSerializableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
+                Direction direction = data.getParcelableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
                 setSelectedDirection(direction);
             }
         }
@@ -136,7 +135,7 @@ public class BusStopPicker extends Activity
         {
             if (resultCode == RESULT_OK)
             {
-                int stop = data.getIntExtra(BusStopSelector.RETURN_INTENT_KEY, -1);
+                Stop stop = data.getParcelableExtra(BusStopSelector.RETURN_INTENT_KEY);
                 setSelectedStop(stop);
             }
         }

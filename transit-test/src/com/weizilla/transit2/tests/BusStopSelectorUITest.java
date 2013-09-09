@@ -49,8 +49,7 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
         //TODO add more and get working with click handler
         String[] expected = new String[]
         {
-            "Stop{id=1926, name='Clark & Addison', " +
-                    "latitude=41.947086853598, longitude=-87.656360864639}",
+            "Clark & Addison",
         };
 
         solo.waitForView(R.id.uiBusStopList);

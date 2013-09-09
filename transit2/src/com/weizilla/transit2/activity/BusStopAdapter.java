@@ -7,26 +7,25 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.weizilla.transit2.R;
-import com.weizilla.transit2.data.Route;
+import com.weizilla.transit2.data.Stop;
 
 import java.util.List;
 
 /**
- *
- * adapter for bus route picker list
+ * list adapter for bus stop
  *
  * @author wei
  *         Date: 9/9/13
- *         Time: 12:09 PM
+ *         Time: 3:37 PM
  */
-public class BusRouteAdapter extends ArrayAdapter<Route>
+public class BusStopAdapter extends ArrayAdapter<Stop>
 {
-    private List<Route> routes;
+    private List<Stop> stops;
 
-    public BusRouteAdapter(Context context, List<Route> routes)
+    public BusStopAdapter(Context context, List<Stop> stops)
     {
-        super(context, R.layout.bus_route_item, routes);
-        this.routes = routes;
+        super(context, R.layout.bus_stop_item, stops);
+        this.stops = stops;
     }
 
     @Override
@@ -36,18 +35,15 @@ public class BusRouteAdapter extends ArrayAdapter<Route>
 
         if (convertView == null) {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.bus_route_item, parent, false);
+            view = inflater.inflate(R.layout.bus_stop_item, parent, false);
         } else {
             view = convertView;
         }
 
-        Route route = routes.get(position);
+        Stop stop = stops.get(position);
 
-        TextView uiId = (TextView) view.findViewById(R.id.uiBusRouteItemId);
-        uiId.setText(route.getId());
-
-        TextView uiName = (TextView) view.findViewById(R.id.uiBusRouteItemName);
-        uiName.setText(route.getName());
+        TextView uiName = (TextView) view.findViewById(R.id.uiBusStopItemName);
+        uiName.setText(stop.getName());
 
         return view;
     }

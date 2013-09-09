@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.TransitService;
@@ -32,9 +31,8 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
     public static final String RETURN_INTENT_KEY = BusStopSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusStopSelector";
     private TransitService transitService;
-    private List<String> stopsDisplay;
     private List<Stop> stops;
-    private ArrayAdapter<String> stopsAdapter;
+    private BusStopAdapter stopsAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,10 +41,8 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
 
         this.setContentView(R.layout.bus_stop_select);
 
-        stopsDisplay = new ArrayList<String>();
         stops = new ArrayList<Stop>();
-        stopsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1,
-                stopsDisplay);
+        stopsAdapter = new BusStopAdapter(this, stops);
         ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
         uiStopsDisplay.setAdapter(stopsAdapter);
         uiStopsDisplay.setOnItemClickListener(this);
@@ -68,26 +64,23 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         }
 
         String route = intent.getStringExtra(Route.KEY);
-        //use better key
-        Direction direction = intent.getParcelableExtra("DIRECTION");
+        Direction direction = intent.getParcelableExtra(Direction.KEY);
         retrieveStops(route, direction);
     }
 
     private void retrieveStops(String route, Direction direction)
     {
-        new LookupStopTask().execute(route, direction.name());
+        new LookupStopTask().execute(route, direction);
     }
 
     private void updateUI(List<Stop> retrievedStops)
     {
-        stopsDisplay.clear();
         stops.clear();
+        stops.addAll(retrievedStops);
 
-        for (Stop stop : retrievedStops)
+        if (Log.isLoggable(TAG, Log.DEBUG))
         {
-            stopsDisplay.add(stop.toString());
-            stops.add(stop);
-            Log.d(TAG, "Adding stop: " + stop.toString());
+            Log.d(TAG, "Adding " + retrievedStops.size() + " stops");
         }
 
         stopsAdapter.notifyDataSetChanged();
@@ -102,18 +95,18 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
     private void returnStop(Stop stop)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, stop.getId());
+        result.putExtra(RETURN_INTENT_KEY, stop);
         setResult(RESULT_OK, result);
         finish();
     }
 
-    private class LookupStopTask extends AsyncTask<String, Void, List<Stop>>
+    private class LookupStopTask extends AsyncTask<Object, Void, List<Stop>>
     {
 
         @Override
-        protected List<Stop> doInBackground(String... params) {
-            String route = params[0];
-            String direction = params[1];
+        protected List<Stop> doInBackground(Object... params) {
+            String route = (String) params[0];
+            Direction direction = (Direction) params[1];
             return transitService.lookupStops(route, direction);
         }
 
