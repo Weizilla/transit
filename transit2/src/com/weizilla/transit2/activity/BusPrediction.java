@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit2.R;
@@ -19,6 +18,7 @@ import com.weizilla.transit2.dataproviders.CTADataProvider;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -31,21 +31,21 @@ import java.util.List;
 public class BusPrediction extends Activity {
     private static final String TAG = "BusPrediction";
     private TransitService transitService;
-    private List<String> predictionsDisplay;
-    private ArrayAdapter<String> predictionsAdapter;
+    private List<Prediction> predictions;
+    private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
 
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        this.setContentView(R.layout.bus_prediction);
+        this.setContentView(R.layout.bus_pred);
 
         busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 
-        predictionsDisplay = new ArrayList<String>();
-        predictionsAdapter = new ArrayAdapter<String>(this, android.R.layout.simple_list_item_1, predictionsDisplay);
+        predictions = new ArrayList<Prediction>();
+        predictionAdapter = new BusPredictionAdapter(this, predictions);
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
-        uiPredictionsDisplay.setAdapter(predictionsAdapter);
+        uiPredictionsDisplay.setAdapter(predictionAdapter);
 
         transitService = new TransitService();
 
@@ -59,6 +59,7 @@ public class BusPrediction extends Activity {
             if (stop != null)
             {
                 busStopIdInput.setText(String.valueOf(stop.getId()));
+                retrievePredictions(null);
             }
         }
     }
@@ -69,17 +70,17 @@ public class BusPrediction extends Activity {
         new LookupPredictionsTask().execute(busStopId);
     }
 
-    private void updateUI(List<Prediction> predictions)
+    private void updateUI(List<Prediction> retrievedPredictions)
     {
-        predictionsDisplay.clear();
+        predictions.clear();
+        predictions.addAll(retrievedPredictions);
 
-        for (Prediction prediction : predictions)
+        if (Log.isLoggable(TAG, Log.DEBUG))
         {
-            predictionsDisplay.add(prediction.toString());
-            Log.d(TAG, "Adding Prediction: " + prediction.toString());
+            Log.d(TAG, "Added " + retrievedPredictions.size() + " predictions");
         }
 
-        predictionsAdapter.notifyDataSetChanged();
+        predictionAdapter.notifyDataSetChanged();
 
         hideKeyboard();
     }
@@ -95,6 +96,11 @@ public class BusPrediction extends Activity {
     public void setTransitDataProvider(TransitDataProvider transitDataProvider)
     {
         transitService.setDataProvider(transitDataProvider);
+    }
+
+    public void setRefTime(Date refTime)
+    {
+        predictionAdapter.setRefTime(refTime);
     }
 
     private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>

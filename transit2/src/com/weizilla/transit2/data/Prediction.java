@@ -1,7 +1,11 @@
 package com.weizilla.transit2.data;
 
+import com.weizilla.transit2.util.TimeConverter;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.convert.Convert;
+
+import java.util.Date;
 
 /**
  * contains information about a single prediction
@@ -11,10 +15,12 @@ import org.simpleframework.xml.Root;
  * Time: 5:42 PM
  */
 @Root(name="prd")
-public class Prediction {
+public class Prediction
+{
 
     @Element(name="tmstmp")
-    private String timestamp;
+    @Convert(TimeConverter.class)
+    private Date timestamp;
 
     @Element(name="typ")
     private String type;
@@ -41,9 +47,10 @@ public class Prediction {
     private String destination;
 
     @Element(name="prdtm")
-    private String predictionTime;
+    @Convert(TimeConverter.class)
+    private Date predictionTime;
 
-    public String getTimestamp() {
+    public Date getTimestamp() {
         return timestamp;
     }
 
@@ -79,7 +86,7 @@ public class Prediction {
         return destination;
     }
 
-    public String getPredictionTime() {
+    public Date getPredictionTime() {
         return predictionTime;
     }
 

@@ -3,7 +3,9 @@ package com.weizilla.transit2;
 import com.weizilla.transit2.data.*;
 import com.weizilla.transit2.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
+import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
+import org.simpleframework.xml.strategy.Strategy;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -11,7 +13,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * TODO auto-generated header
+ *
+ * peforms various high level route, prediction, direction lookup
  *
  * @author wei
  * Date: 8/18/13
@@ -20,8 +23,13 @@ import java.util.List;
 public class TransitService {
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
-    private Serializer serializer = new Persister();
+    private Serializer serializer;
 
+    public TransitService()
+    {
+        Strategy strategy = new AnnotationStrategy();
+        serializer = new Persister(strategy);
+    }
 
     public List<Route> lookupRoutes()
     {

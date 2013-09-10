@@ -3,16 +3,22 @@ package com.weizilla.transit2.tests;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit2.R;
 import com.weizilla.transit2.activity.BusPrediction;
+import com.weizilla.transit2.util.TimeConverter;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 
 public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPrediction>
 {
     private static final String BUS_STOP_ID = "123456";
     private Solo solo;
+    private BusPrediction activity;
 
     public BusPredictionUITest()
     {
@@ -23,9 +29,17 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
     public void setUp() throws Exception
     {
         super.setUp();
-        BusPrediction activity = getActivity();
+        activity = getActivity();
         activity.setTransitDataProvider(new MockTransitDataProvider());
+        activity.setRefTime(genRefTime());
         solo = new Solo(getInstrumentation(), activity);
+    }
+
+    private Date genRefTime() throws ParseException
+    {
+        String refTime = "20130818 17:23";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TimeConverter.PATTERN);
+        return dateFormat.parse(refTime);
     }
 
     @Override
@@ -37,12 +51,12 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
 
     public void testGetPredictionsPopulatesList()
     {
-        String[] expected = new String[]
+        String[][] expected =
         {
-            "Prediction{timestamp='20130818 17:23', type='A', stopId=1916, stopName='Clark & Schubert', vehicleId=1859, distRemaining=6114, route='36', direction='Northbound', destination='Devon/Clark', predictionTime='20130818 17:31'}",
-            "Prediction{timestamp='20130818 17:23', type='A', stopId=1916, stopName='Clark & Schubert', vehicleId=1861, distRemaining=9607, route='36', direction='Northbound', destination='Devon/Clark', predictionTime='20130818 17:35'}",
-            "Prediction{timestamp='20130818 17:23', type='A', stopId=1916, stopName='Clark & Schubert', vehicleId=4129, distRemaining=9473, route='22', direction='Northbound', destination='Howard', predictionTime='20130818 17:36'}",
-            "Prediction{timestamp='20130818 17:23', type='A', stopId=1916, stopName='Clark & Schubert', vehicleId=4074, distRemaining=14728, route='22', direction='Northbound', destination='Howard', predictionTime='20130818 17:43'}"
+            {"36", "Devon/Clark", "8"},
+            {"36", "Devon/Clark", "12"},
+            {"22", "Howard", "13"},
+            {"22", "Howard", "20"},
         };
 
         EditText busStopIdInput = (EditText) solo.getView(R.id.uiBusStopIDInput);
@@ -54,13 +68,17 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
 
         solo.waitForView(R.id.uiPredictionList);
 
-        ListView predictionsDisplay = solo.getCurrentViews(ListView.class).get(0);
         solo.scrollListToTop(0);
-        for (int i = 1; i <= predictionsDisplay.getChildCount(); i++)
+        for (int i = 0; i < expected.length; i++)
         {
-            TextView textView = solo.clickInList(i, 0).get(0);
-            solo.waitForView(textView);
-            assertEquals(expected[i-1], textView.getText().toString());
+            ArrayList<TextView> views = solo.clickInList(i + 1, 0);
+            for (int j = 0; j < expected[i].length; j++)
+            {
+                String expectedStr = expected[i][j];
+                TextView textView = views.get(j);
+                solo.waitForView(textView);
+                assertEquals(expectedStr, textView.getText().toString());
+            }
         }
 
     }
