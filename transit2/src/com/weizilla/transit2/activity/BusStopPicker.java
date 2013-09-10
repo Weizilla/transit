@@ -40,9 +40,11 @@ public class BusStopPicker extends Activity
         this.uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
         this.uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
         this.uiSelectedStop = (TextView) findViewById(R.id.uiSelectedStop);
+
+        startNextStep(null);
     }
 
-    public void selectStopStep(View view)
+    public void startNextStep(View view)
     {
         if (selectedRoute == null)
         {
@@ -121,6 +123,7 @@ public class BusStopPicker extends Activity
             {
                 String route = data.getStringExtra(BusRouteSelector.RETURN_INTENT_KEY);
                 setSelectedRoute(route);
+                startNextStep(null);
             }
         }
         else if (requestCode == DIRECTION_REQUEST)
@@ -129,6 +132,7 @@ public class BusStopPicker extends Activity
             {
                 Direction direction = data.getParcelableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
                 setSelectedDirection(direction);
+                startNextStep(null);
             }
         }
         else if (requestCode == STOP_REQUEST)
@@ -137,6 +141,7 @@ public class BusStopPicker extends Activity
             {
                 Stop stop = data.getParcelableExtra(BusStopSelector.RETURN_INTENT_KEY);
                 setSelectedStop(stop);
+                startNextStep(null);
             }
         }
         else

@@ -11,7 +11,6 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:textSize="30sp"
-        android:minWidth="30sp"
         />
     <TextView
         android:id="@+id/uiBusPredDest"
