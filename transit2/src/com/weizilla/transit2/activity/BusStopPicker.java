@@ -97,6 +97,16 @@ public class BusStopPicker extends Activity
         startActivity(intent);
     }
 
+    public void startOver(View view)
+    {
+        this.selectedRoute = null;
+        this.uiSelectedRoute.setText("Route:");
+        this.selectedDirection = null;
+        this.uiSelectedDirection.setText("Direction:");
+        this.selectedStop = null;
+        this.uiSelectedStop.setText("Stop:");
+    }
+
     private void setSelectedRoute(String route)
     {
         this.selectedRoute = route;

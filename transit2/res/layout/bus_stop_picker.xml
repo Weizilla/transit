@@ -25,13 +25,20 @@
         android:text="Stop:"
         />
 
-    <!-- TODO better name -->
     <Button
         android:id="@+id/uiSelectStop"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:text="Next Step..."
         android:onClick="startNextStep"
+        />
+
+    <Button
+        android:id="@+id/uiSelectStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Start Over"
+        android:onClick="startOver"
         />
 
 </LinearLayout>
