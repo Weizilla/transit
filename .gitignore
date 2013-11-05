@@ -27,3 +27,6 @@ build.xml
 *.jar
 *.war
 *.ear
+
+# key for cta api
+transit/res/values/keys.xml
