@@ -14,8 +14,8 @@ import java.util.List;
  * provides data via cta web service
  *
  * @author wei
- * Date: 8/26/13
- * Time: 9:50 PM
+ *         Date: 8/26/13
+ *         Time: 9:50 PM
  */
 public class CTADataProvider implements TransitDataProvider
 {
@@ -32,7 +32,7 @@ public class CTADataProvider implements TransitDataProvider
     {
         String stopsStr = TextUtils.join(",", stops);
         String urlString = "http://www.ctabustracker.com/bustime/api/v1/getpredictions?key=" + apiKey + "&stpid=" + stopsStr;
-        if (routes != null && ! routes.isEmpty())
+        if (routes != null && !routes.isEmpty())
         {
             String routesStr = TextUtils.join(",", routes);
             urlString += routesStr;

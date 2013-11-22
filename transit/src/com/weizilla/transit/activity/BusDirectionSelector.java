@@ -63,7 +63,7 @@ public class BusDirectionSelector extends Activity
 
     private void initButtons()
     {
-        directionButtons = new HashMap<Direction, Button>();
+        directionButtons = new HashMap<>();
         initButton(Direction.Northbound, R.id.uiBusDirNorth);
         initButton(Direction.Southbound, R.id.uiBusDirSouth);
         initButton(Direction.Eastbound, R.id.uiBusDirEast);
@@ -74,9 +74,11 @@ public class BusDirectionSelector extends Activity
     {
         Button dirButton = (Button) findViewById(resId);
         directionButtons.put(direction, dirButton);
-        dirButton.setOnClickListener(new View.OnClickListener() {
+        dirButton.setOnClickListener(new View.OnClickListener()
+        {
             @Override
-            public void onClick(View v) {
+            public void onClick(View v)
+            {
                 returnDirection(direction);
             }
         });
@@ -117,7 +119,8 @@ public class BusDirectionSelector extends Activity
     {
 
         @Override
-        protected List<Direction> doInBackground(String... params) {
+        protected List<Direction> doInBackground(String... params)
+        {
             String route = params[0];
             return transitService.lookupDirections(route);
         }

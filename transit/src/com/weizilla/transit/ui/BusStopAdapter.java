@@ -33,10 +33,13 @@ public class BusStopAdapter extends ArrayAdapter<Stop>
     {
         View view;
 
-        if (convertView == null) {
+        if (convertView == null)
+        {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.bus_stop_item, parent, false);
-        } else {
+        }
+        else
+        {
             view = convertView;
         }
 

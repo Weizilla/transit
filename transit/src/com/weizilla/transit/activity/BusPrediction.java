@@ -12,11 +12,11 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
-import com.weizilla.transit.ui.BusPredictionAdapter;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.ui.BusPredictionAdapter;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -26,24 +26,26 @@ import java.util.List;
  * Activity for finding the predictions for a single bus stop
  *
  * @author Wei Yang
- * Date: 8/26/13
- * Time: 7:26 PM
+ *         Date: 8/26/13
+ *         Time: 7:26 PM
  */
-public class BusPrediction extends Activity {
+public class BusPrediction extends Activity
+{
     private static final String TAG = "BusPrediction";
     private TransitService transitService;
     private List<Prediction> predictions;
     private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
 
-    public void onCreate(Bundle savedInstanceState) {
+    public void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.bus_pred);
 
         busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 
-        predictions = new ArrayList<Prediction>();
+        predictions = new ArrayList<>();
         predictionAdapter = new BusPredictionAdapter(this, predictions);
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
         uiPredictionsDisplay.setAdapter(predictionAdapter);
@@ -88,7 +90,7 @@ public class BusPrediction extends Activity {
 
     private void hideKeyboard()
     {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
+        InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(busStopIdInput.getWindowToken(), 0);
@@ -107,12 +109,14 @@ public class BusPrediction extends Activity {
     private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
     {
         @Override
-        protected List<Prediction> doInBackground(Integer... params) {
+        protected List<Prediction> doInBackground(Integer... params)
+        {
             return transitService.lookupPredictions(params[0]);
         }
 
         @Override
-        protected void onPostExecute(List<Prediction> predictions) {
+        protected void onPostExecute(List<Prediction> predictions)
+        {
             super.onPostExecute(predictions);
 
             updateUI(predictions);

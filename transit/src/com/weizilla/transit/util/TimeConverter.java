@@ -11,7 +11,6 @@ import java.util.Date;
 /**
  * class for converting date to and from string in format of "20130818 17:23"
  *
- *
  * @author wei
  *         Date: 9/9/13
  *         Time: 5:21 PM

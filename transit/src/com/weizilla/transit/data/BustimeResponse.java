@@ -7,13 +7,14 @@ import java.util.List;
 
 /**
  * holds a list of bus tracker elements
+ *
  * @author wei
- * Date: 8/22/13
- * Time: 5:47 AM
+ *         Date: 8/22/13
+ *         Time: 5:47 AM
  */
-@Root(name="bustime-response")
-public class BustimeResponse {
-
+@Root(name = "bustime-response")
+public class BustimeResponse
+{
     @ElementList(inline = true, required = false)
     private List<Prediction> predictions;
 
@@ -41,7 +42,8 @@ public class BustimeResponse {
         return routes;
     }
 
-    public List<Stop> getStops() {
+    public List<Stop> getStops()
+    {
         return stops;
     }
 }

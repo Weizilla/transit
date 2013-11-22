@@ -12,21 +12,21 @@ import org.simpleframework.xml.Root;
  *         Date: 9/4/13
  *         Time: 5:39 AM
  */
-@Root(name="stop")
+@Root(name = "stop")
 public class Stop implements Parcelable
 {
     public static final String KEY = Stop.class.getName();
 
-    @Element(name="stpid")
+    @Element(name = "stpid")
     public int id;
 
-    @Element(name="stpnm")
+    @Element(name = "stpnm")
     public String name;
 
-    @Element(name="lat")
+    @Element(name = "lat")
     public double latitude;
 
-    @Element(name="lon")
+    @Element(name = "lon")
     public double longitude;
 
     public Stop()

@@ -14,7 +14,6 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- *
  * adapter for a bus prediction list
  *
  * @author wei
@@ -37,10 +36,13 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
     {
         View view;
 
-        if (convertView == null) {
+        if (convertView == null)
+        {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.bus_pred_item, parent, false);
-        } else {
+        }
+        else
+        {
             view = convertView;
         }
 

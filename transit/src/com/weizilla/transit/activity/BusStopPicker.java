@@ -32,7 +32,8 @@ public class BusStopPicker extends Activity
     private static final int STOP_REQUEST = 3;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
+    protected void onCreate(Bundle savedInstanceState)
+    {
         super.onCreate(savedInstanceState);
 
         this.setContentView(R.layout.bus_stop_picker);
@@ -126,7 +127,8 @@ public class BusStopPicker extends Activity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
         if (requestCode == ROUTE_REQUEST)
         {
             if (resultCode == RESULT_OK)

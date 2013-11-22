@@ -13,10 +13,10 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
-import com.weizilla.transit.ui.BusRouteAdapter;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.ui.BusRouteAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -46,7 +46,7 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
         busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
 
-        routes = new ArrayList<Route>();
+        routes = new ArrayList<>();
         routesAdapter = new BusRouteAdapter(this, routes);
         ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
         uiRoutesDisplay.setAdapter(routesAdapter);
@@ -109,7 +109,7 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
     private void hideKeyboard()
     {
-        InputMethodManager imm = (InputMethodManager)getSystemService(
+        InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(busRouteInput.getWindowToken(), 0);
@@ -119,7 +119,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     {
 
         @Override
-        protected List<Route> doInBackground(Void... params) {
+        protected List<Route> doInBackground(Void... params)
+        {
             return transitService.lookupRoutes();
         }
 

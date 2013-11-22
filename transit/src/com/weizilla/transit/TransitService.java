@@ -1,6 +1,10 @@
 package com.weizilla.transit;
 
-import com.weizilla.transit.data.*;
+import com.weizilla.transit.data.BustimeResponse;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
@@ -13,14 +17,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- *
  * peforms various high level route, prediction, direction lookup
  *
  * @author wei
- * Date: 8/18/13
- * Time: 5:40 PM
+ *         Date: 8/18/13
+ *         Time: 5:40 PM
  */
-public class TransitService {
+public class TransitService
+{
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
     private Serializer serializer;
@@ -131,7 +135,8 @@ public class TransitService {
         return results;
     }
 
-    private static void closeStream(InputStream inputStream) {
+    private static void closeStream(InputStream inputStream)
+    {
         if (inputStream != null)
         {
             try
@@ -145,7 +150,8 @@ public class TransitService {
         }
     }
 
-    public void setDataProvider(TransitDataProvider dataProvider) {
+    public void setDataProvider(TransitDataProvider dataProvider)
+    {
         this.dataProvider = dataProvider;
     }
 }

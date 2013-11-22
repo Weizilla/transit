@@ -10,12 +10,12 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
-import com.weizilla.transit.ui.BusStopAdapter;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.ui.BusStopAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,7 +42,7 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
 
         this.setContentView(R.layout.bus_stop_select);
 
-        stops = new ArrayList<Stop>();
+        stops = new ArrayList<>();
         stopsAdapter = new BusStopAdapter(this, stops);
         ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
         uiStopsDisplay.setAdapter(stopsAdapter);
@@ -88,7 +88,8 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
     }
 
     @Override
-    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
         Stop stop = stops.get(position);
         returnStop(stop);
     }
@@ -103,9 +104,9 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
 
     private class LookupStopTask extends AsyncTask<Object, Void, List<Stop>>
     {
-
         @Override
-        protected List<Stop> doInBackground(Object... params) {
+        protected List<Stop> doInBackground(Object... params)
+        {
             String route = (String) params[0];
             Direction direction = (Direction) params[1];
             return transitService.lookupStops(route, direction);

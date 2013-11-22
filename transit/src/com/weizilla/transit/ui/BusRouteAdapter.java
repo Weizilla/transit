@@ -12,7 +12,6 @@ import com.weizilla.transit.data.Route;
 import java.util.List;
 
 /**
- *
  * adapter for bus route picker list
  *
  * @author wei
@@ -34,10 +33,13 @@ public class BusRouteAdapter extends ArrayAdapter<Route>
     {
         View view;
 
-        if (convertView == null) {
+        if (convertView == null)
+        {
             LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
             view = inflater.inflate(R.layout.bus_route_item, parent, false);
-        } else {
+        }
+        else
+        {
             view = convertView;
         }
 

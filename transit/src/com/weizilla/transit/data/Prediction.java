@@ -11,87 +11,97 @@ import java.util.Date;
  * contains information about a single prediction
  *
  * @author wei
- * Date: 8/18/13
- * Time: 5:42 PM
+ *         Date: 8/18/13
+ *         Time: 5:42 PM
  */
-@Root(name="prd")
+@Root(name = "prd")
 public class Prediction
 {
-
-    @Element(name="tmstmp")
+    @Element(name = "tmstmp")
     @Convert(TimeConverter.class)
     private Date timestamp;
 
-    @Element(name="typ")
+    @Element(name = "typ")
     private String type;
 
-    @Element(name="stpid")
+    @Element(name = "stpid")
     private int stopId;
 
-    @Element(name="stpnm")
+    @Element(name = "stpnm")
     private String stopName;
 
-    @Element(name="vid")
+    @Element(name = "vid")
     private int vehicleId;
 
-    @Element(name="dstp")
+    @Element(name = "dstp")
     private int distRemaining;
 
-    @Element(name="rt")
+    @Element(name = "rt")
     private String route;
 
-    @Element(name="rtdir")
+    @Element(name = "rtdir")
     private String direction;
 
-    @Element(name="des")
+    @Element(name = "des")
     private String destination;
 
-    @Element(name="prdtm")
+    @Element(name = "prdtm")
     @Convert(TimeConverter.class)
     private Date predictionTime;
 
-    public Date getTimestamp() {
+    public Date getTimestamp()
+    {
         return timestamp;
     }
 
-    public String getType() {
+    public String getType()
+    {
         return type;
     }
 
-    public int getStopId() {
+    public int getStopId()
+    {
         return stopId;
     }
 
-    public String getStopName() {
+    public String getStopName()
+    {
         return stopName;
     }
 
-    public int getVehicleId() {
+    public int getVehicleId()
+    {
         return vehicleId;
     }
 
-    public int getDistRemaining() {
+    public int getDistRemaining()
+    {
         return distRemaining;
     }
 
-    public String getRoute() {
+    public String getRoute()
+    {
         return route;
     }
 
-    public String getDirection() {
+    public String getDirection()
+    {
         return direction;
     }
 
-    public String getDestination() {
+    public String getDestination()
+    {
         return destination;
     }
 
-    public Date getPredictionTime() {
+    public Date getPredictionTime()
+    {
         return predictionTime;
     }
 
     @Override
-    public String toString() {
+    public String toString()
+    {
         return "Prediction{" +
                 "timestamp='" + timestamp + '\'' +
                 ", type='" + type + '\'' +
