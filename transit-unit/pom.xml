@@ -6,6 +6,7 @@
 
     <groupId>com.weizilla.transit</groupId>
     <artifactId>transit-unit</artifactId>
+    <name>transit-unit</name>
     <version>1.0-SNAPSHOT</version>
 
     <dependencies>

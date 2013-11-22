@@ -36,6 +36,11 @@ public class TransitService {
         List<Route> results = Collections.emptyList();
         InputStream inputStream = dataProvider.getRoutes();
 
+        if (inputStream == null)
+        {
+            return results;
+        }
+
         try
         {
             BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
@@ -127,13 +132,16 @@ public class TransitService {
     }
 
     private static void closeStream(InputStream inputStream) {
-        try
+        if (inputStream != null)
         {
-            inputStream.close();
-        }
-        catch (IOException e)
-        {
-            // ignore
+            try
+            {
+                inputStream.close();
+            }
+            catch (IOException e)
+            {
+                // ignore
+            }
         }
     }
 
