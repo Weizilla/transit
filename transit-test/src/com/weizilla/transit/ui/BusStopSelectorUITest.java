@@ -1,4 +1,4 @@
-package com.weizilla.transit.tests;
+package com.weizilla.transit.ui;
 
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
@@ -7,6 +7,7 @@ import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
 import com.weizilla.transit.activity.BusStopSelector;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 
 /**
  * TODO auto-generated header

@@ -1,7 +1,6 @@
-package com.weizilla.transit.tests;
+package com.weizilla.transit.dataproviders;
 
 import com.weizilla.transit.data.Direction;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 import java.io.InputStream;
 import java.io.Serializable;

@@ -1,11 +1,10 @@
-package com.weizilla.transit.tests;
+package com.weizilla.transit.dataproviders;
 
 import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import org.junit.Before;
 import org.junit.Test;
 
