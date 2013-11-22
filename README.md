@@ -3,6 +3,11 @@ transit
 
 Android CTA Bus/Train Tracker
 
+Required Libs:
+Google Guava
+Robotium-Solo
+Simple-XML
+
 Set up:
 1.) Import
   a.) transit as android project
@@ -12,8 +17,12 @@ Set up:
   a.) transit-test depends on transit and transit-unit
   b.) transit-unit depends on transit
 3.) Add lib
-  a.) transit - simple-xml
-  b.) transit-test - robotium-solo
+  a.) transit
+    i.) simple-xml
+    ii.) guava
+  b.) transit-test
+    i.) robotium-solo
+    ii.) guava
   c.) transit-unit
     i.) simple-xml
     ii.) android.jar

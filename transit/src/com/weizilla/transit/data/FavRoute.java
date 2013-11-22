@@ -14,7 +14,7 @@ public class FavRoute
     public static interface DB extends BaseColumns
     {
         public static final String TABLE_NAME = "Route";
-        public static final String ID = "RouteId";
+        public static final String ID = "Id";
         public static final String NAME = "Name";
     }
 }

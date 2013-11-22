@@ -1,9 +1,15 @@
 package com.weizilla.transit.db;
 
+import android.content.ContentValues;
 import android.content.Context;
+import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import com.weizilla.transit.data.FavRoute;
+import com.weizilla.transit.data.Route;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Handles all CRUD operations related to favorite routes
@@ -20,7 +26,7 @@ public class FavRouteStore
     private static final String CREATE_TABLE_SQL =
         "CREATE TABLE " + FavRoute.DB.TABLE_NAME + " (" +
         FavRoute.DB._ID + " INTEGER PRIMARY KEY, " +
-        FavRoute.DB.ID + " INTEGER UNIQUE, " +
+        FavRoute.DB.ID + " TEXT UNIQUE, " +
         FavRoute.DB.NAME + " TEXT" +
         " )";
     private static final String DROP_TABLE_SQL =
@@ -40,9 +46,25 @@ public class FavRouteStore
         this.database = databaseHelper.getWritableDatabase();
     }
 
+    public long addRoute(Route route)
+    {
+        ContentValues values = new ContentValues();
+        values.put(FavRoute.DB.ID, route.getId());
+        values.put(FavRoute.DB.NAME, route.getName());
+        return database.replace(FavRoute.DB.TABLE_NAME, null, values);
+    }
+
+    public List<Route> getRoutes()
+    {
+        String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
+        String order = FavRoute.DB.ID + " ASC";
+        Cursor cursor = database.query(FavRoute.DB.TABLE_NAME, cols, null, null, null, null, order);
+        return makeRoute(cursor);
+    }
+
     public void close()
     {
-        // do nothing
+        this.databaseHelper.close();
     }
 
     /**
@@ -52,6 +74,25 @@ public class FavRouteStore
     DatabaseHelper getDatabaseHelper()
     {
         return databaseHelper;
+    }
+
+    private static List<Route> makeRoute(Cursor cursor)
+    {
+        List<Route> routes = new ArrayList<>();
+        if (cursor == null || cursor.getCount() == 0)
+        {
+            return routes;
+        }
+
+        cursor.moveToFirst();
+        do
+        {
+            String id = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
+            String name = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
+            routes.add(new Route(id, name));
+        }
+        while (cursor.moveToNext());
+        return routes;
     }
 
     static class DatabaseHelper extends SQLiteOpenHelper
