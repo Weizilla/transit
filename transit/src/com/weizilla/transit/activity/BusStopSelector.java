@@ -10,6 +10,7 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
+import com.weizilla.transit.ui.BusStopAdapter;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
@@ -20,7 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * launches child activites for selecting route attributes and displays the currently selected ones
+ * selects a bus stop
  *
  * @author wei
  *         Date: 9/2/13

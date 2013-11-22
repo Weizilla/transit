@@ -13,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
+import com.weizilla.transit.ui.BusRouteAdapter;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;

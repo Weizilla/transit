@@ -12,6 +12,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
+import com.weizilla.transit.ui.BusPredictionAdapter;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.CTADataProvider;

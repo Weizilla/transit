@@ -1,4 +1,4 @@
-package com.weizilla.transit.activity;
+package com.weizilla.transit.ui;
 
 import android.content.Context;
 import android.view.LayoutInflater;
