@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -16,6 +15,7 @@ import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.db.FavRouteStore;
 import com.weizilla.transit.ui.BusRouteAdapter;
 
 import java.util.ArrayList;
@@ -33,7 +33,10 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusRouteSelector";
     private TransitService transitService;
-    private List<Route> routes;
+    private FavRouteStore favRouteStore;
+    private List<Route> allRoutes;
+    private List<Route> favoriteRoutes;
+    private List<Route> retrievedRoutes;
     private BusRouteAdapter routesAdapter;
     private EditText busRouteInput;
 
@@ -42,33 +45,54 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     {
         super.onCreate(savedInstanceState);
 
-        this.setContentView(R.layout.bus_route_select);
+        allRoutes = new ArrayList<>();
+        favoriteRoutes = new ArrayList<>();
+        retrievedRoutes = new ArrayList<>();
 
-        busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
+        TransitDataProvider transitDataProvider = getDataProvider();
+        transitService = new TransitService(transitDataProvider);
 
-        routes = new ArrayList<>();
-        routesAdapter = new BusRouteAdapter(this, routes);
-        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
-        uiRoutesDisplay.setAdapter(routesAdapter);
-        uiRoutesDisplay.setOnItemClickListener(this);
+        favRouteStore = new FavRouteStore(this);
 
-        transitService = new TransitService();
+        initGui();
 
+    }
+
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        favRouteStore.open();
+
+        //TODO must occur after
+        refreshFavorites();
+        retrieveRoutes();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        favRouteStore.close();
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
         String ctaApiKey = getString(R.string.ctaApiKey);
-
         Intent intent = getIntent();
         TransitDataProvider dataProvider =
                 (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        if (dataProvider != null)
-        {
-            transitService.setDataProvider(dataProvider);
-        }
-        else
-        {
-            transitService.setDataProvider(new CTADataProvider(ctaApiKey));
-        }
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
+    }
 
-        retrieveRoutes();
+    private void initGui()
+    {
+        setContentView(R.layout.bus_route_select);
+        busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
+        routesAdapter = new BusRouteAdapter(this, allRoutes);
+        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
+        uiRoutesDisplay.setAdapter(routesAdapter);
+        uiRoutesDisplay.setOnItemClickListener(this);
     }
 
     private void retrieveRoutes()
@@ -76,27 +100,16 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         new LookupRoutesTask().execute();
     }
 
+    public void refreshFavorites()
+    {
+        new RefreshFavoritesTask().execute();
+    }
+
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Route route = routes.get(position);
+        Route route = allRoutes.get(position);
         returnRoute(route);
-    }
-
-    private void updateUI(List<Route> routes)
-    {
-        //TODO is this necessary?
-        this.routes.clear();
-        this.routes.addAll(routes);
-
-        if (Log.isLoggable(TAG, Log.DEBUG))
-        {
-            Log.d(TAG, "Added " + routes.size() + " routes");
-        }
-
-        routesAdapter.notifyDataSetChanged();
-
-        hideKeyboard();
     }
 
     private void returnRoute(Route route)
@@ -105,6 +118,19 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         result.putExtra(RETURN_INTENT_KEY, route.getId());
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    private void updateAllRoutes()
+    {
+        synchronized (allRoutes)
+        {
+            allRoutes.clear();
+            allRoutes.addAll(favoriteRoutes);
+            allRoutes.addAll(retrievedRoutes);
+        }
+
+        routesAdapter.notifyDataSetChanged();
+        hideKeyboard();
     }
 
     private void hideKeyboard()
@@ -117,7 +143,6 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
 
     private class LookupRoutesTask extends AsyncTask<Void, Void, List<Route>>
     {
-
         @Override
         protected List<Route> doInBackground(Void... params)
         {
@@ -128,7 +153,33 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         protected void onPostExecute(List<Route> routes)
         {
             super.onPostExecute(routes);
-            updateUI(routes);
+            synchronized (retrievedRoutes)
+            {
+                retrievedRoutes.clear();
+                retrievedRoutes.addAll(routes);
+            }
+            updateAllRoutes();
+        }
+    }
+
+    private class RefreshFavoritesTask extends AsyncTask<Void, Void, List<Route>>
+    {
+        @Override
+        protected  List<Route> doInBackground(Void... params)
+        {
+            return favRouteStore.getRoutes();
+        }
+
+        @Override
+        protected void onPostExecute(List<Route> routes)
+        {
+            super.onPostExecute(routes);
+            synchronized (favoriteRoutes)
+            {
+                favoriteRoutes.clear();
+                favoriteRoutes.addAll(routes);
+            }
+            updateAllRoutes();
         }
     }
 }

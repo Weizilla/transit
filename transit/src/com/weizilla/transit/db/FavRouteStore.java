@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 import com.weizilla.transit.data.FavRoute;
 import com.weizilla.transit.data.Route;
 
@@ -21,6 +22,7 @@ import java.util.List;
  */
 public class FavRouteStore
 {
+    private static final String TAG = "FavRouteStore";
     private static final String DB_NAME = "FavRoute";
     private static final int VERSION = 1;
     private static final String CREATE_TABLE_SQL =
@@ -44,6 +46,7 @@ public class FavRouteStore
     {
         this.databaseHelper = new DatabaseHelper(context);
         this.database = databaseHelper.getWritableDatabase();
+        Log.i(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
     }
 
     public long addRoute(Route route)
@@ -65,6 +68,12 @@ public class FavRouteStore
     public void close()
     {
         this.databaseHelper.close();
+    }
+
+    public void deleteDb()
+    {
+        boolean status = context.deleteDatabase(DB_NAME);
+        Log.i(TAG, "Database " + DB_NAME + " delete successful: " + status);
     }
 
     /**

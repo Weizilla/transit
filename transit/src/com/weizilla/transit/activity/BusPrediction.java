@@ -50,10 +50,8 @@ public class BusPrediction extends Activity
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
         uiPredictionsDisplay.setAdapter(predictionAdapter);
 
-        transitService = new TransitService();
-
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        transitService.setDataProvider(new CTADataProvider(ctaApiKey));
+        TransitDataProvider transitDataProvider = getDataProvider();
+        transitService = new TransitService(transitDataProvider);
 
         Intent intent = getIntent();
         if (intent != null)
@@ -65,6 +63,15 @@ public class BusPrediction extends Activity
                 retrievePredictions(null);
             }
         }
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     public void retrievePredictions(View view)
@@ -94,11 +101,6 @@ public class BusPrediction extends Activity
                 Context.INPUT_METHOD_SERVICE);
 
         imm.hideSoftInputFromWindow(busStopIdInput.getWindowToken(), 0);
-    }
-
-    public void setTransitDataProvider(TransitDataProvider transitDataProvider)
-    {
-        transitService.setDataProvider(transitDataProvider);
     }
 
     public void setRefTime(Date refTime)

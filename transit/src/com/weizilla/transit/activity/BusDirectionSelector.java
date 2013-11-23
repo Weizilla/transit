@@ -40,23 +40,10 @@ public class BusDirectionSelector extends Activity
         this.setContentView(R.layout.bus_direction_select);
         initButtons();
 
-        transitService = new TransitService();
+        TransitDataProvider transitDataProvider = getDataProvider();
+        transitService = new TransitService(transitDataProvider);
 
-        String ctaApiKey = getString(R.string.ctaApiKey);
-
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        if (dataProvider != null)
-        {
-            transitService.setDataProvider(dataProvider);
-        }
-        else
-        {
-            transitService.setDataProvider(new CTADataProvider(ctaApiKey));
-        }
-
-        String route = intent.getStringExtra(Route.KEY);
+        String route = getIntent().getStringExtra(Route.KEY);
         disableAllDirection();
         retrieveDirections(route);
     }
@@ -82,6 +69,15 @@ public class BusDirectionSelector extends Activity
                 returnDirection(direction);
             }
         });
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void retrieveDirections(String route)

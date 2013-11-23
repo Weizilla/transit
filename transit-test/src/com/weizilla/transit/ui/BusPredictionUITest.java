@@ -1,5 +1,6 @@
 package com.weizilla.transit.ui;
 
+import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import android.widget.EditText;
@@ -8,6 +9,7 @@ import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
 import com.weizilla.transit.activity.BusPrediction;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.util.TimeConverter;
 
 import java.text.ParseException;
@@ -30,8 +32,10 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
     public void setUp() throws Exception
     {
         super.setUp();
+        Intent intent = new Intent();
+        intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
+        this.setActivityIntent(intent);
         activity = getActivity();
-        activity.setTransitDataProvider(new MockTransitDataProvider());
         activity.setRefTime(genRefTime());
         solo = new Solo(getInstrumentation(), activity);
     }

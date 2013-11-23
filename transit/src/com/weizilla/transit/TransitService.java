@@ -29,10 +29,11 @@ public class TransitService
     private TransitDataProvider dataProvider;
     private Serializer serializer;
 
-    public TransitService()
+    public TransitService(TransitDataProvider transitDataProvider)
     {
         Strategy strategy = new AnnotationStrategy();
         serializer = new Persister(strategy);
+        dataProvider = transitDataProvider;
     }
 
     public List<Route> lookupRoutes()
@@ -148,10 +149,5 @@ public class TransitService
                 // ignore
             }
         }
-    }
-
-    public void setDataProvider(TransitDataProvider dataProvider)
-    {
-        this.dataProvider = dataProvider;
     }
 }

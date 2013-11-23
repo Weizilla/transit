@@ -48,25 +48,22 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         uiStopsDisplay.setAdapter(stopsAdapter);
         uiStopsDisplay.setOnItemClickListener(this);
 
-        transitService = new TransitService();
-
-        String ctaApiKey = getString(R.string.ctaApiKey);
+        TransitDataProvider transitDataProvider = getDataProvider();
+        transitService = new TransitService(transitDataProvider);
 
         Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        if (dataProvider != null)
-        {
-            transitService.setDataProvider(dataProvider);
-        }
-        else
-        {
-            transitService.setDataProvider(new CTADataProvider(ctaApiKey));
-        }
-
         String route = intent.getStringExtra(Route.KEY);
         Direction direction = intent.getParcelableExtra(Direction.KEY);
         retrieveStops(route, direction);
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void retrieveStops(String route, Direction direction)

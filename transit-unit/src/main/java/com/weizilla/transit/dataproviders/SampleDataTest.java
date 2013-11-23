@@ -26,9 +26,7 @@ public class SampleDataTest {
     @Before
     public void setUp()
     {
-        transitService = new TransitService();
-        TransitDataProvider provider = new MockTransitDataProvider();
-        transitService.setDataProvider(provider);
+        transitService = new TransitService(new MockTransitDataProvider());
     }
 
     @Test
