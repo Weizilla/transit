@@ -3,6 +3,7 @@ package com.weizilla.transit.ui;
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
+import com.google.common.collect.Lists;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
 import com.weizilla.transit.activity.BusRouteSelector;
@@ -22,6 +23,10 @@ import java.util.List;
  */
 public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<BusRouteSelector>
 {
+    //reference data from transit-unit project, routes.xml in resources
+    private static final Route ROUTE_1 = new Route("1234", "XXXBronzeville/Union Station");
+    private static final Route ROUTE_2 = new Route("222", "YYYHyde Park Express");
+
     private BusRouteSelector activity;
     private Solo solo;
     private FavRouteStore favRouteStore;
@@ -43,6 +48,10 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);
         favRouteStore = new FavRouteStore(activity);
+
+        // one for favorites, one for retrieved
+        solo.waitForView(R.id.uiBusRouteList);
+        solo.waitForView(R.id.uiBusRouteList);
     }
 
     @Override
@@ -55,59 +64,35 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     public void testStartPopulatesList()
     {
-        //TODO test  more routes
-        //reference data from transit-unit project, routes.xml in resources
-        String[][] expected =
-        {
-            {"1234", "XXXBronzeville/Union Station"}
-        };
+        //TODO test  more routes except clicking on first item exits application
+        List<Route> expectedRoutes = Lists.newArrayList(
+                ROUTE_1
+//                new Route("222", "YYYHyde Park Express")
+        );
 
-        // one for favorites, one for retrieved
-        solo.waitForView(R.id.uiBusRouteList);
-        solo.waitForView(R.id.uiBusRouteList);
-
-        solo.scrollToTop();
-        for (int i = 0; i < expected.length; i++)
+        for (int i = 0; i < expectedRoutes.size(); i++)
         {
+            Route expected = expectedRoutes.get(i);
             Route actual = clickInList(i + 1);
-            String expectedId = expected[i][0];
-            String expectedName = expected[i][1];
-            assertEquals(expectedId, actual.getId());
-            assertEquals(expectedName, actual.getName());
+            assertEquals(expected, actual);
         }
     }
 
     public void testFavoriteRoutesPopulatedByDB()
     {
-        FavRouteStore favRouteStore = new FavRouteStore(activity);
-        favRouteStore.open();
-        favRouteStore.addRoute(new Route("TEST_ID", "TEST_NAME"));
+        addFavRouteToDb(ROUTE_1);
 
         activity.refreshFavorites();
-
-        // one for favorites, one for retrieved
-        solo.waitForView(R.id.uiBusRouteList);
         solo.waitForView(R.id.uiBusRouteList);
 
-        solo.scrollToTop();
         Route actual = clickInList(1);
-        assertEquals("TEST_ID", actual.getId());
-        assertEquals("TEST_NAME", actual.getName());
+        assertEquals(ROUTE_1, actual);
     }
 
     public void testContextMenuAddsSecondRowToFavorite()
     {
-        //reference data from transit-unit project, routes.xml in resources
-        String expectedId = "222";
-        String expectedName = "YYYHyde Park Express";
-
-        // one for favorites, one for retrieved
-        solo.waitForView(R.id.uiBusRouteList);
-        solo.waitForView(R.id.uiBusRouteList);
-
         Route fav = clickLongInList(2);
-        assertEquals(expectedId, fav.getId());
-        assertEquals(expectedName, fav.getName());
+        assertEquals(ROUTE_2, fav);
 
         solo.waitForDialogToOpen(1000);
         // add route to favorite in dialog
@@ -117,8 +102,14 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         solo.waitForView(R.id.uiBusRouteList);
 
         Route actual = clickInList(1);
-        assertEquals(expectedId, actual.getId());
-        assertEquals(expectedName, actual.getName());
+        assertEquals(ROUTE_2, actual);
+    }
+
+    private void addFavRouteToDb(Route route)
+    {
+        FavRouteStore favRouteStore = new FavRouteStore(activity);
+        favRouteStore.open();
+        favRouteStore.addRoute(route);
     }
 
     private Route clickInList(int line)
