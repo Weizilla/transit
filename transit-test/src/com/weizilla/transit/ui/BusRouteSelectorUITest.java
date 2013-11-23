@@ -56,6 +56,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
     public void testStartPopulatesList()
     {
         //TODO test  more routes
+        //reference data from transit-unit project, routes.xml in resources
         String[][] expected =
         {
             {"1234", "XXXBronzeville/Union Station"}
@@ -68,11 +69,11 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         solo.scrollToTop();
         for (int i = 0; i < expected.length; i++)
         {
-            List<TextView> itemViews = solo.clickInList (i + 1, 0);
-            TextView idView = itemViews.get(0);
-            TextView nameView = itemViews.get(1);
-            assertEquals(expected[i][0], idView.getText().toString());
-            assertEquals(expected[i][1], nameView.getText().toString());
+            Route actual = clickInList(i + 1);
+            String expectedId = expected[i][0];
+            String expectedName = expected[i][1];
+            assertEquals(expectedId, actual.getId());
+            assertEquals(expectedName, actual.getName());
         }
     }
 
@@ -89,10 +90,55 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         solo.waitForView(R.id.uiBusRouteList);
 
         solo.scrollToTop();
-        List<TextView> itemViews = solo.clickInList(1, 0);
-        TextView idView = itemViews.get(0);
-        TextView nameView = itemViews.get(1);
-        assertEquals("TEST_ID", idView.getText().toString());
-        assertEquals("TEST_NAME", nameView.getText().toString());
+        Route actual = clickInList(1);
+        assertEquals("TEST_ID", actual.getId());
+        assertEquals("TEST_NAME", actual.getName());
+    }
+
+    public void testContextMenuAddsSecondRowToFavorite()
+    {
+        //reference data from transit-unit project, routes.xml in resources
+        String expectedId = "222";
+        String expectedName = "YYYHyde Park Express";
+
+        // one for favorites, one for retrieved
+        solo.waitForView(R.id.uiBusRouteList);
+        solo.waitForView(R.id.uiBusRouteList);
+
+        Route fav = clickLongInList(2);
+        assertEquals(expectedId, fav.getId());
+        assertEquals(expectedName, fav.getName());
+
+        solo.waitForDialogToOpen(1000);
+        // add route to favorite in dialog
+        solo.clickInList(1);
+
+        activity.refreshFavorites();
+        solo.waitForView(R.id.uiBusRouteList);
+
+        Route actual = clickInList(1);
+        assertEquals(expectedId, actual.getId());
+        assertEquals(expectedName, actual.getName());
+    }
+
+    private Route clickInList(int line)
+    {
+        solo.scrollToTop();
+        List<TextView> views = solo.clickInList(line, 0);
+        return parseRoute(views);
+    }
+
+    private Route clickLongInList(int line)
+    {
+        solo.scrollToTop();
+        List<TextView> views = solo.clickLongInList(line, 0);
+        return parseRoute(views);
+    }
+
+    private static Route parseRoute(List<TextView> views)
+    {
+        String id = views.get(0).getText().toString();
+        String name = views.get(1).getText().toString();
+        return new Route(id, name);
     }
 }

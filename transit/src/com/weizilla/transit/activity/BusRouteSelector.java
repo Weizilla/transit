@@ -1,10 +1,13 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -28,7 +31,8 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 5:46 PM
  */
-public class BusRouteSelector extends Activity implements AdapterView.OnItemClickListener
+public class BusRouteSelector extends Activity
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusRouteSelector";
@@ -64,7 +68,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         super.onResume();
         favRouteStore.open();
 
-        //TODO must occur after
+        //TODO must occur after. do we really want to refresh automatically
+        // when screne is activated?
         refreshFavorites();
         retrieveRoutes();
     }
@@ -93,6 +98,8 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
         uiRoutesDisplay.setAdapter(routesAdapter);
         uiRoutesDisplay.setOnItemClickListener(this);
+        uiRoutesDisplay.setLongClickable(true);
+        uiRoutesDisplay.setOnItemLongClickListener(this);
     }
 
     private void retrieveRoutes()
@@ -103,6 +110,19 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
     public void refreshFavorites()
     {
         new RefreshFavoritesTask().execute();
+    }
+
+    private void updateAllRoutes()
+    {
+        synchronized (allRoutes)
+        {
+            allRoutes.clear();
+            allRoutes.addAll(favoriteRoutes);
+            allRoutes.addAll(retrievedRoutes);
+        }
+
+        routesAdapter.notifyDataSetChanged();
+        hideKeyboard();
     }
 
     @Override
@@ -120,17 +140,30 @@ public class BusRouteSelector extends Activity implements AdapterView.OnItemClic
         finish();
     }
 
-    private void updateAllRoutes()
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        synchronized (allRoutes)
-        {
-            allRoutes.clear();
-            allRoutes.addAll(favoriteRoutes);
-            allRoutes.addAll(retrievedRoutes);
-        }
+        Log.d(TAG, "Item long click. Position: " + position);
+        Route route = allRoutes.get(position);
+        showMenuDialog(route);
+        return true;
+    }
 
-        routesAdapter.notifyDataSetChanged();
-        hideKeyboard();
+    private void showMenuDialog(final Route route)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(route.getId() + " - " + route.getName());
+        builder.setItems(
+                new String[]{"Add to Favorite"},
+                new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        favRouteStore.addRoute(route);
+                    }
+                });
+        builder.create().show();
     }
 
     private void hideKeyboard()
