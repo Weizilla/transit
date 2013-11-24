@@ -8,7 +8,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
@@ -130,10 +129,10 @@ public class BusRouteSelector extends Activity
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
         Route route = allRoutes.get(position);
-        returnRoute(route);
+        finishWithRoute(route);
     }
 
-    private void returnRoute(Route route)
+    private void finishWithRoute(Route route)
     {
         Intent result = new Intent();
         result.putExtra(RETURN_INTENT_KEY, route.getId());
@@ -144,45 +143,49 @@ public class BusRouteSelector extends Activity
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Log.d(TAG, "Item long click. Position: " + position);
         Route route = allRoutes.get(position);
-        showMenuDialog(route);
+        showContextMenu(route);
         return true;
     }
 
-    private void showMenuDialog(final Route route)
+    private void showContextMenu(Route route)
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(route.getId() + " - " + route.getName());
+
         String menuString = route.isFavorite()
             ? "Remove from Favorites"
             : "Add to Favorites";
 
-        builder.setItems(
-                new String[]{menuString},
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        if (route.isFavorite())
-                        {
-                            favRouteStore.removeRoute(route);
-                        }
-                        else
-                        {
-                            favRouteStore.addRoute(route);
-                        }
-                    }
-                });
+        builder.setItems(new String[]{menuString}, buildOnClickListener(route));
         builder.create().show();
+    }
+
+    private DialogInterface.OnClickListener buildOnClickListener(final Route route)
+    {
+        return new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if (route.isFavorite())
+                {
+                    favRouteStore.removeRoute(route);
+                }
+                else
+                {
+                    favRouteStore.addRoute(route);
+                }
+                refreshFavorites();
+            }
+
+        };
     }
 
     private void hideKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-
         imm.hideSoftInputFromWindow(busRouteInput.getWindowToken(), 0);
     }
 
@@ -210,7 +213,7 @@ public class BusRouteSelector extends Activity
     private class RefreshFavoritesTask extends AsyncTask<Void, Void, List<Route>>
     {
         @Override
-        protected  List<Route> doInBackground(Void... params)
+        protected List<Route> doInBackground(Void... params)
         {
             return favRouteStore.getRoutes();
         }

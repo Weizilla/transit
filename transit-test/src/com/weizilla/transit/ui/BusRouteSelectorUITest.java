@@ -101,7 +101,6 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         // add route to favorite in dialog
         solo.clickInList(1);
 
-        activity.refreshFavorites();
         solo.waitForView(R.id.uiBusRouteList);
 
         Route actual = clickInList(1);
@@ -122,7 +121,6 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         // remove route from favorite in dialog
         solo.clickInList(1);
 
-        activity.refreshFavorites();
         solo.waitForView(R.id.uiBusRouteList);
 
         Route actual = clickInList(1);
