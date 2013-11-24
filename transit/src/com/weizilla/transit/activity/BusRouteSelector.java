@@ -5,6 +5,7 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -35,12 +36,13 @@ public class BusRouteSelector extends Activity
         implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
+    public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
     private static final String TAG = "BusRouteSelector";
     private TransitService transitService;
     private FavRouteStore favRouteStore;
-    private List<Route> allRoutes;
-    private List<Route> favoriteRoutes;
-    private List<Route> retrievedRoutes;
+    private final List<Route> allRoutes = new ArrayList<>();
+    private final List<Route> favoriteRoutes = new ArrayList<>();
+    private final List<Route> retrievedRoutes = new ArrayList<>();
     private BusRouteAdapter routesAdapter;
     private EditText busRouteInput;
 
@@ -49,9 +51,9 @@ public class BusRouteSelector extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        allRoutes = new ArrayList<>();
-        favoriteRoutes = new ArrayList<>();
-        retrievedRoutes = new ArrayList<>();
+        allRoutes.clear();
+        favoriteRoutes.clear();
+        retrievedRoutes.clear();
 
         TransitDataProvider transitDataProvider = getDataProvider();
         transitService = new TransitService(transitDataProvider);
@@ -59,7 +61,6 @@ public class BusRouteSelector extends Activity
         favRouteStore = new FavRouteStore(this);
 
         initGui();
-
     }
 
     @Override
@@ -153,14 +154,25 @@ public class BusRouteSelector extends Activity
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(route.getId() + " - " + route.getName());
+        String menuString = route.isFavorite()
+            ? "Remove from Favorites"
+            : "Add to Favorites";
+
         builder.setItems(
-                new String[]{"Add to Favorite"},
+                new String[]{menuString},
                 new DialogInterface.OnClickListener()
                 {
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        favRouteStore.addRoute(route);
+                        if (route.isFavorite())
+                        {
+                            favRouteStore.removeRoute(route);
+                        }
+                        else
+                        {
+                            favRouteStore.addRoute(route);
+                        }
                     }
                 });
         builder.create().show();

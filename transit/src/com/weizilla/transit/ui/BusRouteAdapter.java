@@ -1,12 +1,14 @@
 package com.weizilla.transit.ui;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.weizilla.transit.R;
+import com.weizilla.transit.activity.BusRouteSelector;
 import com.weizilla.transit.data.Route;
 
 import java.util.List;
@@ -45,6 +47,10 @@ public class BusRouteAdapter extends ArrayAdapter<Route>
 
         Route route = routes.get(position);
 
+        TextView uiIsFav = (TextView) view.findViewById(R.id.uiBusRouteItemIsFav);
+        int background = route.isFavorite() ? BusRouteSelector.FAV_BACKGROUND_COLOR : Color.TRANSPARENT;
+        uiIsFav.setBackgroundColor(background);
+
         TextView uiId = (TextView) view.findViewById(R.id.uiBusRouteItemId);
         uiId.setText(route.getId());
 
@@ -53,4 +59,5 @@ public class BusRouteAdapter extends ArrayAdapter<Route>
 
         return view;
     }
+
 }

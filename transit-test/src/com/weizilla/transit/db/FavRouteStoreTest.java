@@ -24,8 +24,10 @@ public class FavRouteStoreTest extends AndroidTestCase
     private static final String DB_TEST_PREFIX = "test_";
     private static final String TEST_NAME = "TEST_NAME";
     private static final String TEST_ID = "TEST_ID";
+    private static final Route TEST_ROUTE = new Route(TEST_ID, TEST_NAME, false);
     private FavRouteStore.DatabaseHelper helper;
     private FavRouteStore store;
+    private SQLiteDatabase db;
 
     @Override
     public void setUp() throws Exception
@@ -37,6 +39,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         store.open();
 
         helper = store.getDatabaseHelper();
+        db = helper.getWritableDatabase();
     }
 
     @Override
@@ -50,85 +53,101 @@ public class FavRouteStoreTest extends AndroidTestCase
     {
         assertNotNull(store);
         assertNotNull(helper);
-    }
-
-    public void testDatabaseCreated()
-    {
-        assertNotNull(helper.getWritableDatabase());
+        assertNotNull(db);
     }
 
     public void testTableCreated()
     {
-        SQLiteDatabase db = helper.getReadableDatabase();
         int numTables = SqliteUtils.countTables(db, FavRoute.DB.TABLE_NAME);
         assertEquals(1, numTables);
     }
 
     public void testFavoriteIsAdded()
     {
-        Route route = new Route(TEST_ID, TEST_NAME);
-        long newId = store.addRoute(route);
+        long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
-
-        SQLiteDatabase db = helper.getReadableDatabase();
 
         int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
         assertEquals(1, totalRows);
 
-        String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
-        String selection = FavRoute.DB.ID + " = ?";
-        String[] selectionArgs = {TEST_ID};
-        Cursor cursor = db.query(FavRoute.DB.TABLE_NAME, cols,
-                selection, selectionArgs, null, null, null);
+        assertSingleTestResultInDb();
+    }
 
-        assertSingleTestResult(cursor);
+    public void testFavoriteIsRemoved()
+    {
+        long newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+
+        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(1, totalRows);
+
+        boolean deleted = store.removeRoute(TEST_ROUTE);
+        assertTrue(deleted);
+
+        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
+    }
+
+    public void testOnlyProperFavoriteIsRemoved()
+    {
+        long newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+        Route removedRoute = new Route(TEST_ID + "_A", TEST_NAME + "_A", false);
+        newId = store.addRoute(removedRoute);
+        assertTrue(newId != -1);
+
+        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(2, totalRows);
+
+        boolean deleted = store.removeRoute(removedRoute);
+        assertTrue(deleted);
+
+        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(1, totalRows);
+
+        assertSingleTestResultInDb();
+    }
+
+    public void testSecondDuplicateDeleteDoesNothing()
+    {
+        long newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+
+        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(1, totalRows);
+
+        boolean deleted = store.removeRoute(TEST_ROUTE);
+        assertTrue(deleted);
+
+        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
+
+        deleted = store.removeRoute(TEST_ROUTE);
+        assertFalse(deleted);
     }
 
     public void testDuplicateAddedWithoutErrors() throws Exception
     {
-        Route route = new Route(TEST_ID, TEST_NAME);
-        long newId = store.addRoute(route);
+        long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
-        newId = store.addRoute(route);
+        newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
-        newId = store.addRoute(route);
+        newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
-
-        SQLiteDatabase db = helper.getReadableDatabase();
 
         int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
         assertEquals(1, totalRows);
 
-        String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
-        String selection = FavRoute.DB.ID + " = ?";
-        String[] selectionArgs = {TEST_ID};
-        Cursor cursor = db.query(FavRoute.DB.TABLE_NAME, cols,
-                selection, selectionArgs, null, null, null);
-
-        assertSingleTestResult(cursor);
+        assertSingleTestResultInDb();
     }
 
-
-    private void assertSingleTestResult(Cursor cursor)
-    {
-        assertNotNull(cursor);
-        assertEquals(1, cursor.getCount());
-
-        cursor.moveToFirst();
-
-        String actualId = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
-        assertEquals(TEST_ID, actualId);
-        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
-        assertEquals(TEST_NAME, actualName);
-
-    }
 
     public void testGetAllFavRoutes() throws Exception
     {
-        Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A");
-        Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B");
-        Route routeC = new Route(TEST_ID + "_C", TEST_NAME + "_C");
-        Route routeD = new Route(TEST_ID + "_D", TEST_NAME + "_D");
+        Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A", true);
+        Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B", true);
+        Route routeC = new Route(TEST_ID + "_C", TEST_NAME + "_C", true);
+        Route routeD = new Route(TEST_ID + "_D", TEST_NAME + "_D", true);
         List<Route> allRoutes = Lists.newArrayList(routeA, routeB, routeC, routeD);
         Collections.sort(allRoutes);
 
@@ -143,9 +162,9 @@ public class FavRouteStoreTest extends AndroidTestCase
 
     public void testGetAllFavRoutesSorted() throws Exception
     {
-        Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A");
-        Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B");
-        Route routeC = new Route(TEST_ID + "_C", TEST_NAME + "_C");
+        Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A", true);
+        Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B", true);
+        Route routeC = new Route(TEST_ID + "_C", TEST_NAME + "_C", true);
         List<Route> allRoutes = Lists.newArrayList(routeA, routeB, routeC);
         Collections.sort(allRoutes);
 
@@ -157,4 +176,22 @@ public class FavRouteStoreTest extends AndroidTestCase
         assertEquals(allRoutes, actualRoutes);
     }
 
+    private void assertSingleTestResultInDb()
+    {
+        String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
+        String selection = FavRoute.DB.ID + " = ?";
+        String[] selectionArgs = {TEST_ID};
+        Cursor cursor = db.query(FavRoute.DB.TABLE_NAME, cols,
+                selection, selectionArgs, null, null, null);
+
+        assertNotNull(cursor);
+        assertEquals(1, cursor.getCount());
+
+        cursor.moveToFirst();
+
+        String actualId = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
+        assertEquals(TEST_ID, actualId);
+        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
+        assertEquals(TEST_NAME, actualName);
+    }
 }

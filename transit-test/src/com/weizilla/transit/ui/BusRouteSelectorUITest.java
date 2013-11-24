@@ -1,6 +1,7 @@
 package com.weizilla.transit.ui;
 
 import android.content.Intent;
+import android.graphics.drawable.ColorDrawable;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
 import com.google.common.collect.Lists;
@@ -24,8 +25,10 @@ import java.util.List;
 public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<BusRouteSelector>
 {
     //reference data from transit-unit project, routes.xml in resources
-    private static final Route ROUTE_1 = new Route("1234", "XXXBronzeville/Union Station");
-    private static final Route ROUTE_2 = new Route("222", "YYYHyde Park Express");
+    private static final Route ROUTE_1 = new Route("1234", "XXXBronzeville/Union Station", false);
+    private static final Route ROUTE_2 = new Route("222", "YYYHyde Park Express", false);
+    private static final Route ROUTE_2_FAV = new Route("222", "YYYHyde Park Express", true);
+    private static final int TIMEOUT = 1000;
 
     private BusRouteSelector activity;
     private Solo solo;
@@ -80,13 +83,13 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     public void testFavoriteRoutesPopulatedByDB()
     {
-        addFavRouteToDb(ROUTE_1);
+        addFavRouteToDb(ROUTE_2);
 
         activity.refreshFavorites();
         solo.waitForView(R.id.uiBusRouteList);
 
         Route actual = clickInList(1);
-        assertEquals(ROUTE_1, actual);
+        assertEquals(ROUTE_2_FAV, actual);
     }
 
     public void testContextMenuAddsSecondRowToFavorite()
@@ -94,7 +97,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         Route fav = clickLongInList(2);
         assertEquals(ROUTE_2, fav);
 
-        solo.waitForDialogToOpen(1000);
+        solo.waitForDialogToOpen(TIMEOUT);
         // add route to favorite in dialog
         solo.clickInList(1);
 
@@ -102,7 +105,29 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         solo.waitForView(R.id.uiBusRouteList);
 
         Route actual = clickInList(1);
-        assertEquals(ROUTE_2, actual);
+        assertEquals(ROUTE_2_FAV, actual);
+    }
+
+    public void testContextMenuRemovesFavorite()
+    {
+        addFavRouteToDb(ROUTE_2);
+
+        activity.refreshFavorites();
+        solo.waitForView(R.id.uiBusRouteList);
+
+        Route fav = clickLongInList(1);
+        assertEquals(ROUTE_2_FAV, fav);
+
+        solo.waitForDialogToOpen(TIMEOUT);
+        // remove route from favorite in dialog
+        solo.clickInList(1);
+
+        activity.refreshFavorites();
+        solo.waitForView(R.id.uiBusRouteList);
+
+        Route actual = clickInList(1);
+        assertEquals(ROUTE_1, actual);
+
     }
 
     private void addFavRouteToDb(Route route)
@@ -128,8 +153,11 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     private static Route parseRoute(List<TextView> views)
     {
-        String id = views.get(0).getText().toString();
-        String name = views.get(1).getText().toString();
-        return new Route(id, name);
+        TextView isFavView = views.get(0);
+        String id = views.get(1).getText().toString();
+        String name = views.get(2).getText().toString();
+        int backgroundColor = ((ColorDrawable) isFavView.getBackground()).getColor();
+        boolean isFav = backgroundColor == BusRouteSelector.FAV_BACKGROUND_COLOR;
+        return new Route(id, name, isFav);
     }
 }

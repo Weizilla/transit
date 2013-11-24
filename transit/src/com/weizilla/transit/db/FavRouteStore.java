@@ -54,7 +54,37 @@ public class FavRouteStore
         ContentValues values = new ContentValues();
         values.put(FavRoute.DB.ID, route.getId());
         values.put(FavRoute.DB.NAME, route.getName());
-        return database.replace(FavRoute.DB.TABLE_NAME, null, values);
+        long newId = database.replace(FavRoute.DB.TABLE_NAME, null, values);
+
+        if (newId != -1)
+        {
+            Log.d(TAG, "Added new fav route. _ID: " + newId + " Route: " + route);
+        }
+
+        return newId;
+    }
+
+    public boolean removeRoute(Route route)
+    {
+        String where = FavRoute.DB.ID + " = ?";
+        String[] whereArgs = {route.getId()};
+
+        int numDel = database.delete(FavRoute.DB.TABLE_NAME, where, whereArgs);
+
+        if (numDel > 1)
+        {
+            Log.w(TAG, "Multiple rows deleted for single route. Num: " + numDel + " Route: " + route);
+        }
+        else if (numDel == 1)
+        {
+            Log.d(TAG, "Deleted fav route: " + route);
+        }
+        else
+        {
+            Log.i(TAG, "No rows delete for route: " + route);
+        }
+
+        return numDel != 0;
     }
 
     public List<Route> getRoutes()
@@ -98,7 +128,7 @@ public class FavRouteStore
         {
             String id = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
             String name = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
-            routes.add(new Route(id, name));
+            routes.add(new Route(id, name, true));
         }
         while (cursor.moveToNext());
         return routes;

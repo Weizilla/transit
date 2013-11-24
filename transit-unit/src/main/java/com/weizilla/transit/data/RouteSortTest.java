@@ -17,8 +17,8 @@ public class RouteSortTest extends TestCase
 {
     public void testSortWithId()
     {
-        Route a = new Route("a", null);
-        Route b = new Route("b", null);
+        Route a = new Route("a", null, false);
+        Route b = new Route("b", "a", false);
         List<Route> routes = Lists.newArrayList(b, a);
         List<Route> expected = Lists.newArrayList(a, b);
         Collections.sort(routes);
@@ -27,8 +27,8 @@ public class RouteSortTest extends TestCase
 
     public void testSortWithOneNullId()
     {
-        Route a = new Route(null, null);
-        Route b = new Route("b", null);
+        Route a = new Route(null, null, false);
+        Route b = new Route("b", null, false);
         List<Route> routes = Lists.newArrayList(b, a);
         List<Route> expected = Lists.newArrayList(a, b);
         Collections.sort(routes);
@@ -37,8 +37,8 @@ public class RouteSortTest extends TestCase
 
     public void testSortWithName()
     {
-        Route a = new Route(null, "a");
-        Route b = new Route(null, "b");
+        Route a = new Route(null, "a", false);
+        Route b = new Route(null, "b", false);
         List<Route> routes = Lists.newArrayList(b, a);
         List<Route> expected = Lists.newArrayList(a, b);
         Collections.sort(routes);
@@ -47,10 +47,19 @@ public class RouteSortTest extends TestCase
 
     public void testNoErrorsWithAllNull()
     {
-        Route a = new Route(null, null);
-        Route b = new Route(null, null);
+        Route a = new Route(null, null, false);
+        Route b = new Route(null, null, false);
         List<Route> routes = Lists.newArrayList(b, a);
         Collections.sort(routes);
+    }
 
+    public void testSortWithFavorite()
+    {
+        Route a = new Route(null, "a", true);
+        Route b = new Route(null, "a", false);
+        List<Route> routes = Lists.newArrayList(b, a);
+        List<Route> expected = Lists.newArrayList(a, b);
+        Collections.sort(routes);
+        assertEquals(expected, routes);
     }
 }

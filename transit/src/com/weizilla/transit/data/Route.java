@@ -21,15 +21,18 @@ public class Route implements Comparable<Route>
     @Element(name = "rtnm")
     private String name;
 
+    private boolean isFavorite = false;
+
     public Route()
     {
         // default for simple-xml
     }
 
-    public Route(String id, String name)
+    public Route(String id, String name, boolean isFavorite)
     {
         this.id = id;
         this.name = name;
+        this.isFavorite = isFavorite;
     }
 
     public String getId()
@@ -42,6 +45,10 @@ public class Route implements Comparable<Route>
         return name;
     }
 
+    public boolean isFavorite()
+    {
+        return isFavorite;
+    }
 
     @Override
     public boolean equals(Object o)
@@ -57,6 +64,10 @@ public class Route implements Comparable<Route>
 
         Route route = (Route) o;
 
+        if (isFavorite != route.isFavorite)
+        {
+            return false;
+        }
         if (id != null ? !id.equals(route.id) : route.id != null)
         {
             return false;
@@ -74,26 +85,33 @@ public class Route implements Comparable<Route>
     {
         int result = id != null ? id.hashCode() : 0;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (isFavorite ? 1 : 0);
         return result;
     }
 
     @Override
-
     public String toString()
     {
         return "Route{" +
                 "id='" + id + '\'' +
                 ", name='" + name + '\'' +
+                ", isFavorite=" + isFavorite +
                 '}';
     }
 
     @Override
     public int compareTo(Route another)
     {
+        // sort by id descending, then name decending, then favorite first
+        // nulls are sorted above values
         int ret = compareString(id, another.id);
         if (ret == 0)
         {
             ret = compareString(name, another.name);
+        }
+        if (ret == 0)
+        {
+            ret = compareFavorite(isFavorite, another.isFavorite);
         }
 
         return ret;
@@ -116,6 +134,24 @@ public class Route implements Comparable<Route>
         else
         {
             return lhs.compareTo(rhs);
+        }
+    }
+
+    private int compareFavorite(boolean lhs, boolean rhs)
+    {
+        // return 0 if same
+        // if not, sort the one with 'true' in front
+        if (lhs == rhs)
+        {
+            return 0;
+        }
+        else if (lhs)
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
         }
     }
 
