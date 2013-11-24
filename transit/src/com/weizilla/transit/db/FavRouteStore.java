@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
+import com.weizilla.transit.BusRoutesProvider;
 import com.weizilla.transit.data.FavRoute;
 import com.weizilla.transit.data.Route;
 
@@ -20,7 +21,7 @@ import java.util.List;
  *         Date: 11/22/13
  *         Time: 9:49 AM
  */
-public class FavRouteStore
+public class FavRouteStore implements BusRoutesProvider
 {
     private static final String TAG = "FavRouteStore";
     private static final String DB_NAME = "FavRoute";

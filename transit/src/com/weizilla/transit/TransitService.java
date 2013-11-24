@@ -17,13 +17,14 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * peforms various high level route, prediction, direction lookup
+ * peforms various high level route, prediction, direction lookup against a
+ * transit data provider
  *
  * @author wei
  *         Date: 8/18/13
  *         Time: 5:40 PM
  */
-public class TransitService
+public class TransitService implements BusRoutesProvider
 {
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
@@ -36,7 +37,7 @@ public class TransitService
         dataProvider = transitDataProvider;
     }
 
-    public List<Route> lookupRoutes()
+    public List<Route> getRoutes()
     {
         List<Route> results = Collections.emptyList();
         InputStream inputStream = dataProvider.getRoutes();

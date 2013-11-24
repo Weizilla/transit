@@ -13,6 +13,7 @@ import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
+import com.weizilla.transit.BusRoutesProvider;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Route;
@@ -37,11 +38,11 @@ public class BusRouteSelector extends Activity
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
     private static final String TAG = "BusRouteSelector";
-    private TransitService transitService;
-    private FavRouteStore favRouteStore;
     private final List<Route> allRoutes = new ArrayList<>();
     private final List<Route> favoriteRoutes = new ArrayList<>();
     private final List<Route> retrievedRoutes = new ArrayList<>();
+    private TransitService transitService;
+    private FavRouteStore favRouteStore;
     private BusRouteAdapter routesAdapter;
     private EditText busRouteInput;
 
@@ -104,12 +105,12 @@ public class BusRouteSelector extends Activity
 
     private void retrieveRoutes()
     {
-        new LookupRoutesTask().execute();
+        new RetrieveRoutesTask(transitService, retrievedRoutes).execute();
     }
 
     public void refreshFavorites()
     {
-        new RefreshFavoritesTask().execute();
+        new RetrieveRoutesTask(favRouteStore, favoriteRoutes).execute();
     }
 
     private void updateAllRoutes()
@@ -189,43 +190,31 @@ public class BusRouteSelector extends Activity
         imm.hideSoftInputFromWindow(busRouteInput.getWindowToken(), 0);
     }
 
-    private class LookupRoutesTask extends AsyncTask<Void, Void, List<Route>>
+    private class RetrieveRoutesTask extends AsyncTask<Void, Void, List<Route>>
     {
+        private final List<Route> routes;
+        private BusRoutesProvider provider;
+
+        private RetrieveRoutesTask(BusRoutesProvider provider, List<Route> routes)
+        {
+            this.provider = provider;
+            this.routes = routes;
+        }
+
         @Override
         protected List<Route> doInBackground(Void... params)
         {
-            return transitService.lookupRoutes();
+            return provider.getRoutes();
         }
 
         @Override
         protected void onPostExecute(List<Route> routes)
         {
             super.onPostExecute(routes);
-            synchronized (retrievedRoutes)
+            synchronized (this.routes)
             {
-                retrievedRoutes.clear();
-                retrievedRoutes.addAll(routes);
-            }
-            updateAllRoutes();
-        }
-    }
-
-    private class RefreshFavoritesTask extends AsyncTask<Void, Void, List<Route>>
-    {
-        @Override
-        protected List<Route> doInBackground(Void... params)
-        {
-            return favRouteStore.getRoutes();
-        }
-
-        @Override
-        protected void onPostExecute(List<Route> routes)
-        {
-            super.onPostExecute(routes);
-            synchronized (favoriteRoutes)
-            {
-                favoriteRoutes.clear();
-                favoriteRoutes.addAll(routes);
+                this.routes.clear();
+                this.routes.addAll(routes);
             }
             updateAllRoutes();
         }
