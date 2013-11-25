@@ -4,7 +4,6 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.weizilla.transit.BusRoutesProvider;
 import com.weizilla.transit.data.FavRoute;
@@ -25,7 +24,6 @@ public class FavRouteStore implements BusRoutesProvider
 {
     private static final String TAG = "FavRouteStore";
     private static final String DB_NAME = "FavRoute";
-    private static final int VERSION = 1;
     private static final String CREATE_TABLE_SQL =
         "CREATE TABLE " + FavRoute.DB.TABLE_NAME + " (" +
         FavRoute.DB._ID + " INTEGER PRIMARY KEY, " +
@@ -36,7 +34,7 @@ public class FavRouteStore implements BusRoutesProvider
         "DROP TABLE IF EXISTS " + FavRoute.DB.TABLE_NAME;
     private Context context;
     private SQLiteDatabase database;
-    private DatabaseHelper databaseHelper;
+    private SqliteDbHelper databaseHelper;
 
     public FavRouteStore(Context context)
     {
@@ -45,8 +43,9 @@ public class FavRouteStore implements BusRoutesProvider
 
     public void open()
     {
-        this.databaseHelper = new DatabaseHelper(context);
-        this.database = databaseHelper.getWritableDatabase();
+        databaseHelper = new SqliteDbHelper(context,
+            DB_NAME, CREATE_TABLE_SQL, DROP_TABLE_SQL);
+        database = databaseHelper.getWritableDatabase();
         Log.i(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
     }
 
@@ -111,7 +110,7 @@ public class FavRouteStore implements BusRoutesProvider
      * Returns a database helper for testing
      * @return the database helper for this store
      */
-    DatabaseHelper getDatabaseHelper()
+    SqliteDbHelper getDatabaseHelper()
     {
         return databaseHelper;
     }
@@ -135,25 +134,5 @@ public class FavRouteStore implements BusRoutesProvider
         return routes;
     }
 
-    static class DatabaseHelper extends SQLiteOpenHelper
-    {
-        public DatabaseHelper(Context context)
-        {
-            super(context, DB_NAME, null, VERSION);
-        }
-
-        @Override
-        public void onCreate(SQLiteDatabase db)
-        {
-            db.execSQL(CREATE_TABLE_SQL);
-        }
-
-        @Override
-        public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-        {
-            db.execSQL(DROP_TABLE_SQL);
-            db.execSQL(CREATE_TABLE_SQL);
-        }
-    }
 }
 

@@ -6,11 +6,11 @@ import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
 import com.weizilla.transit.activity.BusStopSelector;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 /**
- * TODO auto-generated header
+ * Tests the bus stop selector activity and ui
  *
  * @author wei
  *         Date: 9/3/13
@@ -18,6 +18,7 @@ import com.weizilla.transit.dataproviders.MockTransitDataProvider;
  */
 public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusStopSelector>
 {
+    //reference data from transit-unit project, routes.xml in resources
     private Solo solo;
 
     public BusStopSelectorUITest()

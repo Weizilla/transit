@@ -25,7 +25,7 @@ public class FavRouteStoreTest extends AndroidTestCase
     private static final String TEST_NAME = "TEST_NAME";
     private static final String TEST_ID = "TEST_ID";
     private static final Route TEST_ROUTE = new Route(TEST_ID, TEST_NAME, false);
-    private FavRouteStore.DatabaseHelper helper;
+    private SqliteDbHelper helper;
     private FavRouteStore store;
     private SQLiteDatabase db;
 
