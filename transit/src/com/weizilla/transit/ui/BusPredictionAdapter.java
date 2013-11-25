@@ -54,6 +54,10 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
         TextView uiDest = (TextView) view.findViewById(R.id.uiBusPredDest);
         uiDest.setText(prediction.getDestination());
 
+        //TODO need to use ext class for ref time
+        // as cta times are always in central time
+        // plus this solves problem of time offset between device and cta clock
+        // and setting ext time for unit tests
         Date refTime = this.refTime != null ? this.refTime : new Date();
         long timeLeft = calculateTimeLeft(refTime, prediction.getPredictionTime());
 
