@@ -81,6 +81,29 @@ public class FavStopStore
         return buildStops(cursor);
     }
 
+    public boolean removeStop(Stop stop)
+    {
+        String where = FavStop.DB.ID + " = ?";
+        String[] whereArgs = {String.valueOf(stop.getId())};
+
+        int numDel = database.delete(FavStop.DB.TABLE_NAME, where, whereArgs);
+
+        if (numDel > 1)
+        {
+            Log.w(TAG, "Multiple rows deleted for single fav stop removal. Stop: " + stop);
+        }
+        else if (numDel == 0)
+        {
+            Log.d(TAG, "Deleted fav stop: " + stop);
+        }
+        else
+        {
+            Log.i(TAG, "No rows deleted for fav stop removal: " + stop);
+        }
+
+        return numDel > 0;
+    }
+
     public void close()
     {
         databaseHelper.close();

@@ -78,13 +78,12 @@ public class FavRouteStoreTest extends AndroidTestCase
         long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        assertSingleTestResultInDb();
 
         boolean deleted = store.removeRoute(TEST_ROUTE);
         assertTrue(deleted);
 
-        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
         assertEquals(0, totalRows);
     }
 

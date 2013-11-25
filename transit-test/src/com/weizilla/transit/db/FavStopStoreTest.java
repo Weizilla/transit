@@ -31,6 +31,11 @@ public class FavStopStoreTest extends AndroidTestCase
     private static final int TEST_ID = 123;
     private static final String TEST_NAME = "TEST_STOP_NAME";
     private static final Stop TEST_STOP = new Stop(TEST_ID, TEST_NAME);
+    private static final Stop TEST_STOP_1 = new Stop(TEST_ID + 1, TEST_NAME + "_1");
+    private static final Stop TEST_STOP_2 = new Stop(TEST_ID + 2, TEST_NAME + "_2");
+    private static final Stop TEST_STOP_3 = new Stop(TEST_ID + 3, TEST_NAME + "_3");
+    private static final Stop TEST_STOP_4 = new Stop(TEST_ID + 4, TEST_NAME + "_4");
+    private static final Stop TEST_STOP_5 = new Stop(TEST_ID + 5, TEST_NAME + "_5");
     private SqliteDbHelper helper;
     private FavStopStore store;
     private SQLiteDatabase db;
@@ -94,18 +99,78 @@ public class FavStopStoreTest extends AndroidTestCase
         assertSingleTestStopInDb();
     }
 
+    public void testFavoriteIsRemoved()
+    {
+        long newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
+        assertTrue(newId != -1);
+
+        assertSingleTestStopInDb();
+
+        boolean deleted = store.removeStop(TEST_STOP);
+        assertTrue(deleted);
+
+        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
+    }
+
+    public void testSecondDuplicateDeleteDoesNothing()
+    {
+        long newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
+        assertTrue(newId != -1);
+
+        assertSingleTestStopInDb();
+
+        boolean deleted = store.removeStop(TEST_STOP);
+        assertTrue(deleted);
+
+        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
+
+        deleted = store.removeStop(TEST_STOP);
+        assertFalse(deleted);
+    }
+
+    public void testOnlyProperFavIsRemoved()
+    {
+        long newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_1);
+        assertTrue(newId != -1);
+        newId = store.addStop(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_2);
+        assertTrue(newId != -1);
+        newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_3);
+        assertTrue(newId != -1);
+        newId = store.addStop(TEST_ROUTE, TEST_DIR_W, TEST_STOP_4);
+        assertTrue(newId != -1);
+        newId = store.addStop(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_5);
+        assertTrue(newId != -1);
+
+        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
+        assertEquals(5, totalRows);
+
+        boolean deleted = store.removeStop(TEST_STOP_3);
+        assertTrue(deleted);
+
+        totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
+        assertEquals(4, totalRows);
+
+        assertSingleStopInDb(TEST_ROUTE, TEST_DIR_E, TEST_STOP_1);
+        assertSingleStopInDb(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_2);
+        assertSingleStopInDb(TEST_ROUTE, TEST_DIR_W, TEST_STOP_4);
+        assertSingleStopInDb(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_5);
+    }
+
     public void testGetFavoritesSingleRouteDir()
     {
-        Stop stopA = new Stop(TEST_ID + 1, TEST_NAME + "_A");
-        Stop stopB = new Stop(TEST_ID + 2, TEST_NAME + "_B");
-        Stop stopC = new Stop(TEST_ID + 3, TEST_NAME + "_C");
-        Stop stopD = new Stop(TEST_ID + 4, TEST_NAME + "_D");
-        List<Stop> allStops = Lists.newArrayList(stopA, stopB, stopC, stopD);
+        List<Stop> allStops = Lists.newArrayList(
+                TEST_STOP_1,
+                TEST_STOP_2,
+                TEST_STOP_3,
+                TEST_STOP_4
+        );
 
-        store.addStop(TEST_ROUTE, TEST_DIR_E, stopA);
-        store.addStop(TEST_ROUTE, TEST_DIR_E, stopB);
-        store.addStop(TEST_ROUTE, TEST_DIR_E, stopC);
-        store.addStop(TEST_ROUTE, TEST_DIR_E, stopD);
+        store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_1);
+        store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_2);
+        store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_3);
+        store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP_4);
 
         List<Stop> actualStops = store.getStops(TEST_ROUTE, TEST_DIR_E);
         assertEquals(allStops, actualStops);
@@ -113,19 +178,19 @@ public class FavStopStoreTest extends AndroidTestCase
 
     public void testGetFavoritesMultipleRoutesDir()
     {
-        Stop stopA = new Stop(TEST_ID + 1, TEST_NAME + "_A");
-        Stop stopB = new Stop(TEST_ID + 2, TEST_NAME + "_B");
-        Stop stopC = new Stop(TEST_ID + 3, TEST_NAME + "_C");
-        Stop stopD = new Stop(TEST_ID + 4, TEST_NAME + "_D");
-        Stop stopE = new Stop(TEST_ID + 5, TEST_NAME + "_E");
-        List<Stop> stops1 = Lists.newArrayList(stopA, stopD, stopE);
-        List<Stop> stops2 = Lists.newArrayList(stopB, stopC);
+        List<Stop> stops1 = Lists.newArrayList(
+                TEST_STOP_1,
+                TEST_STOP_4,
+                TEST_STOP_5);
+        List<Stop> stops2 = Lists.newArrayList(
+                TEST_STOP_2,
+                TEST_STOP_3);
 
-        store.addStop(TEST_ROUTE, TEST_DIR_W, stopA);
-        store.addStop(TEST_ROUTE_2, TEST_DIR_E, stopB);
-        store.addStop(TEST_ROUTE_2, TEST_DIR_E, stopC);
-        store.addStop(TEST_ROUTE, TEST_DIR_W, stopD);
-        store.addStop(TEST_ROUTE, TEST_DIR_W, stopE);
+        store.addStop(TEST_ROUTE, TEST_DIR_W, TEST_STOP_1);
+        store.addStop(TEST_ROUTE_2, TEST_DIR_E, TEST_STOP_2);
+        store.addStop(TEST_ROUTE_2, TEST_DIR_E, TEST_STOP_3);
+        store.addStop(TEST_ROUTE, TEST_DIR_W, TEST_STOP_4);
+        store.addStop(TEST_ROUTE, TEST_DIR_W, TEST_STOP_5);
 
         List<Stop> actualStops1 = store.getStops(TEST_ROUTE, TEST_DIR_W);
         assertEquals(stops1, actualStops1);
@@ -136,13 +201,18 @@ public class FavStopStoreTest extends AndroidTestCase
 
     private void assertSingleTestStopInDb()
     {
+        assertSingleStopInDb(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
+    }
+
+    private void assertSingleStopInDb(Route route, Direction direction, Stop stop)
+    {
         String[] cols = {FavStop.DB.ID,
                 FavStop.DB.NAME,
                 FavStop.DB.ROUTE_ID,
                 FavStop.DB.ROUTE_DIR
-                };
+        };
         String selection = FavStop.DB.ID + " = ?";
-        String[] selectionArgs = {String.valueOf(TEST_STOP.getId())};
+        String[] selectionArgs = {String.valueOf(stop.getId())};
         Cursor cursor = db.query(FavStop.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
 
@@ -155,14 +225,14 @@ public class FavStopStoreTest extends AndroidTestCase
         int actualId = Integer.valueOf(actualIdStr);
         String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
         Stop actualStop = new Stop(actualId, actualName);
-        assertEquals(TEST_STOP, actualStop);
+        assertEquals(stop, actualStop);
 
         String actualRouteId = cursor.getString(
                 cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_ID));
-        assertEquals(TEST_ROUTE.getId(), actualRouteId);
+        assertEquals(route.getId(), actualRouteId);
 
         String actualRouteDir = cursor.getString(
                 cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_DIR));
-        assertEquals(TEST_DIR_E.toString(), actualRouteDir);
+        assertEquals(direction.toString(), actualRouteDir);
     }
 }
