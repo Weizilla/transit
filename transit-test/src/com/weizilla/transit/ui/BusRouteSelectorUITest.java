@@ -83,7 +83,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     public void testFavoriteRoutesPopulatedByDB()
     {
-        addFavRouteToDb(ROUTE_2);
+        addRouteToFavDb(ROUTE_2);
 
         activity.refreshFavorites();
         solo.waitForView(R.id.uiBusRouteList);
@@ -109,7 +109,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     public void testContextMenuRemovesFavorite()
     {
-        addFavRouteToDb(ROUTE_2);
+        addRouteToFavDb(ROUTE_2);
 
         activity.refreshFavorites();
         solo.waitForView(R.id.uiBusRouteList);
@@ -128,7 +128,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
     }
 
-    private void addFavRouteToDb(Route route)
+    private void addRouteToFavDb(Route route)
     {
         FavRouteStore favRouteStore = new FavRouteStore(activity);
         favRouteStore.open();
