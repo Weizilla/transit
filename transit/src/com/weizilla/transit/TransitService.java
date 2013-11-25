@@ -64,11 +64,11 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
         return results;
     }
 
-    public List<Direction> lookupDirections(String route)
+    public List<Direction> lookupDirections(Route route)
     {
         List<Direction> directions = Collections.emptyList();
 
-        InputStream inputStream = dataProvider.getDirections(route);
+        InputStream inputStream = dataProvider.getDirections(route.getId());
 
         try
         {

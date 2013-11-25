@@ -31,6 +31,7 @@ public class BusDirectionSelector extends Activity
     private static final String TAG = "BusDirectionSelector";
     private TransitService transitService;
     private Map<Direction, Button> directionButtons;
+    private Route route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,9 +44,9 @@ public class BusDirectionSelector extends Activity
         TransitDataProvider transitDataProvider = getDataProvider();
         transitService = new TransitService(transitDataProvider);
 
-        String route = getIntent().getStringExtra(Route.KEY);
+        route = getIntent().getParcelableExtra(Route.KEY);
         disableAllDirection();
-        retrieveDirections(route);
+        retrieveDirections();
     }
 
     private void initButtons()
@@ -80,9 +81,12 @@ public class BusDirectionSelector extends Activity
         return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
-    private void retrieveDirections(String route)
+    private void retrieveDirections()
     {
-        new LookupDirectionTask().execute(route);
+        if (route != null)
+        {
+            new LookupDirectionTask().execute(route);
+        }
     }
 
     private void updateUI(List<Direction> retrievedDirections)
@@ -111,13 +115,13 @@ public class BusDirectionSelector extends Activity
         finish();
     }
 
-    private class LookupDirectionTask extends AsyncTask<String, Void, List<Direction>>
+    private class LookupDirectionTask extends AsyncTask<Route, Void, List<Direction>>
     {
 
         @Override
-        protected List<Direction> doInBackground(String... params)
+        protected List<Direction> doInBackground(Route... params)
         {
-            String route = params[0];
+            Route route = params[0];
             return transitService.lookupDirections(route);
         }
 
