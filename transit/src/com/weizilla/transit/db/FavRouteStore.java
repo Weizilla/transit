@@ -92,7 +92,7 @@ public class FavRouteStore implements BusRoutesProvider
         String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
         String order = FavRoute.DB.ID + " ASC";
         Cursor cursor = database.query(FavRoute.DB.TABLE_NAME, cols, null, null, null, null, order);
-        return makeRoute(cursor);
+        return buildRoutes(cursor);
     }
 
     public void close()
@@ -115,7 +115,7 @@ public class FavRouteStore implements BusRoutesProvider
         return databaseHelper;
     }
 
-    private static List<Route> makeRoute(Cursor cursor)
+    private static List<Route> buildRoutes(Cursor cursor)
     {
         List<Route> routes = new ArrayList<>();
         if (cursor == null || cursor.getCount() == 0)
