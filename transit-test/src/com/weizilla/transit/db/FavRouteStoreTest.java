@@ -73,6 +73,21 @@ public class FavRouteStoreTest extends AndroidTestCase
         assertSingleTestResultInDb();
     }
 
+    public void testDuplicateAddedWithoutErrors()
+    {
+        long newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+        newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+        newId = store.addRoute(TEST_ROUTE);
+        assertTrue(newId != -1);
+
+        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
+        assertEquals(1, totalRows);
+
+        assertSingleTestResultInDb();
+    }
+
     public void testFavoriteIsRemoved()
     {
         long newId = store.addRoute(TEST_ROUTE);
@@ -124,22 +139,6 @@ public class FavRouteStoreTest extends AndroidTestCase
         deleted = store.removeRoute(TEST_ROUTE);
         assertFalse(deleted);
     }
-
-    public void testDuplicateAddedWithoutErrors()
-    {
-        long newId = store.addRoute(TEST_ROUTE);
-        assertTrue(newId != -1);
-        newId = store.addRoute(TEST_ROUTE);
-        assertTrue(newId != -1);
-        newId = store.addRoute(TEST_ROUTE);
-        assertTrue(newId != -1);
-
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
-
-        assertSingleTestResultInDb();
-    }
-
 
     public void testGetAllFavRoutes()
     {
