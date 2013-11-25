@@ -6,7 +6,7 @@ import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
 /**
- * TODO auto-generated header
+ * represents a bus stop
  *
  * @author wei
  *         Date: 9/4/13
@@ -18,28 +18,34 @@ public class Stop implements Parcelable
     public static final String KEY = Stop.class.getName();
 
     @Element(name = "stpid")
-    public int id;
+    private int id;
 
     @Element(name = "stpnm")
-    public String name;
+    private String name;
 
+    // not used
     @Element(name = "lat")
-    public double latitude;
+    private double latitude;
 
+    // not used
     @Element(name = "lon")
-    public double longitude;
+    private double longitude;
 
     public Stop()
     {
         // default
     }
 
+    public Stop(int id, String name)
+    {
+        this.id = id;
+        this.name = name;
+    }
+
     public Stop(Parcel parcel)
     {
         this.id = parcel.readInt();
         this.name = parcel.readString();
-        this.latitude = parcel.readDouble();
-        this.longitude = parcel.readDouble();
     }
 
     @Override
@@ -47,8 +53,6 @@ public class Stop implements Parcelable
     {
         dest.writeInt(this.id);
         dest.writeString(this.name);
-        dest.writeDouble(this.latitude);
-        dest.writeDouble(this.longitude);
     }
 
     @Override
@@ -67,14 +71,38 @@ public class Stop implements Parcelable
         return name;
     }
 
-    public double getLatitude()
+    @Override
+    public boolean equals(Object o)
     {
-        return latitude;
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Stop stop = (Stop) o;
+
+        if (id != stop.id)
+        {
+            return false;
+        }
+        if (name != null ? !name.equals(stop.name) : stop.name != null)
+        {
+            return false;
+        }
+
+        return true;
     }
 
-    public double getLongitude()
+    @Override
+    public int hashCode()
     {
-        return longitude;
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        return result;
     }
 
     @Override
@@ -83,8 +111,6 @@ public class Stop implements Parcelable
         return "Stop{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", latitude=" + latitude +
-                ", longitude=" + longitude +
                 '}';
     }
 

@@ -126,7 +126,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         assertFalse(deleted);
     }
 
-    public void testDuplicateAddedWithoutErrors() throws Exception
+    public void testDuplicateAddedWithoutErrors()
     {
         long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
@@ -142,7 +142,7 @@ public class FavRouteStoreTest extends AndroidTestCase
     }
 
 
-    public void testGetAllFavRoutes() throws Exception
+    public void testGetAllFavRoutes()
     {
         Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A", true);
         Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B", true);
@@ -160,7 +160,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         assertEquals(allRoutes, actualRoutes);
     }
 
-    public void testGetAllFavRoutesSorted() throws Exception
+    public void testGetAllFavRoutesSorted()
     {
         Route routeA = new Route(TEST_ID + "_A", TEST_NAME + "_A", true);
         Route routeB = new Route(TEST_ID + "_B", TEST_NAME + "_B", true);
