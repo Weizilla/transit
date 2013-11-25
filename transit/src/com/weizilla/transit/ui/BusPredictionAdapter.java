@@ -55,7 +55,7 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
         uiDest.setText(prediction.getDestination());
 
         Date refTime = this.refTime != null ? this.refTime : new Date();
-        int timeLeft = calculateTimeLeft(refTime, prediction.getPredictionTime());
+        long timeLeft = calculateTimeLeft(refTime, prediction.getPredictionTime());
 
         TextView uiPred = (TextView) view.findViewById(R.id.uiBusPredTimeLeft);
         uiPred.setText(String.valueOf(timeLeft));
@@ -68,9 +68,9 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
         this.refTime = refTime;
     }
 
-    public static int calculateTimeLeft(Date refTime, Date predictionTime)
+    public static long calculateTimeLeft(Date refTime, Date predictionTime)
     {
-        return (int) TimeUnit.MILLISECONDS.toMinutes(predictionTime.getTime() - refTime.getTime());
+        return TimeUnit.MILLISECONDS.toMinutes(predictionTime.getTime() - refTime.getTime());
     }
 
 

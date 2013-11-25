@@ -149,7 +149,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
         return parseRoute(views);
     }
 
-    private static Route parseRoute(List<TextView> views)
+    public static Route parseRoute(List<TextView> views)
     {
         TextView isFavView = views.get(0);
         String id = views.get(1).getText().toString();

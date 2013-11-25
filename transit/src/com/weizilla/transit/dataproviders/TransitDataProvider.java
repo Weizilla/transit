@@ -3,6 +3,7 @@ package com.weizilla.transit.dataproviders;
 import com.weizilla.transit.data.Direction;
 
 import java.io.InputStream;
+import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -12,7 +13,7 @@ import java.util.List;
  *         Date: 8/18/13
  *         Time: 5:41 PM
  */
-public interface TransitDataProvider
+public interface TransitDataProvider extends Serializable
 {
     public static final String KEY = TransitDataProvider.class.getName();
 

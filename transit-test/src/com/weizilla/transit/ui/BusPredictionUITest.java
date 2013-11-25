@@ -40,13 +40,6 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
         solo = new Solo(getInstrumentation(), activity);
     }
 
-    private Date genRefTime() throws ParseException
-    {
-        String refTime = "20130818 17:23";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(TimeConverter.PATTERN);
-        return dateFormat.parse(refTime);
-    }
-
     @Override
     public void tearDown() throws Exception
     {
@@ -86,6 +79,13 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
             }
         }
 
+    }
+
+    public static Date genRefTime() throws ParseException
+    {
+        String refTime = "20130818 17:23";
+        SimpleDateFormat dateFormat = new SimpleDateFormat(TimeConverter.PATTERN);
+        return dateFormat.parse(refTime);
     }
 
 }

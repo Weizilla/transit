@@ -156,7 +156,7 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
         return parseStop(views);
     }
 
-    private static Stop parseStop(List<TextView> views)
+    public static Stop parseStop(List<TextView> views)
     {
         TextView isFavView = views.get(0);
         String name = views.get(1).getText().toString();
