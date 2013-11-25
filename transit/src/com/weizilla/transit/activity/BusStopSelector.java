@@ -1,6 +1,8 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
@@ -30,7 +32,8 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 7:07 PM
  */
-public class BusStopSelector extends Activity implements AdapterView.OnItemClickListener
+public class BusStopSelector extends Activity
+        implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
     public static final String RETURN_INTENT_KEY = BusStopSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
@@ -96,6 +99,8 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
         uiStopsDisplay.setAdapter(stopsAdapter);
         uiStopsDisplay.setOnItemClickListener(this);
+        uiStopsDisplay.setLongClickable(true);
+        uiStopsDisplay.setOnItemLongClickListener(this);
     }
 
     private void retrieveStops()
@@ -139,6 +144,47 @@ public class BusStopSelector extends Activity implements AdapterView.OnItemClick
         result.putExtra(RETURN_INTENT_KEY, stop);
         setResult(RESULT_OK, result);
         finish();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Stop stop = allStops.get(position);
+        showContextMenu(stop);
+        return true;
+    }
+
+    private void showContextMenu(Stop stop)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(stop.getName());
+
+        String menuString = stop.isFavorite()
+            ? "Remove from Favorites"
+            : "Add to Favorites";
+
+        builder.setItems(new String[]{menuString}, buildOnClickListener(stop));
+        builder.create().show();
+    }
+
+    private DialogInterface.OnClickListener buildOnClickListener(final Stop stop)
+    {
+        return new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                if (stop.isFavorite())
+                {
+                    favStopStore.removeStop(stop);
+                }
+                else
+                {
+                    favStopStore.addStop(route, direction, stop);
+                }
+                refreshFavorites();
+            }
+        };
     }
 
     private class RetrieveStopsTask extends AsyncTask<Object, Void, List<Stop>>

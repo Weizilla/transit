@@ -33,6 +33,8 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
     private static final Stop STOP_2_FAV = new Stop(1939, "Clark & Ainslie", true);
     private static final Route TEST_ROUTE = new Route("TEST_ROUTE_ID", "TEST_ROUTE_NAME", false);
     private static final Direction TEST_DIR = Direction.Eastbound;
+    private static final int TIMEOUT = 1000;
+
     private BusStopSelector activity;
     private Solo solo;
     private FavStopStore favStopStore;
@@ -89,7 +91,7 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
 
     public void testFavoriteRoutesPopulatedByDB()
     {
-        addFavRouteToDb(TEST_ROUTE, TEST_DIR, STOP_2);
+        addStopToFavDb(TEST_ROUTE, TEST_DIR, STOP_2);
 
         activity.refreshFavorites();
         solo.waitForView(R.id.uiBusStopList);
@@ -98,17 +100,59 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
         assertEqualsUi(STOP_2_FAV, actual);
     }
 
-    private void addFavRouteToDb(Route route, Direction direction, Stop stop)
+    private void addStopToFavDb(Route route, Direction direction, Stop stop)
     {
         FavStopStore favStopStore = new FavStopStore(activity);
         favStopStore.open();
         favStopStore.addStop(route, direction, stop);
     }
 
+    public void testContextMenuAddsSecondRowToFavorite()
+    {
+        Stop fav = clickLongInList(2);
+        assertEqualsUi(STOP_2, fav);
+
+        solo.waitForDialogToOpen(TIMEOUT);
+        // add stop to favorite in dialog
+        solo.clickInList(1);
+
+        solo.waitForView(R.id.uiBusStopList);
+
+        Stop stop = clickInList(1);
+        assertEqualsUi(STOP_2_FAV, stop);
+    }
+
+    public void testContextMenuRemovesFavorite()
+    {
+        addStopToFavDb(TEST_ROUTE, TEST_DIR, STOP_2);
+
+        activity.refreshFavorites();
+        solo.waitForView(R.id.uiBusStopList);
+
+        Stop fav = clickLongInList(1);
+        assertEqualsUi(STOP_2_FAV, fav);
+
+        solo.waitForDialogToOpen(TIMEOUT);
+        // remove route from favorite in dialog
+        solo.clickInList(1);
+
+        solo.waitForView(R.id.uiBusStopList);
+
+        Stop actual = clickInList(1);
+        assertEqualsUi(STOP_1, actual);
+    }
+
     private Stop clickInList(int line)
     {
         solo.scrollToTop();
         List<TextView> views = solo.clickInList(line, 0);
+        return parseStop(views);
+    }
+
+    private Stop clickLongInList(int line)
+    {
+        solo.scrollToTop();
+        List<TextView> views = solo.clickLongInList(line, 0);
         return parseStop(views);
     }
 
