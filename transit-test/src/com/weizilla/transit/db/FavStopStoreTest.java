@@ -30,12 +30,12 @@ public class FavStopStoreTest extends AndroidTestCase
     private static final Direction TEST_DIR_W = Direction.Westbound;
     private static final int TEST_ID = 123;
     private static final String TEST_NAME = "TEST_STOP_NAME";
-    private static final Stop TEST_STOP = new Stop(TEST_ID, TEST_NAME);
-    private static final Stop TEST_STOP_1 = new Stop(TEST_ID + 1, TEST_NAME + "_1");
-    private static final Stop TEST_STOP_2 = new Stop(TEST_ID + 2, TEST_NAME + "_2");
-    private static final Stop TEST_STOP_3 = new Stop(TEST_ID + 3, TEST_NAME + "_3");
-    private static final Stop TEST_STOP_4 = new Stop(TEST_ID + 4, TEST_NAME + "_4");
-    private static final Stop TEST_STOP_5 = new Stop(TEST_ID + 5, TEST_NAME + "_5");
+    private static final Stop TEST_STOP = new Stop(TEST_ID, TEST_NAME, true);
+    private static final Stop TEST_STOP_1 = new Stop(TEST_ID + 1, TEST_NAME + "_1", true);
+    private static final Stop TEST_STOP_2 = new Stop(TEST_ID + 2, TEST_NAME + "_2", true);
+    private static final Stop TEST_STOP_3 = new Stop(TEST_ID + 3, TEST_NAME + "_3", true);
+    private static final Stop TEST_STOP_4 = new Stop(TEST_ID + 4, TEST_NAME + "_4", true);
+    private static final Stop TEST_STOP_5 = new Stop(TEST_ID + 5, TEST_NAME + "_5", true);
     private SqliteDbHelper helper;
     private FavStopStore store;
     private SQLiteDatabase db;
@@ -224,7 +224,7 @@ public class FavStopStoreTest extends AndroidTestCase
         String actualIdStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
         int actualId = Integer.valueOf(actualIdStr);
         String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
-        Stop actualStop = new Stop(actualId, actualName);
+        Stop actualStop = new Stop(actualId, actualName, true);
         assertEquals(stop, actualStop);
 
         String actualRouteId = cursor.getString(

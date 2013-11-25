@@ -1,5 +1,7 @@
 package com.weizilla.transit.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -11,7 +13,7 @@ import org.simpleframework.xml.Root;
  *         Time: 6:34 AM
  */
 @Root
-public class Route implements Comparable<Route>
+public class Route implements Parcelable, Comparable<Route>
 {
     public static final String KEY = Route.class.getName();
 
@@ -33,6 +35,25 @@ public class Route implements Comparable<Route>
         this.id = id;
         this.name = name;
         this.isFavorite = isFavorite;
+    }
+
+    public Route(Parcel parcel)
+    {
+        id = parcel.readString();
+        name = parcel.readString();
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeString(id);
+        dest.writeString(name);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
     }
 
     public String getId()
@@ -155,4 +176,18 @@ public class Route implements Comparable<Route>
         }
     }
 
+    public static final Creator<Route> CREATOR = new Creator<Route>()
+    {
+        @Override
+        public Route createFromParcel(Parcel source)
+        {
+            return new Route(source);
+        }
+
+        @Override
+        public Route[] newArray(int size)
+        {
+            return new Route[size];
+        }
+    };
 }

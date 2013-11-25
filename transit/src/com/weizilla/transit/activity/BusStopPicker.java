@@ -23,7 +23,7 @@ public class BusStopPicker extends Activity
     private TextView uiSelectedRoute;
     private TextView uiSelectedDirection;
     private TextView uiSelectedStop;
-    private String selectedRoute;
+    private Route selectedRoute;
     private Direction selectedDirection;
     private Stop selectedStop;
 
@@ -108,7 +108,7 @@ public class BusStopPicker extends Activity
         this.uiSelectedStop.setText("Stop:");
     }
 
-    private void setSelectedRoute(String route)
+    private void setSelectedRoute(Route route)
     {
         this.selectedRoute = route;
         this.uiSelectedRoute.setText("Route: " + this.selectedRoute);
@@ -133,7 +133,7 @@ public class BusStopPicker extends Activity
         {
             if (resultCode == RESULT_OK)
             {
-                String route = data.getStringExtra(BusRouteSelector.RETURN_INTENT_KEY);
+                Route route = data.getParcelableExtra(BusRouteSelector.RETURN_INTENT_KEY);
                 setSelectedRoute(route);
                 startNextStep(null);
             }

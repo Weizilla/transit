@@ -13,7 +13,8 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 /**
- * TODO auto-generated header
+ * Tests that parsing the mock xml data works correctly with
+ * the mock data provider
  *
  * @author wei
  * Date: 8/18/13
@@ -21,6 +22,7 @@ import static org.junit.Assert.assertEquals;
  */
 
 public class SampleDataTest {
+    private static final Route TEST_ROUTE = new Route("TEST_ID", "TEST_NAME", false);
     private TransitService transitService;
 
     @Before
@@ -54,7 +56,7 @@ public class SampleDataTest {
     @Test
     public void testGettingStops()
     {
-        List<Stop> stops = transitService.lookupStops(null, null);
+        List<Stop> stops = transitService.getStops(TEST_ROUTE, null);
         assertEquals(85, stops.size());
     }
 }

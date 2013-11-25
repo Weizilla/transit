@@ -136,7 +136,7 @@ public class BusRouteSelector extends Activity
     private void finishWithRoute(Route route)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, route.getId());
+        result.putExtra(RETURN_INTENT_KEY, route);
         setResult(RESULT_OK, result);
         finish();
     }

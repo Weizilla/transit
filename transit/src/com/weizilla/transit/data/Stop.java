@@ -31,15 +31,18 @@ public class Stop implements Parcelable
     @Element(name = "lon")
     private double longitude;
 
+    private boolean isFavorite;
+
     public Stop()
     {
         // default
     }
 
-    public Stop(int id, String name)
+    public Stop(int id, String name, boolean isFavorite)
     {
         this.id = id;
         this.name = name;
+        this.isFavorite = isFavorite;
     }
 
     public Stop(Parcel parcel)
@@ -71,6 +74,11 @@ public class Stop implements Parcelable
         return name;
     }
 
+    public boolean isFavorite()
+    {
+        return isFavorite;
+    }
+
     @Override
     public boolean equals(Object o)
     {
@@ -89,6 +97,10 @@ public class Stop implements Parcelable
         {
             return false;
         }
+        if (isFavorite != stop.isFavorite)
+        {
+            return false;
+        }
         if (name != null ? !name.equals(stop.name) : stop.name != null)
         {
             return false;
@@ -102,6 +114,7 @@ public class Stop implements Parcelable
     {
         int result = id;
         result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (isFavorite ? 1 : 0);
         return result;
     }
 
@@ -109,8 +122,9 @@ public class Stop implements Parcelable
     public String toString()
     {
         return "Stop{" +
-                "id=" + id +
+                "isFavorite=" + isFavorite +
                 ", name='" + name + '\'' +
+                ", id=" + id +
                 '}';
     }
 

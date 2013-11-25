@@ -24,7 +24,7 @@ import java.util.List;
  *         Date: 8/18/13
  *         Time: 5:40 PM
  */
-public class TransitService implements BusRoutesProvider
+public class TransitService implements BusRoutesProvider, BusStopsProvider
 {
     private static final String TAG = "TransitService";
     private TransitDataProvider dataProvider;
@@ -87,11 +87,11 @@ public class TransitService implements BusRoutesProvider
         return directions;
     }
 
-    public List<Stop> lookupStops(String route, Direction direction)
+    public List<Stop> getStops(Route route, Direction direction)
     {
         List<Stop> stops = Collections.emptyList();
 
-        InputStream inputStream = dataProvider.getStops(route, direction);
+        InputStream inputStream = dataProvider.getStops(route.getId(), direction);
         try
         {
             BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);

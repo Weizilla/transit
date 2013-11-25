@@ -5,6 +5,7 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.weizilla.transit.BusStopsProvider;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.FavStop;
 import com.weizilla.transit.data.Route;
@@ -22,7 +23,7 @@ import java.util.List;
  *         Date: 11/24/13
  *         Time: 6:22 PM
  */
-public class FavStopStore
+public class FavStopStore implements BusStopsProvider
 {
     private static final String TAG = "FavStopStore";
     private static final String DB_NAME = "FavStop";
@@ -109,6 +110,12 @@ public class FavStopStore
         databaseHelper.close();
     }
 
+    public void deleteDb()
+    {
+        boolean status = context.deleteDatabase(DB_NAME);
+        Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
+    }
+
     SqliteDbHelper getDatabaseHelper()
     {
         return databaseHelper;
@@ -127,7 +134,7 @@ public class FavStopStore
             String idStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
             int id = Integer.parseInt(idStr);
             String name = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
-            stops.add(new Stop(id, name));
+            stops.add(new Stop(id, name, true));
         }
         while (cursor.moveToNext());
 
