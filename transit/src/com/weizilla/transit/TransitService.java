@@ -14,6 +14,7 @@ import org.simpleframework.xml.strategy.Strategy;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collections;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -135,6 +136,30 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
         }
 
         return results;
+    }
+
+    public Date getCurrentTime()
+    {
+        Date results = new Date();
+        InputStream inputStream = dataProvider.getCurrentTime();
+
+        try
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
+            results = response.getCurrentTime();
+        }
+        catch (Exception e)
+        {
+            //TODO find logging framework that works in junit and android
+            e.printStackTrace();
+        }
+        finally
+        {
+            closeStream(inputStream);
+        }
+
+        return results;
+
     }
 
     private static void closeStream(InputStream inputStream)

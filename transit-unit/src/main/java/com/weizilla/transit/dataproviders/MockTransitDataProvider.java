@@ -3,7 +3,6 @@ package com.weizilla.transit.dataproviders;
 import com.weizilla.transit.data.Direction;
 
 import java.io.InputStream;
-import java.io.Serializable;
 import java.util.List;
 
 /**
@@ -13,7 +12,7 @@ import java.util.List;
  * Date: 8/18/13
  * Time: 5:32 PM
  */
-public class MockTransitDataProvider implements Serializable, TransitDataProvider
+public class MockTransitDataProvider implements TransitDataProvider
 {
     @Override
     public InputStream getPredictions(List<Integer> stops, List<Integer> routes)
@@ -37,6 +36,12 @@ public class MockTransitDataProvider implements Serializable, TransitDataProvide
     public InputStream getDirections(String route)
     {
         return readSampleFile("directions_ew.xml");
+    }
+
+    @Override
+    public InputStream getCurrentTime()
+    {
+        return readSampleFile("current_time.xml");
     }
 
     private static InputStream readSampleFile(String filename)

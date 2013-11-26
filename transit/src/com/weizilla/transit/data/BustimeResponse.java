@@ -1,8 +1,12 @@
 package com.weizilla.transit.data;
 
+import com.weizilla.transit.util.TimeConverter;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.convert.Convert;
 
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -27,6 +31,10 @@ public class BustimeResponse
     @ElementList(inline = true, required = false)
     private List<Stop> stops;
 
+    @Element(name = "tm", required = false)
+    @Convert(TimeConverter.class)
+    private Date currentTime;
+
     public List<Prediction> getPredictions()
     {
         return predictions;
@@ -45,5 +53,10 @@ public class BustimeResponse
     public List<Stop> getStops()
     {
         return stops;
+    }
+
+    public Date getCurrentTime()
+    {
+        return currentTime;
     }
 }

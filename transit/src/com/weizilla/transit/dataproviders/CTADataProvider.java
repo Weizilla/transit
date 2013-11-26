@@ -106,6 +106,24 @@ public class CTADataProvider implements TransitDataProvider
         return null;
     }
 
+    @Override
+    public InputStream getCurrentTime()
+    {
+        String urlString = "http://www.ctabustracker.com/bustime/api/v1/gettime?key=" + apiKey;
+
+        try
+        {
+            return callCTAServer(urlString);
+        }
+        catch (IOException e)
+        {
+            Log.e(TAG, e.getMessage(), e);
+        }
+
+        //TODO better error handling
+        return null;
+    }
+
     private static InputStream callCTAServer(String urlString) throws IOException
     {
         InputStream is;

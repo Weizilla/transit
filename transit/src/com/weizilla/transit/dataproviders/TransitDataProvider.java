@@ -7,7 +7,7 @@ import java.io.Serializable;
 import java.util.List;
 
 /**
- * TODO auto-generated header
+ * interface for anything that provides streams of transit data
  *
  * @author wei
  *         Date: 8/18/13
@@ -24,4 +24,6 @@ public interface TransitDataProvider extends Serializable
     public InputStream getStops(String routeId, Direction direction);
 
     public InputStream getDirections(String route);
+
+    public InputStream getCurrentTime();
 }

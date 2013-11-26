@@ -9,8 +9,10 @@ import android.widget.TextView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Prediction;
 
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -54,11 +56,9 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
         TextView uiDest = (TextView) view.findViewById(R.id.uiBusPredDest);
         uiDest.setText(prediction.getDestination());
 
-        //TODO need to use ext class for ref time
-        // as cta times are always in central time
-        // plus this solves problem of time offset between device and cta clock
-        // and setting ext time for unit tests
-        Date refTime = this.refTime != null ? this.refTime : new Date();
+        //TODO need to get current time from transit provider
+        // to account for time offset
+        Date refTime = this.refTime != null ? this.refTime : getCurrentTime();
         long timeLeft = calculateTimeLeft(refTime, prediction.getPredictionTime());
 
         TextView uiPred = (TextView) view.findViewById(R.id.uiBusPredTimeLeft);
@@ -71,6 +71,15 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
     {
         this.refTime = refTime;
     }
+
+    public static Date getCurrentTime()
+    {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.setTimeZone(TimeZone.getTimeZone("America/Chicago"));
+        return calendar.getTime();
+    }
+
 
     public static long calculateTimeLeft(Date refTime, Date predictionTime)
     {

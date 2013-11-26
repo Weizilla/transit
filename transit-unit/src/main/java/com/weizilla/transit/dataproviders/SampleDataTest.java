@@ -8,7 +8,10 @@ import com.weizilla.transit.data.Stop;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
+import java.util.TimeZone;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,5 +61,17 @@ public class SampleDataTest {
     {
         List<Stop> stops = transitService.getStops(TEST_ROUTE, null);
         assertEquals(85, stops.size());
+    }
+
+    @Test
+    public void testGettingCurrentTime()
+    {
+        Date currentTime = transitService.getCurrentTime();
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(2013, Calendar.NOVEMBER, 25, 18, 9, 0);
+        calendar.set(Calendar.MILLISECOND, 0);
+        calendar.setTimeZone(TimeZone.getTimeZone("America/Chicago"));
+        Date expected = calendar.getTime();
+        assertEquals(expected, currentTime);
     }
 }
