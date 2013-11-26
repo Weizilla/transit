@@ -3,6 +3,7 @@ package com.weizilla.transit.ui;
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.jayway.android.robotium.solo.Solo;
@@ -28,6 +29,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
     private static final Route ROUTE_1 = new Route("1234", "XXXBronzeville/Union Station", false);
     private static final Route ROUTE_2 = new Route("222", "YYYHyde Park Express", false);
     private static final Route ROUTE_2_FAV = new Route("222", "YYYHyde Park Express", true);
+    private static final Route ROUTE_3 = new Route("15", "Jeffery Local", false);
     private static final int TIMEOUT = 1000;
 
     private BusRouteSelector activity;
@@ -125,7 +127,15 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
 
         Route actual = clickInList(1);
         assertEquals(ROUTE_1, actual);
+    }
 
+    public void testFilteredDropdown()
+    {
+        EditText edit = solo.getEditText(0);
+        solo.typeText(edit, ROUTE_3.getName());
+
+        Route actual = clickInList(1);
+        assertEquals(ROUTE_3, actual);
     }
 
     private void addRouteToFavDb(Route route)

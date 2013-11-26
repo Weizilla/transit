@@ -2,14 +2,13 @@ package com.weizilla.transit.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
-import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -21,6 +20,7 @@ import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavRouteStore;
 import com.weizilla.transit.ui.BusRouteAdapter;
+import com.weizilla.transit.ui.FilterTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,7 +38,6 @@ public class BusRouteSelector extends Activity
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
     private static final String TAG = "BusRouteSelector";
-    private final List<Route> allRoutes = new ArrayList<>();
     private final List<Route> favoriteRoutes = new ArrayList<>();
     private final List<Route> retrievedRoutes = new ArrayList<>();
     private TransitService transitService;
@@ -51,7 +50,6 @@ public class BusRouteSelector extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        allRoutes.clear();
         favoriteRoutes.clear();
         retrievedRoutes.clear();
 
@@ -61,6 +59,28 @@ public class BusRouteSelector extends Activity
         favRouteStore = new FavRouteStore(this);
 
         initGui();
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
+    }
+
+    private void initGui()
+    {
+        setContentView(R.layout.bus_route_select);
+        routesAdapter = new BusRouteAdapter(this);
+        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
+        uiRoutesDisplay.setAdapter(routesAdapter);
+        uiRoutesDisplay.setOnItemClickListener(this);
+        uiRoutesDisplay.setLongClickable(true);
+        uiRoutesDisplay.setOnItemLongClickListener(this);
+        busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
+        busRouteInput.addTextChangedListener(new FilterTextWatcher(routesAdapter));
     }
 
     @Override
@@ -82,27 +102,6 @@ public class BusRouteSelector extends Activity
         favRouteStore.close();
     }
 
-    private TransitDataProvider getDataProvider()
-    {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
-    }
-
-    private void initGui()
-    {
-        setContentView(R.layout.bus_route_select);
-        busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
-        routesAdapter = new BusRouteAdapter(this, allRoutes);
-        ListView uiRoutesDisplay = (ListView) findViewById(R.id.uiBusRouteList);
-        uiRoutesDisplay.setAdapter(routesAdapter);
-        uiRoutesDisplay.setOnItemClickListener(this);
-        uiRoutesDisplay.setLongClickable(true);
-        uiRoutesDisplay.setOnItemLongClickListener(this);
-    }
-
     private void retrieveRoutes()
     {
         new RetrieveRoutesTask(transitService, retrievedRoutes).execute();
@@ -115,21 +114,17 @@ public class BusRouteSelector extends Activity
 
     private void updateAllRoutes()
     {
-        synchronized (allRoutes)
-        {
-            allRoutes.clear();
-            allRoutes.addAll(favoriteRoutes);
-            allRoutes.addAll(retrievedRoutes);
-        }
-
+        routesAdapter.clear();
+        routesAdapter.addAll(favoriteRoutes);
+        routesAdapter.addAll(retrievedRoutes);
         routesAdapter.notifyDataSetChanged();
-        hideKeyboard();
+        routesAdapter.getFilter().filter(busRouteInput.getText().toString());
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Route route = allRoutes.get(position);
+        Route route = routesAdapter.getItem(position);
         finishWithRoute(route);
     }
 
@@ -144,7 +139,7 @@ public class BusRouteSelector extends Activity
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Route route = allRoutes.get(position);
+        Route route = routesAdapter.getItem(position);
         showContextMenu(route);
         return true;
     }
@@ -158,47 +153,45 @@ public class BusRouteSelector extends Activity
             ? "Remove from Favorites"
             : "Add to Favorites";
 
-        builder.setItems(new String[]{menuString}, buildOnClickListener(route));
+        builder.setItems(new String[]{menuString}, new DialogClickListener(route));
         builder.create().show();
     }
 
-    private DialogInterface.OnClickListener buildOnClickListener(final Route route)
+    private class DialogClickListener implements DialogInterface.OnClickListener
     {
-        return new DialogInterface.OnClickListener()
+        private Route route;
+
+        private DialogClickListener(Route route)
         {
-            @Override
-            public void onClick(DialogInterface dialog, int which)
+            this.route = route;
+        }
+
+        @Override
+        public void onClick(DialogInterface dialog, int which)
+        {
+            if (route.isFavorite())
             {
-                if (route.isFavorite())
-                {
-                    favRouteStore.removeRoute(route);
-                }
-                else
-                {
-                    favRouteStore.addRoute(route);
-                }
-                refreshFavorites();
+                favRouteStore.removeRoute(route);
             }
-
-        };
-    }
-
-    private void hideKeyboard()
-    {
-        InputMethodManager imm = (InputMethodManager) getSystemService(
-                Context.INPUT_METHOD_SERVICE);
-        imm.hideSoftInputFromWindow(busRouteInput.getWindowToken(), 0);
+            else
+            {
+                favRouteStore.addRoute(route);
+            }
+            refreshFavorites();
+        }
     }
 
     private class RetrieveRoutesTask extends AsyncTask<Void, Void, List<Route>>
     {
         private final List<Route> routes;
-        private BusRoutesProvider provider;
+        private final BusRoutesProvider provider;
+        private final String providerName;
 
         private RetrieveRoutesTask(BusRoutesProvider provider, List<Route> routes)
         {
             this.provider = provider;
             this.routes = routes;
+            providerName = provider.getClass().getName();
         }
 
         @Override
@@ -211,6 +204,7 @@ public class BusRouteSelector extends Activity
         protected void onPostExecute(List<Route> routes)
         {
             super.onPostExecute(routes);
+            Log.d(TAG, "Retrieved " + routes.size() + " routes from " + providerName);
             synchronized (this.routes)
             {
                 this.routes.clear();
