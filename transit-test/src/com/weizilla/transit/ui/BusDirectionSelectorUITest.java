@@ -5,11 +5,12 @@ import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.activity.BusDirectionSelector;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 /**
- * TODO auto-generated header
+ * tests the bus direction selection activity
  *
  * @author wei
  *         Date: 9/3/13
@@ -31,6 +32,7 @@ public class BusDirectionSelectorUITest extends ActivityInstrumentationTestCase2
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
+        intent.putExtra(Route.KEY, new Route("TEST_ID", "TEST_NAME", false));
         this.setActivityIntent(intent);
 
         solo = new Solo(getInstrumentation(), getActivity());

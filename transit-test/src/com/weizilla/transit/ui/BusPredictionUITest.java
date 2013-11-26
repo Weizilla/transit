@@ -13,7 +13,6 @@ import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.util.TimeConverter;
 
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -83,9 +82,7 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
 
     public static Date genRefTime() throws ParseException
     {
-        String refTime = "20130818 17:23";
-        SimpleDateFormat dateFormat = new SimpleDateFormat(TimeConverter.PATTERN);
-        return dateFormat.parse(refTime);
+        return TimeConverter.parse("20130818 17:23");
     }
 
 }
