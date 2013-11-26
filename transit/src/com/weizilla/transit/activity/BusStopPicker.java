@@ -41,10 +41,10 @@ public class BusStopPicker extends Activity
 
         dataProvider = (TransitDataProvider) getIntent().getSerializableExtra(TransitDataProvider.KEY);
 
-        this.setContentView(R.layout.bus_stop_picker);
-        this.uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
-        this.uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
-        this.uiSelectedStop = (TextView) findViewById(R.id.uiSelectedStop);
+        setContentView(R.layout.bus_stop_picker);
+        uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
+        uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
+        uiSelectedStop = (TextView) findViewById(R.id.uiSelectedStop);
 
         startNextStep(null);
     }
@@ -107,30 +107,33 @@ public class BusStopPicker extends Activity
 
     public void startOver(View view)
     {
-        this.selectedRoute = null;
-        this.uiSelectedRoute.setText("Route:");
-        this.selectedDirection = null;
-        this.uiSelectedDirection.setText("Direction:");
-        this.selectedStop = null;
-        this.uiSelectedStop.setText("Stop:");
+        selectedRoute = null;
+        uiSelectedRoute.setText("Route:");
+        selectedDirection = null;
+        uiSelectedDirection.setText("Direction:");
+        selectedStop = null;
+        uiSelectedStop.setText("Stop:");
     }
 
     private void setSelectedRoute(Route route)
     {
-        this.selectedRoute = route;
-        this.uiSelectedRoute.setText("Route: " + this.selectedRoute);
+        selectedRoute = route;
+        uiSelectedRoute.setText("Route: "
+                + selectedRoute.getId() + " - " + selectedRoute.getName());
     }
 
     private void setSelectedDirection(Direction direction)
     {
-        this.selectedDirection = direction;
-        this.uiSelectedDirection.setText("Direction: " + this.selectedDirection);
+        selectedDirection = direction;
+        uiSelectedDirection.setText("Direction: "
+                + selectedDirection);
     }
 
     private void setSelectedStop(Stop stop)
     {
-        this.selectedStop = stop;
-        this.uiSelectedStop.setText("Stop: " + this.selectedStop.getName());
+        selectedStop = stop;
+        uiSelectedStop.setText("Stop: "
+                + selectedStop.getName());
     }
 
     @Override
