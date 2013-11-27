@@ -15,7 +15,7 @@ import java.util.List;
  */
 public interface TransitDataProvider extends Serializable
 {
-    public static final String KEY = TransitDataProvider.class.getName();
+    public static final String KEY = "com.weizilla.transit.dataproviders.TransitDataProvider";
 
     public InputStream getPredictions(List<Integer> stops, List<Integer> routes);
 

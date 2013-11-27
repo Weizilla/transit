@@ -27,7 +27,7 @@ import java.util.List;
  */
 public class TransitService implements BusRoutesProvider, BusStopsProvider
 {
-    private static final String TAG = "TransitService";
+    private static final String TAG = "transit.TransitService";
     private TransitDataProvider dataProvider;
     private Serializer serializer;
 

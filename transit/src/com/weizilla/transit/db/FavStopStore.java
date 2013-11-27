@@ -25,7 +25,7 @@ import java.util.List;
  */
 public class FavStopStore implements BusStopsProvider
 {
-    private static final String TAG = "FavStopStore";
+    private static final String TAG = "transit.FavStopStore";
     private static final String DB_NAME = "FavStop";
     private static final String CREATE_TABLE_SQL =
             "CREATE TABLE " + FavStop.DB.TABLE_NAME + " (" +

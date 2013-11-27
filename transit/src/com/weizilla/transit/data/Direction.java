@@ -19,7 +19,7 @@ public enum Direction implements Parcelable
     Southbound,
     Westbound;
 
-    public static final String KEY = Direction.class.getName();
+    public static final String KEY = "com.weizilla.transit.data.Direction";
 
     @Override
     public int describeContents()

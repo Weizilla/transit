@@ -15,7 +15,7 @@ import org.simpleframework.xml.Root;
 @Root(name = "stop")
 public class Stop implements Parcelable
 {
-    public static final String KEY = Stop.class.getName();
+    public static final String KEY = "com.weizilla.transit.data.Stop";
 
     @Element(name = "stpid")
     private int id;

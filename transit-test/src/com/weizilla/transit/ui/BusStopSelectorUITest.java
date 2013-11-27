@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Parcelable;
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.jayway.android.robotium.solo.Solo;
@@ -31,6 +32,7 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
     private static final Stop STOP_1 = new Stop(1926, "Clark & Addison", false);
     private static final Stop STOP_2 = new Stop(1939, "Clark & Ainslie", false);
     private static final Stop STOP_2_FAV = new Stop(1939, "Clark & Ainslie", true);
+    private static final Stop STOP_3 = new Stop(1958, "Clark & Albion", false);
     private static final Route TEST_ROUTE = new Route("TEST_ROUTE_ID", "TEST_ROUTE_NAME", false);
     private static final Direction TEST_DIR = Direction.Eastbound;
     private static final int TIMEOUT = 1000;
@@ -140,6 +142,15 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
 
         Stop actual = clickInList(1);
         assertEqualsUi(STOP_1, actual);
+    }
+
+    public void testFilteredDropdown()
+    {
+        EditText edit = solo.getEditText(0);
+        solo.typeText(edit, STOP_3.getName());
+
+        Stop actual = clickInList(1);
+        assertEqualsUi(STOP_3, actual);
     }
 
     private Stop clickInList(int line)

@@ -2,16 +2,11 @@ package com.weizilla.transit.ui;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.activity.BusStopSelector;
 import com.weizilla.transit.data.Stop;
-
-import java.util.List;
 
 /**
  * list adapter for bus stop
@@ -20,40 +15,30 @@ import java.util.List;
  *         Date: 9/9/13
  *         Time: 3:37 PM
  */
-public class BusStopAdapter extends ArrayAdapter<Stop>
+public class BusStopAdapter extends ListAdapter<Stop>
 {
-    private List<Stop> stops;
+    private static final String TAG = "transit.BusStopAdapter";
 
-    public BusStopAdapter(Context context, List<Stop> stops)
+    public BusStopAdapter(Context context)
     {
-        super(context, R.layout.bus_stop_item, stops);
-        this.stops = stops;
+        super(context, R.layout.bus_stop_item);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    protected boolean isItemIncluded(Stop stop, String constraint)
     {
-        View view;
+        String lower = constraint.toLowerCase();
+        return stop.getName().toLowerCase().contains(lower);
+    }
 
-        if (convertView == null)
-        {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.bus_stop_item, parent, false);
-        }
-        else
-        {
-            view = convertView;
-        }
-
-        Stop stop = stops.get(position);
-
+    @Override
+    protected void displayItem(Stop stop, View view)
+    {
         int background = stop.isFavorite() ? BusStopSelector.FAV_BACKGROUND_COLOR : Color.TRANSPARENT;
         TextView uiIsFav = (TextView) view.findViewById(R.id.uiBusStopItemIsFav);
         uiIsFav.setBackgroundColor(background);
 
         TextView uiName = (TextView) view.findViewById(R.id.uiBusStopItemName);
         uiName.setText(stop.getName());
-
-        return view;
     }
 }

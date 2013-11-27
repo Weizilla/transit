@@ -37,7 +37,7 @@ public class BusRouteSelector extends Activity
 {
     public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
-    private static final String TAG = "BusRouteSelector";
+    private static final String TAG = "transit.BusRouteSelector";
     private final List<Route> favoriteRoutes = new ArrayList<>();
     private final List<Route> retrievedRoutes = new ArrayList<>();
     private TransitService transitService;

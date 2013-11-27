@@ -22,7 +22,7 @@ import java.util.List;
  */
 public class FavRouteStore implements BusRoutesProvider
 {
-    private static final String TAG = "FavRouteStore";
+    private static final String TAG = "transit.FavRouteStore";
     private static final String DB_NAME = "FavRoute";
     private static final String CREATE_TABLE_SQL =
         "CREATE TABLE " + FavRoute.DB.TABLE_NAME + " (" +

@@ -19,7 +19,7 @@ import java.util.List;
  */
 public class CTADataProvider implements TransitDataProvider
 {
-    private static final String TAG = "CTADataProvider";
+    private static final String TAG = "transit.CTADataProvider";
     private String apiKey;
 
     public CTADataProvider(String apiKey)

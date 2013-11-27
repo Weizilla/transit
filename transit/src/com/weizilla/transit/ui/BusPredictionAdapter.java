@@ -1,17 +1,13 @@
 package com.weizilla.transit.ui;
 
 import android.content.Context;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Prediction;
 
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
@@ -22,34 +18,24 @@ import java.util.concurrent.TimeUnit;
  *         Date: 9/9/13
  *         Time: 4:24 PM
  */
-public class BusPredictionAdapter extends ArrayAdapter<Prediction>
+public class BusPredictionAdapter extends ListAdapter<Prediction>
 {
-    private List<Prediction> predictions;
     private Date refTime;
 
-    public BusPredictionAdapter(Context context, List<Prediction> predictions)
+    public BusPredictionAdapter(Context context)
     {
-        super(context, R.layout.bus_pred_item, predictions);
-        this.predictions = predictions;
+        super(context, R.layout.bus_pred_item);
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
+    protected boolean isItemIncluded(Prediction prediction, String constraint)
     {
-        View view;
+        return true; // no filtering
+    }
 
-        if (convertView == null)
-        {
-            LayoutInflater inflater = (LayoutInflater) getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-            view = inflater.inflate(R.layout.bus_pred_item, parent, false);
-        }
-        else
-        {
-            view = convertView;
-        }
-
-        Prediction prediction = predictions.get(position);
-
+    @Override
+    protected void displayItem(Prediction prediction, View view)
+    {
         TextView uiRoute = (TextView) view.findViewById(R.id.uiBusPredRoute);
         uiRoute.setText(prediction.getRoute());
 
@@ -63,8 +49,6 @@ public class BusPredictionAdapter extends ArrayAdapter<Prediction>
 
         TextView uiPred = (TextView) view.findViewById(R.id.uiBusPredTimeLeft);
         uiPred.setText(String.valueOf(timeLeft));
-
-        return view;
     }
 
     public void setRefTime(Date refTime)

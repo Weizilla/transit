@@ -21,6 +21,7 @@ import com.weizilla.transit.dataproviders.TransitDataProvider;
  */
 public class BusStopPicker extends Activity
 {
+    private static final String TAG = "transit.BusStopPicker";
     private static final int ROUTE_REQUEST = 1;
     private static final int DIRECTION_REQUEST = 2;
     private static final int STOP_REQUEST = 3;

@@ -5,7 +5,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -18,7 +17,6 @@ import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.ui.BusPredictionAdapter;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -31,9 +29,8 @@ import java.util.List;
  */
 public class BusPrediction extends Activity
 {
-    private static final String TAG = "BusPrediction";
+    private static final String TAG = "transit.BusPrediction";
     private TransitService transitService;
-    private List<Prediction> predictions;
     private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
 
@@ -45,8 +42,7 @@ public class BusPrediction extends Activity
 
         busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 
-        predictions = new ArrayList<>();
-        predictionAdapter = new BusPredictionAdapter(this, predictions);
+        predictionAdapter = new BusPredictionAdapter(this);
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
         uiPredictionsDisplay.setAdapter(predictionAdapter);
 
@@ -82,13 +78,11 @@ public class BusPrediction extends Activity
 
     private void updateUI(List<Prediction> retrievedPredictions)
     {
-        predictions.clear();
-        predictions.addAll(retrievedPredictions);
+        predictionAdapter.clear();
+        predictionAdapter.addAll(retrievedPredictions);
 
-        if (Log.isLoggable(TAG, Log.DEBUG))
-        {
-            Log.d(TAG, "Added " + retrievedPredictions.size() + " predictions");
-        }
+        // for future filtering based on bus route
+        predictionAdapter.getFilter().filter(null);
 
         predictionAdapter.notifyDataSetChanged();
 

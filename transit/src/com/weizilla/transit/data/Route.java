@@ -15,7 +15,7 @@ import org.simpleframework.xml.Root;
 @Root
 public class Route implements Parcelable, Comparable<Route>
 {
-    public static final String KEY = Route.class.getName();
+    public static final String KEY = "com.weizilla.transit.data.Route";
 
     @Element(name = "rt")
     private String id;

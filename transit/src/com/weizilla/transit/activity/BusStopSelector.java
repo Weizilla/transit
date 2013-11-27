@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.BusStopsProvider;
 import com.weizilla.transit.R;
@@ -21,6 +22,7 @@ import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavStopStore;
 import com.weizilla.transit.ui.BusStopAdapter;
+import com.weizilla.transit.ui.FilterTextWatcher;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -37,8 +39,7 @@ public class BusStopSelector extends Activity
 {
     public static final String RETURN_INTENT_KEY = BusStopSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
-    private static final String TAG = "BusStopSelector";
-    private final List<Stop> allStops = new ArrayList<>();
+    private static final String TAG = "transit.BusStopSelector";
     private final List<Stop> retrievedStops = new ArrayList<>();
     private final List<Stop> favoriteStops = new ArrayList<>();
     private TransitService transitService;
@@ -46,6 +47,7 @@ public class BusStopSelector extends Activity
     private BusStopAdapter stopsAdapter;
     private Route route;
     private Direction direction;
+    private EditText busStopInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -95,7 +97,9 @@ public class BusStopSelector extends Activity
     private void initGui()
     {
         this.setContentView(R.layout.bus_stop_select);
-        stopsAdapter = new BusStopAdapter(this, allStops);
+        stopsAdapter = new BusStopAdapter(this);
+        busStopInput = (EditText) findViewById(R.id.uiBusStopInput);
+        busStopInput.addTextChangedListener(new FilterTextWatcher(stopsAdapter));
         ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
         uiStopsDisplay.setAdapter(stopsAdapter);
         uiStopsDisplay.setOnItemClickListener(this);
@@ -121,20 +125,17 @@ public class BusStopSelector extends Activity
 
     private void updateAllStops()
     {
-        synchronized (allStops)
-        {
-            allStops.clear();
-            allStops.addAll(favoriteStops);
-            allStops.addAll(retrievedStops);
-        }
-
+        stopsAdapter.clear();
+        stopsAdapter.addAll(favoriteStops);
+        stopsAdapter.addAll(retrievedStops);
+        stopsAdapter.getFilter().filter(busStopInput.getText().toString());
         stopsAdapter.notifyDataSetChanged();
     }
 
     @Override
     public void onItemClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Stop stop = allStops.get(position);
+        Stop stop = stopsAdapter.getItem(position);
         finishWithStop(stop);
     }
 
@@ -149,7 +150,7 @@ public class BusStopSelector extends Activity
     @Override
     public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
     {
-        Stop stop = allStops.get(position);
+        Stop stop = stopsAdapter.getItem(position);
         showContextMenu(stop);
         return true;
     }
