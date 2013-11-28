@@ -11,6 +11,7 @@ import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -150,7 +151,7 @@ public class GroupStore
     /**
      * Adds a Stop to the group, creating a new Group if necessary.
      * Returns the id of the group the stop was added to. Returns
-     * -1 if an error occuring adding a group or stop
+     * -1 if an error occured while adding a group or stop
      * @param groupName the name of the group for this stop
      * @param stop the stop to add
      * @return the id of the group, -1 if error occurred
@@ -201,6 +202,12 @@ public class GroupStore
             Log.w(TAG, "No rows deleted when removing stop. Group: " + groupName + " Stop: " + stop);
         }
         return numDel != 0;
+    }
+
+    public List<Group> getGroups()
+    {
+        //TODO
+        return Collections.emptyList();
     }
 
     public void close()
