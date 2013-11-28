@@ -216,23 +216,33 @@ public class FavStopStoreTest extends AndroidTestCase
         Cursor cursor = db.query(FavStop.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
 
-        assertNotNull(cursor);
-        assertEquals(1, cursor.getCount());
+        try
+        {
+            assertNotNull(cursor);
+            assertEquals(1, cursor.getCount());
 
-        cursor.moveToFirst();
+            cursor.moveToFirst();
 
-        String actualIdStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
-        int actualId = Integer.valueOf(actualIdStr);
-        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
-        Stop actualStop = new Stop(actualId, actualName, true);
-        assertEquals(stop, actualStop);
+            String actualIdStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
+            int actualId = Integer.valueOf(actualIdStr);
+            String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
+            Stop actualStop = new Stop(actualId, actualName, true);
+            assertEquals(stop, actualStop);
 
-        String actualRouteId = cursor.getString(
-                cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_ID));
-        assertEquals(route.getId(), actualRouteId);
+            String actualRouteId = cursor.getString(
+                    cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_ID));
+            assertEquals(route.getId(), actualRouteId);
 
-        String actualRouteDir = cursor.getString(
-                cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_DIR));
-        assertEquals(direction.toString(), actualRouteDir);
+            String actualRouteDir = cursor.getString(
+                    cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_DIR));
+            assertEquals(direction.toString(), actualRouteDir);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 }

@@ -182,14 +182,24 @@ public class FavRouteStoreTest extends AndroidTestCase
         Cursor cursor = db.query(FavRoute.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
 
-        assertNotNull(cursor);
-        assertEquals(1, cursor.getCount());
+        try
+        {
+            assertNotNull(cursor);
+            assertEquals(1, cursor.getCount());
 
-        cursor.moveToFirst();
+            cursor.moveToFirst();
 
-        String actualId = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
-        assertEquals(TEST_ID, actualId);
-        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
-        assertEquals(TEST_NAME, actualName);
+            String actualId = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.ID));
+            assertEquals(TEST_ID, actualId);
+            String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavRoute.DB.NAME));
+            assertEquals(TEST_NAME, actualName);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 }

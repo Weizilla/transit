@@ -47,7 +47,7 @@ public class FruitStorage
             cursor.moveToFirst();
             String resultName = cursor.getString(cursor.getColumnIndexOrThrow(FruitContract.FruitEntry.NAME));
             String resultSize = cursor.getString(cursor.getColumnIndexOrThrow(FruitContract.FruitEntry.SIZE));
-
+            cursor.close();
             return new Fruit(resultName, resultSize);
         }
         else
