@@ -18,7 +18,7 @@ public class Stop implements Parcelable
     public static final String KEY = "com.weizilla.transit.data.Stop";
 
     @Element(name = "stpid")
-    private int id;
+    private int id = -1;
 
     @Element(name = "stpnm")
     private String name;
