@@ -13,15 +13,11 @@ import java.util.List;
  */
 public class Group
 {
-    private long id; // this is the rows's unique key (_id)
+    private long id = -1; // this is the rows's unique key (_id)
     private String name;
     private List<Integer> stopIds;
 
-    public Group(String name)
-    {
-        this(-1, name);
-    }
-
+    //TODO add stop ids
     public Group(long id, String name)
     {
         this.id = id;

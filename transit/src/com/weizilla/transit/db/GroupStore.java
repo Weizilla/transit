@@ -3,11 +3,12 @@ package com.weizilla.transit.db;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
-import android.database.SQLException;
+import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.common.collect.Lists;
 import com.weizilla.transit.data.Group;
+import com.weizilla.transit.data.Stop;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -33,7 +34,9 @@ public class GroupStore
             "CREATE TABLE " + Group.GroupsStopsDB.TABLE_NAME + " (" +
             Group.DB._ID + " INTEGER PRIMARY KEY, " +
             Group.GroupsStopsDB.GROUP_ID + " INTEGER, " +
-            Group.GroupsStopsDB.STOP_ID + " INTEGER " +
+            Group.GroupsStopsDB.STOP_ID + " INTEGER, " +
+            "UNIQUE (" + Group.GroupsStopsDB.GROUP_ID + ", " +
+                    Group.GroupsStopsDB.STOP_ID + ")" +
             ")";
     private static final List<String> CREATE_SQLS =
             Lists.newArrayList(CREATE_GROUPS_SQL, CREATE_GROUPS_STOPS_SQL);
@@ -60,26 +63,84 @@ public class GroupStore
         db = dbHelper.getWritableDatabase();
     }
 
-    public long addGroup(Group group)
+    /**
+     * Adds a new group to the store and returns it's
+     * key id. If a group with the same name exists already,
+     * returns that group's id
+     * @param groupName the name of the group to be added
+     * @return the key of the newly inserted group
+     * or existing duplicate group
+     */
+    public long addGroup(String groupName)
     {
         ContentValues values = new ContentValues();
-        values.put(Group.DB.NAME, group.getName());
+        values.put(Group.DB.NAME, groupName);
         long id;
         try
         {
             id = db.insertOrThrow(Group.DB.TABLE_NAME, null, values);
-            Log.d(TAG, "Inserted new group. id: " + id + " group: " + group);
+            Log.d(TAG, "Inserted new group. id: " + id + " group: " + groupName);
         }
-        catch (SQLException e)
+        catch (SQLiteConstraintException e)
         {
-            e.printStackTrace();
-            // assume it's duplicate name error.
-            // look up duplicate id and return
-            id = queryGroupId(group);
-            Log.d(TAG, "Added group already exists. id: " + id + " group: " + group);
+            // ignore duplicate name and return id of old row
+            id = queryGroupId(groupName);
+            Log.d(TAG, "Added group already exists. id: " + id + " group: " + groupName);
         }
 
         return id;
+    }
+
+    public boolean removeGroup(String groupName)
+    {
+        String where = Group.DB.NAME + " = ?";
+        String[] whereArgs = {groupName};
+        int numDeleted = db.delete(Group.DB.TABLE_NAME, where, whereArgs);
+        if (numDeleted > 0)
+        {
+            Log.w(TAG, "Multiple rows deleted when removing group: " + groupName);
+        }
+        else if (numDeleted == 1)
+        {
+            Log.d(TAG, "Removed group: " + groupName);
+        }
+        else
+        {
+            Log.i(TAG, "No rows removed when removing group: " + groupName);
+        }
+        return numDeleted != 0;
+    }
+
+    public boolean removeGroup(long groupId)
+    {
+        String where = Group.DB._ID + " = ?";
+        String[] whereArgs = {String.valueOf(groupId)};
+        int numDeleted = db.delete(Group.DB.TABLE_NAME, where, whereArgs);
+        if (numDeleted > 0)
+        {
+            Log.w(TAG, "Multiple rows deleted when removing group id: " + groupId);
+        }
+        else if (numDeleted == 1)
+        {
+            Log.d(TAG, "Removed group id: " + groupId);
+        }
+        else
+        {
+            Log.i(TAG, "No rows removed when removing group id: " + groupId);
+        }
+        return numDeleted != 0;
+    }
+
+    public boolean addStop(String groupName, Stop stop)
+    {
+        long groupId = addGroup(groupName);
+
+        ContentValues values = new ContentValues();
+        values.put(Group.GroupsStopsDB.GROUP_ID, groupId);
+        values.put(Group.GroupsStopsDB.STOP_ID, stop.getId());
+
+        long newId = db.insert(Group.GroupsStopsDB.TABLE_NAME, null, values);
+        return newId != -1;
     }
 
     public void close()
@@ -94,17 +155,25 @@ public class GroupStore
         Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
     }
 
-    private long queryGroupId(Group group)
+    private long queryGroupId(String groupName)
     {
         String[] cols = {Group.DB._ID, Group.DB.NAME};
         String selection = Group.DB.NAME + " = ?";
-        String[] selectionArgs = {group.getName()};
+        String[] selectionArgs = {groupName};
         Cursor cursor = db.query(Group.DB.TABLE_NAME, cols, selection, selectionArgs,
                 null, null, null);
-
-        List<Group> groups = buildGroups(cursor);
-
-        return groups.get(0).getId();
+        try
+        {
+            List<Group> groups = buildGroups(cursor);
+            return groups.isEmpty() ? -1 : groups.get(0).getId();
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     /**
@@ -139,4 +208,5 @@ public class GroupStore
 
         return groups;
     }
+
 }

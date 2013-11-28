@@ -4,6 +4,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 import com.weizilla.transit.data.Group;
+import com.weizilla.transit.data.Stop;
 
 /**
  * test the group store
@@ -14,8 +15,8 @@ import com.weizilla.transit.data.Group;
  */
 public class GroupStoreTest extends AndroidTestCase
 {
-    private static final String TEST_NAME = "TEST_NAME";
-    private static final Group TEST_GROUP = new Group(TEST_NAME);
+    private static final String TEST_GROUP_NAME = "TEST_NAME";
+    private static final Stop TEST_STOP = new Stop(123, "STOP NAME", false);
     private GroupStore store;
     private SqliteDbHelper dbHelper;
     private SQLiteDatabase db;
@@ -32,7 +33,7 @@ public class GroupStoreTest extends AndroidTestCase
     public void tearDown() throws Exception
     {
         super.tearDown();
-        dbHelper.close();
+        store.close();
         store.deleteDb();
     }
 
@@ -45,7 +46,7 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testAddGroup()
     {
-        long newId = store.addGroup(TEST_GROUP);
+        long newId = store.addGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
 
         int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
@@ -56,14 +57,14 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testDuplicateAddedReturnsSameIdWithoutErrors()
     {
-        long firstId = store.addGroup(TEST_GROUP);
+        long firstId = store.addGroup(TEST_GROUP_NAME);
         assertTrue(firstId != -1);
 
-        long newId = store.addGroup(TEST_GROUP);
+        long newId = store.addGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
         assertEquals(firstId, newId);
 
-        newId = store.addGroup(TEST_GROUP);
+        newId = store.addGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
         assertEquals(firstId, newId);
 
@@ -73,9 +74,32 @@ public class GroupStoreTest extends AndroidTestCase
         assertSingleTestResultInDb();
     }
 
-    public void testDeleteGroup()
+    public void testDeleteGroupWithName()
     {
-        //TODO
+        long newId = store.addGroup(TEST_GROUP_NAME);
+        assertTrue(newId != -1);
+
+        assertSingleTestResultInDb();
+
+        boolean deleted = store.removeGroup(TEST_GROUP_NAME);
+        assertTrue(deleted);
+
+        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
+    }
+
+    public void testDeleteGroupWithId()
+    {
+        long newId = store.addGroup(TEST_GROUP_NAME);
+        assertTrue(newId != -1);
+
+        assertSingleTestResultInDb();
+
+        boolean deleted = store.removeGroup(newId);
+        assertTrue(deleted);
+
+        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+        assertEquals(0, totalRows);
     }
 
     public void testRemoveGroupRemovesStops()
@@ -85,12 +109,44 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testAddStopsToGroup()
     {
-        //TODO
+        boolean added = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertTrue(added);
+
+        int totalGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+        assertEquals(1, totalGroups);
+
+        assertSingleTestResultInDb();
+
+        int totalGroupsStops = SqliteUtils.countRows(db,
+                Group.GroupsStopsDB.TABLE_NAME);
+        assertEquals(1, totalGroupsStops);
+
+        long groupId = getGroupId(TEST_GROUP_NAME);
+
+        assertGroupStopLink(groupId, TEST_STOP.getId());
     }
 
-    public void testAddStopsToNonExistentGroupWithoutErrors()
+    public void testNoDuplicatedStopsAdded()
     {
-        //TODO
+        boolean added = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertTrue(added);
+        added = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertFalse(added);
+        added = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertFalse(added);
+
+        int totalGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+        assertEquals(1, totalGroups);
+
+        assertSingleTestResultInDb();
+
+        int totalGroupsStops = SqliteUtils.countRows(db,
+                Group.GroupsStopsDB.TABLE_NAME);
+        assertEquals(1, totalGroupsStops);
+
+        long groupId = getGroupId(TEST_GROUP_NAME);
+
+        assertGroupStopLink(groupId, TEST_STOP.getId());
     }
 
     public void testRemoveStopsFromGroup()
@@ -98,21 +154,85 @@ public class GroupStoreTest extends AndroidTestCase
         //TODO
     }
 
-    private void assertSingleTestResultInDb()
+    private Cursor queryForGroups(String groupName)
     {
         String[] cols = {Group.DB._ID, Group.DB.NAME};
         String selection = Group.DB.NAME + " = ?";
-        String[] selectionArgs = {TEST_NAME};
+        String[] selectionArgs = {groupName};
         Cursor cursor = db.query(Group.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
+        return cursor;
+    }
 
-        assertNotNull(cursor);
-        assertEquals(1, cursor.getCount());
+    private long getGroupId(String groupName)
+    {
+        Cursor cursor = queryForGroups(groupName);
+        try
+        {
+            cursor.moveToFirst();
+            return cursor.getLong(cursor.getColumnIndexOrThrow(Group.DB._ID));
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
+    }
 
-        cursor.moveToFirst();
+    private void assertSingleTestResultInDb()
+    {
+        Cursor cursor = queryForGroups(TEST_GROUP_NAME);
+        try
+        {
+            assertNotNull(cursor);
+            assertEquals(1, cursor.getCount());
 
-        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(Group.DB.NAME));
-        assertEquals(TEST_NAME, actualName);
+            cursor.moveToFirst();
+
+            String actualName = cursor.getString(cursor.getColumnIndexOrThrow(Group.DB.NAME));
+            assertEquals(TEST_GROUP_NAME, actualName);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
+    }
+
+    private void assertGroupStopLink(long groupId, long stopId)
+    {
+        String selection = Group.GroupsStopsDB.GROUP_ID + " = ?";
+        String[] selectionArgs = {String.valueOf(groupId)};
+        String[] cols = {Group.GroupsStopsDB.GROUP_ID,
+                Group.GroupsStopsDB.STOP_ID};
+        Cursor cursor = db.query(Group.GroupsStopsDB.TABLE_NAME, cols,
+                selection, selectionArgs, null, null, null);
+        try
+        {
+            assertNotNull(cursor);
+            assertEquals(1, cursor.getCount());
+
+            cursor.moveToFirst();
+
+            int groupIdIndex = cursor.getColumnIndexOrThrow(Group.GroupsStopsDB.GROUP_ID);
+            long actualGroupId = cursor.getLong(groupIdIndex);
+            assertEquals(groupId, actualGroupId);
+
+            int stopIdIndex = cursor.getColumnIndexOrThrow(Group.GroupsStopsDB.STOP_ID);
+            long actualStopId = cursor.getLong(stopIdIndex);
+            assertEquals(stopId, actualStopId);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
 }
