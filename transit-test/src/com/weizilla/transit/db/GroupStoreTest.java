@@ -5,6 +5,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.util.SqliteTestUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -57,8 +58,7 @@ public class GroupStoreTest extends AndroidTestCase
         long newId = store.addGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
     }
@@ -76,8 +76,7 @@ public class GroupStoreTest extends AndroidTestCase
         assertTrue(newId != -1);
         assertEquals(firstId, newId);
 
-        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
     }
@@ -92,8 +91,7 @@ public class GroupStoreTest extends AndroidTestCase
         boolean deleted = store.removeGroup(TEST_GROUP_NAME);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 0);
     }
 
 //    public void testDeleteGroupWithId()
@@ -106,7 +104,7 @@ public class GroupStoreTest extends AndroidTestCase
 //        boolean deleted = store.removeGroup(newId);
 //        assertTrue(deleted);
 //
-//        int totalRows = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+//        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME);
 //        assertEquals(0, totalRows);
 //    }
 
@@ -119,15 +117,13 @@ public class GroupStoreTest extends AndroidTestCase
 
         assertSingleTestResultInDb();
 
-        int totalLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(2, totalLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 2);
 
         //TODO test remove by id too
         boolean deleted = store.removeGroup(TEST_GROUP_NAME);
         assertTrue(deleted);
 
-        totalLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(0, totalLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 0);
     }
 
     public void testAddStopsToGroup()
@@ -135,14 +131,11 @@ public class GroupStoreTest extends AndroidTestCase
         long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
         assertTrue(groupId != -1);
 
-        int totalGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(1, totalGroups);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
 
-        int totalGroupsStops = SqliteUtils.countRows(db,
-                Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(1, totalGroupsStops);
+        SqliteTestUtils.assertRowCount(db,Group.GroupsStopsDB.TABLE_NAME, 1);
 
         assertGroupStopLink(groupId, TEST_STOP);
     }
@@ -156,14 +149,11 @@ public class GroupStoreTest extends AndroidTestCase
         groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
         assertTrue(groupId != -1);
 
-        int totalGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(1, totalGroups);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
 
-        int totalGroupsStops = SqliteUtils.countRows(db,
-                Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(1, totalGroupsStops);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 1);
 
         assertGroupStopLink(groupId, TEST_STOP);
     }
@@ -176,27 +166,23 @@ public class GroupStoreTest extends AndroidTestCase
         long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
         store.addStop(TEST_GROUP_NAME, TEST_STOP_2);
 
-        int totalGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(1, totalGroups);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
         assertSingleTestResultInDb();
 
-        int totalLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(2, totalLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 2);
         assertGroupStopLink(groupId, TEST_STOP);
         assertGroupStopLink(groupId, TEST_STOP_2);
 
         boolean removed = store.removeStop(TEST_GROUP_NAME, TEST_STOP);
         assertTrue(removed);
 
-        totalLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(1, totalLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 1);
         assertGroupStopLink(groupId, TEST_STOP_2);
 
         removed = store.removeStop(TEST_GROUP_NAME, TEST_STOP_2);
         assertTrue(removed);
 
-        totalLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(0, totalLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 0);
 
         assertSingleTestResultInDb();
     }
@@ -208,8 +194,7 @@ public class GroupStoreTest extends AndroidTestCase
         long groupId2 = store.addGroup(TEST_GROUP_NAME_2);
         assertTrue(groupId2 != -1);
 
-        int numGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
-        assertEquals(2, numGroups);
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 2);
 
         List<Group> groups = store.getGroups();
         assertEquals(2, groups.size());
@@ -241,8 +226,7 @@ public class GroupStoreTest extends AndroidTestCase
         Collections.addAll(expected2, TEST_STOP.getId(),
                 TEST_STOP_2.getId(), TEST_STOP_3.getId());
 
-        int numLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
-        assertEquals(5, numLinks);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 5);
 
         List<Group> groups = store.getGroups();
         assertEquals(2, groups.size());

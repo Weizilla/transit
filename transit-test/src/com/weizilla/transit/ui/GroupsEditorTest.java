@@ -1,6 +1,5 @@
 package com.weizilla.transit.ui;
 
-import android.database.sqlite.SQLiteDatabase;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
@@ -24,7 +23,6 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
     private GroupsEditor activity;
     private Solo solo;
     private GroupStore store;
-    private SQLiteDatabase db;
 
     public GroupsEditorTest()
     {
@@ -40,7 +38,6 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         solo = new Solo(getInstrumentation(), activity);
         store = new GroupStore(activity);
         store.open();
-        db = store.getDatabaseHelper().getWritableDatabase();
 
         solo.waitForView(R.id.uiGroupList);
     }
