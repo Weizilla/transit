@@ -19,6 +19,34 @@ public class SqliteUtils
         // empty
     }
 
+    public static String print(Cursor cursor)
+    {
+        StringBuilder builder = new StringBuilder();
+
+        cursor.moveToFirst();
+
+        for (int i = 0; i < cursor.getColumnCount(); i++)
+        {
+            String colName = cursor.getColumnName(i);
+            builder.append(colName).append("|");
+        }
+
+        builder.append("\n");
+
+        do
+        {
+            for (int i = 0; i < cursor.getColumnCount(); i++)
+            {
+                String value = cursor.getString(i);
+                builder.append(value).append("|");
+            }
+            builder.append("\n");
+        }
+        while (cursor.moveToNext());
+
+        return builder.toString();
+    }
+
     public static int countTables(SQLiteDatabase db, String tableName)
     {
         Cursor cursor = db.rawQuery(COUNT_TABLES_SQL, new String[]{tableName});

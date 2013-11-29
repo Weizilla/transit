@@ -12,7 +12,9 @@ import com.weizilla.transit.data.Stop;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * responsible for handling grouping of bus stops so that they
@@ -47,6 +49,13 @@ public class GroupStore
             "DROP TABLE IF EXIST " + Group.GroupsStopsDB.TABLE_NAME;
     private static final List<String> DROP_SQLS =
             Lists.newArrayList(DROP_GROUPS_SQL, DROP_GROUPS_STOPS_SQL);
+    private static final String SELECT_GROUPS_SQL =
+            "SELECT g." + Group.DB._ID + ", " +
+            "g." + Group.DB.NAME + ", " +
+            "gs." + Group.GroupsStopsDB.STOP_ID + " " +
+            "FROM " + Group.DB.TABLE_NAME + " g " +
+            "LEFT JOIN " + Group.GroupsStopsDB.TABLE_NAME + " gs ON " +
+            "g." + Group.DB._ID + " = " + " gs." + Group.GroupsStopsDB.GROUP_ID;
     private static final int ERROR_ID = -1;
     private Context context;
     private SqliteDbHelper dbHelper;
@@ -206,8 +215,18 @@ public class GroupStore
 
     public List<Group> getGroups()
     {
-        //TODO
-        return Collections.emptyList();
+        Cursor cursor = db.rawQuery(SELECT_GROUPS_SQL, null);
+        try
+        {
+            return buildGroups(cursor);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public void close()
@@ -253,27 +272,42 @@ public class GroupStore
         return dbHelper;
     }
 
-    //TODO also build stop id mappings?
     private static List<Group> buildGroups(Cursor cursor)
     {
-        List<Group> groups = new ArrayList<>();
         if (cursor == null || cursor.getCount() == 0)
         {
-            return groups;
+            return Collections.emptyList();
         }
+
+        Map<Long, Group> groups = new HashMap<>();
 
         cursor.moveToFirst();
         do
         {
-            long id = cursor.getLong(cursor.getColumnIndexOrThrow(Group.DB._ID));
-            String name = cursor.getString(cursor.getColumnIndexOrThrow(Group.DB.NAME));
-            groups.add(new Group(id, name));
+            addRowToGroups(cursor, groups);
         }
         while (cursor.moveToNext());
 
-        cursor.close();
-
-        return groups;
+        List<Group> groupList = new ArrayList<>(groups.values());
+        Collections.sort(groupList);
+        return groupList;
     }
 
+    private static void addRowToGroups(Cursor cursor, Map<Long, Group> groups)
+    {
+        long groupId = cursor.getLong(cursor.getColumnIndexOrThrow(Group.DB._ID));
+        Group group = groups.get(groupId);
+        if (group == null)
+        {
+            String groupName = cursor.getString(cursor.getColumnIndexOrThrow(Group.DB.NAME));
+            group = new Group(groupId, groupName);
+            groups.put(groupId, group);
+        }
+
+        int stopIdIndex = cursor.getColumnIndex(Group.GroupsStopsDB.STOP_ID);
+        if (stopIdIndex != -1 && ! cursor.isNull(stopIdIndex))
+        {
+            group.addStopId(cursor.getInt(stopIdIndex));
+        }
+    }
 }

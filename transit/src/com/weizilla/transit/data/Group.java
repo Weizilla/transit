@@ -1,8 +1,11 @@
 package com.weizilla.transit.data;
 
 import android.provider.BaseColumns;
+import com.google.common.primitives.Longs;
+import com.weizilla.transit.util.StringUtil;
 
-import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
 
 /**
  * represents a single group of bus stops
@@ -11,11 +14,11 @@ import java.util.List;
  *         Date: 11/27/13
  *         Time: 5:02 PM
  */
-public class Group
+public class Group implements Comparable<Group>
 {
     private long id = -1; // this is the rows's unique key (_id)
     private String name;
-    private List<Integer> stopIds;
+    private Set<Integer> stopIds = new TreeSet<>();
 
     //TODO add stop ids
     public Group(long id, String name)
@@ -34,6 +37,16 @@ public class Group
         return name;
     }
 
+    public Set<Integer> getStopIds()
+    {
+        return stopIds;
+    }
+
+    public void addStopId(int stopId)
+    {
+        stopIds.add(stopId);
+    }
+
     @Override
     public String toString()
     {
@@ -42,6 +55,17 @@ public class Group
                 ", name='" + name + '\'' +
                 ", stopIds=" + stopIds +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Group another)
+    {
+        int ret = Longs.compare(id, another.id);
+        if (ret == 0)
+        {
+            ret = StringUtil.compare(name, another.name);
+        }
+        return ret;
     }
 
     /**

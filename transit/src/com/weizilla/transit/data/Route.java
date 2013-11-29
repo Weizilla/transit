@@ -2,6 +2,7 @@ package com.weizilla.transit.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.weizilla.transit.util.StringUtil;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -125,10 +126,10 @@ public class Route implements Parcelable, Comparable<Route>
     {
         // sort by id descending, then name decending, then favorite first
         // nulls are sorted above values
-        int ret = compareString(id, another.id);
+        int ret = StringUtil.compare(id, another.id);
         if (ret == 0)
         {
-            ret = compareString(name, another.name);
+            ret = StringUtil.compare(name, another.name);
         }
         if (ret == 0)
         {
@@ -138,25 +139,6 @@ public class Route implements Parcelable, Comparable<Route>
         return ret;
     }
 
-    private static int compareString(String lhs, String rhs)
-    {
-        if (lhs == null && rhs == null)
-        {
-            return 0;
-        }
-        else if (lhs == null)
-        {
-            return -1;
-        }
-        else if (rhs == null)
-        {
-            return 1;
-        }
-        else
-        {
-            return lhs.compareTo(rhs);
-        }
-    }
 
     private int compareFavorite(boolean lhs, boolean rhs)
     {

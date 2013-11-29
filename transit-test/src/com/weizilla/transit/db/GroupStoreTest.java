@@ -6,6 +6,11 @@ import android.test.AndroidTestCase;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
 
+import java.util.Collections;
+import java.util.List;
+import java.util.Set;
+import java.util.TreeSet;
+
 /**
  * test the group store
  *
@@ -16,8 +21,10 @@ import com.weizilla.transit.data.Stop;
 public class GroupStoreTest extends AndroidTestCase
 {
     private static final String TEST_GROUP_NAME = "TEST_NAME";
-    private static final Stop TEST_STOP = new Stop(123, "STOP NAME", false);
-    private static final Stop TEST_STOP_2 = new Stop(234, "STOP NAME", false);
+    private static final String TEST_GROUP_NAME_2 = "TEST_NAME_2";
+    private static final Stop TEST_STOP = new Stop(123, "STOP_NAME", false);
+    private static final Stop TEST_STOP_2 = new Stop(234, "STOP_NAME_2", false);
+    private static final Stop TEST_STOP_3 = new Stop(345, "STOP_NAME_3", false);
     private GroupStore store;
     private SqliteDbHelper dbHelper;
     private SQLiteDatabase db;
@@ -161,6 +168,9 @@ public class GroupStoreTest extends AndroidTestCase
         assertGroupStopLink(groupId, TEST_STOP);
     }
 
+    //TODO test foreign key constraint between group id and
+    // group id in linked table
+
     public void testRemoveStopsFromGroup()
     {
         long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
@@ -191,18 +201,73 @@ public class GroupStoreTest extends AndroidTestCase
         assertSingleTestResultInDb();
     }
 
-    private Cursor queryForGroups(String groupName)
+    public void testGetGroupsWithNoStops()
     {
-        String[] cols = {Group.DB._ID, Group.DB.NAME};
-        String selection = Group.DB.NAME + " = ?";
-        String[] selectionArgs = {groupName};
-        return db.query(Group.DB.TABLE_NAME, cols,
-                selection, selectionArgs, null, null, null);
+        long groupId =store.addGroup(TEST_GROUP_NAME);
+        assertTrue(groupId != -1);
+        long groupId2 = store.addGroup(TEST_GROUP_NAME_2);
+        assertTrue(groupId2 != -1);
+
+        int numGroups = SqliteUtils.countRows(db, Group.DB.TABLE_NAME);
+        assertEquals(2, numGroups);
+
+        List<Group> groups = store.getGroups();
+        assertEquals(2, groups.size());
+
+        Group group1 = groups.get(0);
+        assertEquals(groupId, group1.getId());
+        assertEquals(TEST_GROUP_NAME, group1.getName());
+        assertTrue(group1.getStopIds().isEmpty());
+
+        Group group2 = groups.get(1);
+        assertEquals(groupId2, group2.getId());
+        assertEquals(TEST_GROUP_NAME_2, group2.getName());
+        assertTrue(group2.getStopIds().isEmpty());
+    }
+
+    public void testGetGroupsWithStops()
+    {
+        long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertTrue(groupId != -1);
+        store.addStop(TEST_GROUP_NAME, TEST_STOP_2);
+        Set<Integer> expected1 = new TreeSet<>();
+        Collections.addAll(expected1, TEST_STOP.getId(), TEST_STOP_2.getId());
+
+        long groupId2 = store.addStop(TEST_GROUP_NAME_2, TEST_STOP);
+        assertTrue(groupId2 != -1);
+        store.addStop(TEST_GROUP_NAME_2, TEST_STOP_2);
+        store.addStop(TEST_GROUP_NAME_2, TEST_STOP_3);
+        Set<Integer> expected2 = new TreeSet<>();
+        Collections.addAll(expected2, TEST_STOP.getId(),
+                TEST_STOP_2.getId(), TEST_STOP_3.getId());
+
+        int numLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
+        assertEquals(5, numLinks);
+
+        List <Group> groups = store.getGroups();
+        assertEquals(2, groups.size());
+        Collections.sort(groups);
+
+        Group group1 = groups.get(0);
+        assertEquals(groupId, group1.getId());
+        assertEquals(TEST_GROUP_NAME, group1.getName());
+        Set <Integer> stops1 = group1.getStopIds();
+        assertEquals(expected1, stops1);
+
+        Group group2 = groups.get(1);
+        assertEquals(groupId2, group2.getId());
+        assertEquals(TEST_GROUP_NAME_2, group2.getName());
+        Set<Integer> stops2 = group2.getStopIds();
+        assertEquals(expected2, stops2);
     }
 
     private void assertSingleTestResultInDb()
     {
-        Cursor cursor = queryForGroups(TEST_GROUP_NAME);
+        String[] cols = {Group.DB._ID, Group.DB.NAME};
+        String selection = Group.DB.NAME + " = ?";
+        String[] selectionArgs = {TEST_GROUP_NAME};
+        Cursor cursor = db.query(Group.DB.TABLE_NAME, cols,
+                selection, selectionArgs, null, null, null);
         try
         {
             assertNotNull(cursor);
