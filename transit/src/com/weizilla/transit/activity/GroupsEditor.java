@@ -1,9 +1,13 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
@@ -19,7 +23,7 @@ import java.util.List;
  *         Date: 11/28/13
  *         Time: 12:58 PM
  */
-public class GroupsEditor extends Activity
+public class GroupsEditor extends Activity implements AdapterView.OnItemLongClickListener
 {
     private static final String TAG = "transit.GroupsActivity";
     private GroupStore store;
@@ -42,8 +46,8 @@ public class GroupsEditor extends Activity
         ListView uiGroupsDisplay = (ListView) findViewById(R.id.uiGroupList);
         uiGroupsDisplay.setAdapter(groupsAdapter);
 //        uiGroupsDisplay.setOnItemClickListener(this);
-//        uiGroupsDisplay.setLongClickable(true);
-//        uiGroupsDisplay.setOnItemLongClickListener(this);
+        uiGroupsDisplay.setLongClickable(true);
+        uiGroupsDisplay.setOnItemLongClickListener(this);
     }
 
     @Override
@@ -76,6 +80,29 @@ public class GroupsEditor extends Activity
         groupsAdapter.getFilter().filter(null);
 
         groupsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Group group = groupsAdapter.getItem(position);
+        showContextMenu(group);
+        return true;
+    }
+
+    private void showContextMenu(final Group group)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(group.getName());
+        builder.setItems(new String[]{"Delete"}, new DialogInterface.OnClickListener(){
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                store.removeGroup(group.getName());
+                refreshGroups();
+            }
+        });
+        builder.create().show();
     }
 
     private class RefreshGroupsTask extends AsyncTask<Void, Void, List<Group>>

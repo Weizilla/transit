@@ -20,6 +20,8 @@ import java.util.List;
 public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEditor>
 {
     private static final String TEST_GROUP_NAME = "TEST_GROUP_NAME";
+    private static final String TEST_GROUP_NAME_2 = "TEST_GROUP_NAME_2";
+    private static final int TIMEOUT = 1000;
     private GroupsEditor activity;
     private Solo solo;
     private GroupStore store;
@@ -62,10 +64,38 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         assertEquals(TEST_GROUP_NAME, name);
     }
 
+    public void testDeleteFirstGroup()
+    {
+        addGroup(TEST_GROUP_NAME, 123, 234);
+        addGroup(TEST_GROUP_NAME_2, 123, 234);
+        activity.refreshGroups();
+
+        solo.waitForView(R.id.uiGroupList);
+
+        String name = clickLongInList(1);
+        assertEquals(TEST_GROUP_NAME, name);
+
+        solo.waitForDialogToOpen(TIMEOUT);
+        solo.clickInList(1);
+
+        solo.waitForView(R.id.uiGroupList);
+
+        name = clickInList(1);
+        assertEquals(TEST_GROUP_NAME_2, name);
+    }
+
     private String clickInList(int line)
     {
         solo.scrollToTop();
         List<TextView> views = solo.clickInList(line, 0);
+        TextView textView = views.get(0);
+        return textView.getText().toString();
+    }
+
+    private String clickLongInList(int line)
+    {
+        solo.scrollToTop();
+        List<TextView> views = solo.clickLongInList(line, 0);
         TextView textView = views.get(0);
         return textView.getText().toString();
     }
