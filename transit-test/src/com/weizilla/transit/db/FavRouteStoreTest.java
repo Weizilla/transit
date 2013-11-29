@@ -7,6 +7,7 @@ import android.test.RenamingDelegatingContext;
 import com.google.common.collect.Lists;
 import com.weizilla.transit.data.FavRoute;
 import com.weizilla.transit.data.Route;
+import com.weizilla.transit.util.SqliteTestUtils;
 
 import java.util.Collections;
 import java.util.List;
@@ -67,8 +68,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
     }
@@ -82,8 +82,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
     }
@@ -98,8 +97,7 @@ public class FavRouteStoreTest extends AndroidTestCase
         boolean deleted = store.removeRoute(TEST_ROUTE);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 0);
     }
 
     public void testOnlyProperFavoriteIsRemoved()
@@ -110,14 +108,12 @@ public class FavRouteStoreTest extends AndroidTestCase
         newId = store.addRoute(removedRoute);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(2, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 2);
 
         boolean deleted = store.removeRoute(removedRoute);
         assertTrue(deleted);
 
-        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 1);
 
         assertSingleTestResultInDb();
     }
@@ -127,14 +123,12 @@ public class FavRouteStoreTest extends AndroidTestCase
         long newId = store.addRoute(TEST_ROUTE);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 1);
 
         boolean deleted = store.removeRoute(TEST_ROUTE);
         assertTrue(deleted);
 
-        totalRows = SqliteUtils.countRows(db, FavRoute.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavRoute.DB.TABLE_NAME, 0);
 
         deleted = store.removeRoute(TEST_ROUTE);
         assertFalse(deleted);

@@ -9,6 +9,7 @@ import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.FavStop;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.util.SqliteTestUtils;
 
 import java.util.List;
 
@@ -78,8 +79,8 @@ public class FavStopStoreTest extends AndroidTestCase
         long newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 1);
 
         assertSingleTestStopInDb();
     }
@@ -93,8 +94,7 @@ public class FavStopStoreTest extends AndroidTestCase
         newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
         assertTrue(newId != -1);
 
-        long totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 1);
 
         assertSingleTestStopInDb();
     }
@@ -109,8 +109,7 @@ public class FavStopStoreTest extends AndroidTestCase
         boolean deleted = store.removeStop(TEST_STOP);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 0);
     }
 
     public void testSecondDuplicateDeleteDoesNothing()
@@ -123,8 +122,7 @@ public class FavStopStoreTest extends AndroidTestCase
         boolean deleted = store.removeStop(TEST_STOP);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 0);
 
         deleted = store.removeStop(TEST_STOP);
         assertFalse(deleted);
@@ -143,14 +141,12 @@ public class FavStopStoreTest extends AndroidTestCase
         newId = store.addStop(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_5);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(5, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 5);
 
         boolean deleted = store.removeStop(TEST_STOP_3);
         assertTrue(deleted);
 
-        totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(4, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 4);
 
         assertSingleStopInDb(TEST_ROUTE, TEST_DIR_E, TEST_STOP_1);
         assertSingleStopInDb(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_2);
