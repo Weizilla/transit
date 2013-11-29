@@ -9,6 +9,7 @@ import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.FavStop;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.util.SqliteTestUtils;
 
 import java.util.List;
 
@@ -78,8 +79,8 @@ public class FavStopStoreTest extends AndroidTestCase
         long newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 1);
 
         assertSingleTestStopInDb();
     }
@@ -93,8 +94,7 @@ public class FavStopStoreTest extends AndroidTestCase
         newId = store.addStop(TEST_ROUTE, TEST_DIR_E, TEST_STOP);
         assertTrue(newId != -1);
 
-        long totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(1, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 1);
 
         assertSingleTestStopInDb();
     }
@@ -109,8 +109,7 @@ public class FavStopStoreTest extends AndroidTestCase
         boolean deleted = store.removeStop(TEST_STOP);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 0);
     }
 
     public void testSecondDuplicateDeleteDoesNothing()
@@ -123,8 +122,7 @@ public class FavStopStoreTest extends AndroidTestCase
         boolean deleted = store.removeStop(TEST_STOP);
         assertTrue(deleted);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(0, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 0);
 
         deleted = store.removeStop(TEST_STOP);
         assertFalse(deleted);
@@ -143,14 +141,12 @@ public class FavStopStoreTest extends AndroidTestCase
         newId = store.addStop(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_5);
         assertTrue(newId != -1);
 
-        int totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(5, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 5);
 
         boolean deleted = store.removeStop(TEST_STOP_3);
         assertTrue(deleted);
 
-        totalRows = SqliteUtils.countRows(db, FavStop.DB.TABLE_NAME);
-        assertEquals(4, totalRows);
+        SqliteTestUtils.assertRowCount(db, FavStop.DB.TABLE_NAME, 4);
 
         assertSingleStopInDb(TEST_ROUTE, TEST_DIR_E, TEST_STOP_1);
         assertSingleStopInDb(TEST_ROUTE_2, TEST_DIR_W, TEST_STOP_2);
@@ -216,23 +212,33 @@ public class FavStopStoreTest extends AndroidTestCase
         Cursor cursor = db.query(FavStop.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
 
-        assertNotNull(cursor);
-        assertEquals(1, cursor.getCount());
+        try
+        {
+            assertNotNull(cursor);
+            assertEquals(1, cursor.getCount());
 
-        cursor.moveToFirst();
+            cursor.moveToFirst();
 
-        String actualIdStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
-        int actualId = Integer.valueOf(actualIdStr);
-        String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
-        Stop actualStop = new Stop(actualId, actualName, true);
-        assertEquals(stop, actualStop);
+            String actualIdStr = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.ID));
+            int actualId = Integer.valueOf(actualIdStr);
+            String actualName = cursor.getString(cursor.getColumnIndexOrThrow(FavStop.DB.NAME));
+            Stop actualStop = new Stop(actualId, actualName, true);
+            assertEquals(stop, actualStop);
 
-        String actualRouteId = cursor.getString(
-                cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_ID));
-        assertEquals(route.getId(), actualRouteId);
+            String actualRouteId = cursor.getString(
+                    cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_ID));
+            assertEquals(route.getId(), actualRouteId);
 
-        String actualRouteDir = cursor.getString(
-                cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_DIR));
-        assertEquals(direction.toString(), actualRouteDir);
+            String actualRouteDir = cursor.getString(
+                    cursor.getColumnIndexOrThrow(FavStop.DB.ROUTE_DIR));
+            assertEquals(direction.toString(), actualRouteDir);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 }

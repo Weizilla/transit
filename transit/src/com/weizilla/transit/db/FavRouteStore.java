@@ -92,7 +92,17 @@ public class FavRouteStore implements BusRoutesProvider
         String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
         String order = FavRoute.DB.ID + " ASC";
         Cursor cursor = database.query(FavRoute.DB.TABLE_NAME, cols, null, null, null, null, order);
-        return buildRoutes(cursor);
+        try
+        {
+            return buildRoutes(cursor);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public void close()

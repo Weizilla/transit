@@ -79,7 +79,17 @@ public class FavStopStore implements BusStopsProvider
         String[] selectionArgs = {route.getId(), direction.toString()};
         Cursor cursor = database.query(FavStop.DB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, order);
-        return buildStops(cursor);
+        try
+        {
+            return buildStops(cursor);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public boolean removeStop(Stop stop)

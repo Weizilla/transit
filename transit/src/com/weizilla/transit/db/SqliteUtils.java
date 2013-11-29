@@ -50,14 +50,34 @@ public class SqliteUtils
     public static int countTables(SQLiteDatabase db, String tableName)
     {
         Cursor cursor = db.rawQuery(COUNT_TABLES_SQL, new String[]{tableName});
-        return getSingleValue(cursor, 0);
+        try
+        {
+            return getSingleValue(cursor, 0);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public static int countRows(SQLiteDatabase db, String tableName)
     {
         String sql = COUNT_ROWS_SQL + tableName;
         Cursor cursor = db.rawQuery(sql, null);
-        return getSingleValue(cursor, 0);
+        try
+        {
+            return getSingleValue(cursor, 0);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public static int getSingleValue(Cursor cursor, int defaultValue)
