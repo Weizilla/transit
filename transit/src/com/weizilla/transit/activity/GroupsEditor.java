@@ -8,6 +8,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
@@ -60,7 +61,7 @@ public class GroupsEditor extends Activity implements AdapterView.OnItemLongClic
     }
 
     @Override
-    protected  void onPause()
+    protected void onPause()
     {
         super.onPause();
         store.close();
@@ -103,6 +104,35 @@ public class GroupsEditor extends Activity implements AdapterView.OnItemLongClic
             }
         });
         builder.create().show();
+    }
+
+    public void newGroup(View view)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(R.string.new_group);
+        final EditText uiNewGroupName = new EditText(this);
+        uiNewGroupName.setHint("Group Name");
+        builder.setView(uiNewGroupName);
+        builder.setPositiveButton(R.string.create, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                String newGroupName = uiNewGroupName.getText().toString();
+                store.createGroup(newGroupName);
+                refreshGroups();
+            }
+        });
+        builder.setNegativeButton(android.R.string.cancel, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                dialog.cancel();
+            }
+        });
+        builder.create().show();
+        uiNewGroupName.requestFocus();
     }
 
     private class RefreshGroupsTask extends AsyncTask<Void, Void, List<Group>>

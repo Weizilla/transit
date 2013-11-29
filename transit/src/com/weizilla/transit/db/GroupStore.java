@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteConstraintException;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
+import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
@@ -82,8 +83,14 @@ public class GroupStore
      * @return the key of the newly inserted group
      * or existing duplicate group
      */
-    public long addGroup(String groupName)
+    public long createGroup(String groupName)
     {
+        if (Strings.isNullOrEmpty(groupName))
+        {
+            Log.w(TAG, "Cannot create group with null or empty name");
+            return -1;
+        }
+
         ContentValues values = new ContentValues();
         values.put(Group.DB.NAME, groupName);
         long id;
@@ -172,7 +179,7 @@ public class GroupStore
             return ERROR_ID;
         }
 
-        long groupId = addGroup(groupName);
+        long groupId = createGroup(groupName);
         if (groupId == ERROR_ID)
         {
             return ERROR_ID;

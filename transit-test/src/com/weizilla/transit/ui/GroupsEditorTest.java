@@ -84,6 +84,20 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         assertEquals(TEST_GROUP_NAME_2, name);
     }
 
+    public void testCreateGroupByDialog()
+    {
+        String buttonString = solo.getString(R.string.new_group);
+        solo.clickOnButton(buttonString);
+        solo.waitForDialogToOpen(TIMEOUT);
+        solo.enterText(0, TEST_GROUP_NAME);
+        buttonString = solo.getString(R.string.create);
+        solo.clickOnButton(buttonString);
+
+        solo.waitForView(R.id.uiGroupList);
+        String name = clickInList(1);
+        assertEquals(TEST_GROUP_NAME, name);
+    }
+
     private String clickInList(int line)
     {
         solo.scrollToTop();

@@ -1,4 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">transit</string>
+    <string name="new_group">New Group...</string>
+    <string name="create">Create</string>
 </resources>

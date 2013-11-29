@@ -55,7 +55,7 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testAddGroup()
     {
-        long newId = store.addGroup(TEST_GROUP_NAME);
+        long newId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
 
         SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
@@ -65,14 +65,14 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testDuplicateAddedReturnsSameIdWithoutErrors()
     {
-        long firstId = store.addGroup(TEST_GROUP_NAME);
+        long firstId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(firstId != -1);
 
-        long newId = store.addGroup(TEST_GROUP_NAME);
+        long newId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
         assertEquals(firstId, newId);
 
-        newId = store.addGroup(TEST_GROUP_NAME);
+        newId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
         assertEquals(firstId, newId);
 
@@ -83,7 +83,7 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testDeleteGroupWithName()
     {
-        long newId = store.addGroup(TEST_GROUP_NAME);
+        long newId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(newId != -1);
 
         assertSingleTestResultInDb();
@@ -96,7 +96,7 @@ public class GroupStoreTest extends AndroidTestCase
 
 //    public void testDeleteGroupWithId()
 //    {
-//        long newId = store.addGroup(TEST_GROUP_NAME);
+//        long newId = store.createGroup(TEST_GROUP_NAME);
 //        assertTrue(newId != -1);
 //
 //        assertSingleTestResultInDb();
@@ -189,9 +189,9 @@ public class GroupStoreTest extends AndroidTestCase
 
     public void testGetGroupsWithNoStops()
     {
-        long groupId =store.addGroup(TEST_GROUP_NAME);
+        long groupId =store.createGroup(TEST_GROUP_NAME);
         assertTrue(groupId != -1);
-        long groupId2 = store.addGroup(TEST_GROUP_NAME_2);
+        long groupId2 = store.createGroup(TEST_GROUP_NAME_2);
         assertTrue(groupId2 != -1);
 
         SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 2);
