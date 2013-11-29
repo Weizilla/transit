@@ -244,14 +244,14 @@ public class GroupStoreTest extends AndroidTestCase
         int numLinks = SqliteUtils.countRows(db, Group.GroupsStopsDB.TABLE_NAME);
         assertEquals(5, numLinks);
 
-        List <Group> groups = store.getGroups();
+        List<Group> groups = store.getGroups();
         assertEquals(2, groups.size());
         Collections.sort(groups);
 
         Group group1 = groups.get(0);
         assertEquals(groupId, group1.getId());
         assertEquals(TEST_GROUP_NAME, group1.getName());
-        Set <Integer> stops1 = group1.getStopIds();
+        Set<Integer> stops1 = group1.getStopIds();
         assertEquals(expected1, stops1);
 
         Group group2 = groups.get(1);
