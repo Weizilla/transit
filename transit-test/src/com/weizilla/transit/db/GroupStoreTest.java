@@ -3,14 +3,14 @@ package com.weizilla.transit.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.test.AndroidTestCase;
+import com.google.common.collect.Lists;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.util.SqliteTestUtils;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
 /**
  * test the group store
@@ -187,9 +187,26 @@ public class GroupStoreTest extends AndroidTestCase
         assertSingleTestResultInDb();
     }
 
+    public void testGetGroupWithId()
+    {
+        long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
+        assertTrue(groupId != -1);
+        store.addStop(TEST_GROUP_NAME, TEST_STOP_2);
+        store.addStop(TEST_GROUP_NAME, TEST_STOP_3);
+        List<Stop> stops = Lists.newArrayList(TEST_STOP, TEST_STOP_2, TEST_STOP_3);
+
+        SqliteTestUtils.assertRowCount(db, Group.DB.TABLE_NAME, 1);
+        SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 3);
+
+        Group actualGroup = store.getGroup(groupId);
+        assertEquals(groupId, actualGroup.getId());
+        assertEquals(TEST_GROUP_NAME, actualGroup.getName());
+        assertEquals(stops, actualGroup.getStops());
+    }
+
     public void testGetGroupsWithNoStops()
     {
-        long groupId =store.createGroup(TEST_GROUP_NAME);
+        long groupId = store.createGroup(TEST_GROUP_NAME);
         assertTrue(groupId != -1);
         long groupId2 = store.createGroup(TEST_GROUP_NAME_2);
         assertTrue(groupId2 != -1);
@@ -202,12 +219,12 @@ public class GroupStoreTest extends AndroidTestCase
         Group group1 = groups.get(0);
         assertEquals(groupId, group1.getId());
         assertEquals(TEST_GROUP_NAME, group1.getName());
-        assertTrue(group1.getStopIds().isEmpty());
+        assertTrue(group1.getStops().isEmpty());
 
         Group group2 = groups.get(1);
         assertEquals(groupId2, group2.getId());
         assertEquals(TEST_GROUP_NAME_2, group2.getName());
-        assertTrue(group2.getStopIds().isEmpty());
+        assertTrue(group2.getStops().isEmpty());
     }
 
     public void testGetGroupsWithStops()
@@ -215,16 +232,18 @@ public class GroupStoreTest extends AndroidTestCase
         long groupId = store.addStop(TEST_GROUP_NAME, TEST_STOP);
         assertTrue(groupId != -1);
         store.addStop(TEST_GROUP_NAME, TEST_STOP_2);
-        Set<Integer> expected1 = new TreeSet<>();
-        Collections.addAll(expected1, TEST_STOP.getId(), TEST_STOP_2.getId());
+        List<Stop> expected1 = new ArrayList<>();
+        Collections.addAll(expected1, TEST_STOP, TEST_STOP_2);
+        Collections.sort(expected1);
 
         long groupId2 = store.addStop(TEST_GROUP_NAME_2, TEST_STOP);
         assertTrue(groupId2 != -1);
         store.addStop(TEST_GROUP_NAME_2, TEST_STOP_2);
         store.addStop(TEST_GROUP_NAME_2, TEST_STOP_3);
-        Set<Integer> expected2 = new TreeSet<>();
-        Collections.addAll(expected2, TEST_STOP.getId(),
-                TEST_STOP_2.getId(), TEST_STOP_3.getId());
+        List<Stop> expected2 = new ArrayList<>();
+        Collections.addAll(expected2, TEST_STOP,
+                TEST_STOP_2, TEST_STOP_3);
+        Collections.sort(expected2);
 
         SqliteTestUtils.assertRowCount(db, Group.GroupsStopsDB.TABLE_NAME, 5);
 
@@ -235,13 +254,15 @@ public class GroupStoreTest extends AndroidTestCase
         Group group1 = groups.get(0);
         assertEquals(groupId, group1.getId());
         assertEquals(TEST_GROUP_NAME, group1.getName());
-        Set<Integer> stops1 = group1.getStopIds();
+        List<Stop> stops1 = group1.getStops();
+        Collections.sort(stops1);
         assertEquals(expected1, stops1);
 
         Group group2 = groups.get(1);
         assertEquals(groupId2, group2.getId());
         assertEquals(TEST_GROUP_NAME_2, group2.getName());
-        Set<Integer> stops2 = group2.getStopIds();
+        List<Stop> stops2 = group2.getStops();
+        Collections.sort(stops2);
         assertEquals(expected2, stops2);
     }
 
@@ -278,7 +299,8 @@ public class GroupStoreTest extends AndroidTestCase
                 Group.GroupsStopsDB.STOP_ID + " = ?";
         String[] selectionArgs = {String.valueOf(groupId), stopId};
         String[] cols = {Group.GroupsStopsDB.GROUP_ID,
-                Group.GroupsStopsDB.STOP_ID};
+                Group.GroupsStopsDB.STOP_ID,
+                Group.GroupsStopsDB.STOP_NAME};
         Cursor cursor = db.query(Group.GroupsStopsDB.TABLE_NAME, cols,
                 selection, selectionArgs, null, null, null);
         try
@@ -295,6 +317,10 @@ public class GroupStoreTest extends AndroidTestCase
             int stopIdIndex = cursor.getColumnIndexOrThrow(Group.GroupsStopsDB.STOP_ID);
             long actualStopId = cursor.getLong(stopIdIndex);
             assertEquals(stop.getId(), actualStopId);
+
+            int stopNameIndex = cursor.getColumnIndexOrThrow(Group.GroupsStopsDB.STOP_NAME);
+            String actualStopName = cursor.getString(stopNameIndex);
+            assertEquals(stop.getName(), actualStopName);
         }
         finally
         {

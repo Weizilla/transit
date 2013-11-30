@@ -88,7 +88,7 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
         assertEquals(TEST_STOP, actualStop);
 
         // test prediction
-        solo.waitForView(R.id.uiPredictionList);
+        solo.waitForView(R.id.uiBusPredictionDisplay);
         solo.scrollToTop();
         List<TextView> predViews = solo.clickInList(1, 0);
 

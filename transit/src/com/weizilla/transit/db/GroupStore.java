@@ -39,6 +39,7 @@ public class GroupStore
             Group.DB._ID + " INTEGER PRIMARY KEY, " +
             Group.GroupsStopsDB.GROUP_ID + " INTEGER, " +
             Group.GroupsStopsDB.STOP_ID + " INTEGER, " +
+            Group.GroupsStopsDB.STOP_NAME + " TEXT, " +
             "UNIQUE (" + Group.GroupsStopsDB.GROUP_ID + ", " +
                     Group.GroupsStopsDB.STOP_ID + ")" +
             ")";
@@ -53,7 +54,8 @@ public class GroupStore
     private static final String SELECT_GROUPS_SQL =
             "SELECT g." + Group.DB._ID + ", " +
             "g." + Group.DB.NAME + ", " +
-            "gs." + Group.GroupsStopsDB.STOP_ID + " " +
+            "gs." + Group.GroupsStopsDB.STOP_ID + ", " +
+            "gs." + Group.GroupsStopsDB.STOP_NAME + " " +
             "FROM " + Group.DB.TABLE_NAME + " g " +
             "LEFT JOIN " + Group.GroupsStopsDB.TABLE_NAME + " gs ON " +
             "g." + Group.DB._ID + " = " + " gs." + Group.GroupsStopsDB.GROUP_ID;
@@ -188,6 +190,7 @@ public class GroupStore
         ContentValues values = new ContentValues();
         values.put(Group.GroupsStopsDB.GROUP_ID, groupId);
         values.put(Group.GroupsStopsDB.STOP_ID, stop.getId());
+        values.put(Group.GroupsStopsDB.STOP_NAME, stop.getName());
 
         long newId = db.replace(Group.GroupsStopsDB.TABLE_NAME, null, values);
         if (newId != ERROR_ID)
@@ -226,6 +229,34 @@ public class GroupStore
         try
         {
             return buildGroups(cursor);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
+    }
+
+    public Group getGroup(long groupId)
+    {
+        String sql = SELECT_GROUPS_SQL +
+                " WHERE g." + Group.DB._ID + " = ?";
+        String[] selectArgs = {String.valueOf(groupId)};
+        Cursor cursor = db.rawQuery(sql, selectArgs);
+        try
+        {
+            List<Group> groups = buildGroups(cursor);
+            if (groups.isEmpty())
+            {
+                Log.w(TAG, "No group found with id: " + groupId);
+                return null;
+            }
+            else
+            {
+                return groups.get(0);
+            }
         }
         finally
         {
@@ -312,9 +343,16 @@ public class GroupStore
         }
 
         int stopIdIndex = cursor.getColumnIndex(Group.GroupsStopsDB.STOP_ID);
-        if (stopIdIndex != -1 && ! cursor.isNull(stopIdIndex))
+        int stopNameIndex = cursor.getColumnIndex(Group.GroupsStopsDB.STOP_NAME);
+
+        if (stopIdIndex != -1 && stopNameIndex != -1 &&
+            ! cursor.isNull(stopIdIndex) && ! cursor.isNull(stopNameIndex))
         {
-            group.addStopId(cursor.getInt(stopIdIndex));
+            int stopId = cursor.getInt(stopIdIndex);
+            String stopName = cursor.getString(stopNameIndex);
+            Stop stop = new Stop(stopId, stopName, false);
+            group.addStop(stop);
         }
+
     }
 }

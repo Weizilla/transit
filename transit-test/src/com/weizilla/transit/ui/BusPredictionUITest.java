@@ -63,7 +63,7 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
         Button retrievePredictionsButton = (Button) solo.getView(R.id.uiRetrievePredictions);
         solo.clickOnView(retrievePredictionsButton);
 
-        solo.waitForView(R.id.uiPredictionList);
+        solo.waitForView(R.id.uiBusPredictionDisplay);
 
         solo.scrollListToTop(0);
         for (int i = 0; i < expected.length; i++)

@@ -43,7 +43,7 @@ public class BusPrediction extends Activity
         busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
 
         predictionAdapter = new BusPredictionAdapter(this);
-        ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiPredictionList);
+        ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiBusPredictionDisplay);
         uiPredictionsDisplay.setAdapter(predictionAdapter);
 
         TransitDataProvider transitDataProvider = getDataProvider();

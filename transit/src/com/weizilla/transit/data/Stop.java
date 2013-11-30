@@ -2,6 +2,8 @@ package com.weizilla.transit.data;
 
 import android.os.Parcel;
 import android.os.Parcelable;
+import com.google.common.primitives.Longs;
+import com.weizilla.transit.util.StringUtil;
 import org.simpleframework.xml.Element;
 import org.simpleframework.xml.Root;
 
@@ -13,7 +15,7 @@ import org.simpleframework.xml.Root;
  *         Time: 5:39 AM
  */
 @Root(name = "stop")
-public class Stop implements Parcelable
+public class Stop implements Parcelable, Comparable<Stop>
 {
     public static final String KEY = "com.weizilla.transit.data.Stop";
 
@@ -126,6 +128,43 @@ public class Stop implements Parcelable
                 ", name='" + name + '\'' +
                 ", id=" + id +
                 '}';
+    }
+
+    @Override
+    public int compareTo(Stop another)
+    {
+        // sort by id descending, then name decending, then favorite first
+        // nulls are sorted above values
+        int ret = Longs.compare(id, another.id);
+        if (ret == 0)
+        {
+            ret = StringUtil.compare(name, another.name);
+        }
+        if (ret == 0)
+        {
+            ret = compareFavorite(isFavorite, another.isFavorite);
+        }
+
+        return ret;
+    }
+
+    //TODO combine to utils
+    private int compareFavorite(boolean lhs, boolean rhs)
+    {
+        // return 0 if same
+        // if not, sort the one with 'true' in front
+        if (lhs == rhs)
+        {
+            return 0;
+        }
+        else if (lhs)
+        {
+            return -1;
+        }
+        else
+        {
+            return 1;
+        }
     }
 
     public static final Creator<Stop> CREATOR = new Creator<Stop>()

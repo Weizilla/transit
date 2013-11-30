@@ -5,25 +5,19 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <EditText
-        android:id="@+id/uiBusStopIDInput"
-        android:layout_width="fill_parent"
+    <TextView
+        android:id="@+id/uiGroupName"
         android:layout_height="wrap_content"
-        android:inputType="number"
-        />
-
-    <Button
-        android:id="@+id/uiRetrievePredictions"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:onClick="retrievePredictions"
-        android:text="Retrieve Predictions"
+        android:singleLine="true"
+        android:textSize="30sp"
         />
 
     <ListView
-        android:id="@+id/uiBusPredictionDisplay"
+        android:id="@+id/uiGroupStopsDisplay"
         android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
+        android:layout_weight="1"
         />
 
 </LinearLayout>

@@ -1,11 +1,13 @@
 package com.weizilla.transit.data;
 
+import android.os.Parcel;
+import android.os.Parcelable;
 import android.provider.BaseColumns;
 import com.google.common.primitives.Longs;
 import com.weizilla.transit.util.StringUtil;
 
-import java.util.Set;
-import java.util.TreeSet;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * represents a single group of bus stops
@@ -14,17 +16,38 @@ import java.util.TreeSet;
  *         Date: 11/27/13
  *         Time: 5:02 PM
  */
-public class Group implements Comparable<Group>
+public class Group implements Parcelable, Comparable<Group>
 {
+    public static final String INTENT_KEY = "com.weizilla.transit.data.Group";
     private long id = -1; // this is the rows's unique key (_id)
     private String name;
-    private Set<Integer> stopIds = new TreeSet<>();
+    private List<Stop> stops = new ArrayList<>();
 
-    //TODO add stop ids
     public Group(long id, String name)
     {
         this.id = id;
         this.name = name;
+    }
+
+    public Group(Parcel parcel)
+    {
+        id = parcel.readLong();
+        name = parcel.readString();
+        parcel.readTypedList(stops, Stop.CREATOR);
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags)
+    {
+        dest.writeLong(id);
+        dest.writeString(name);
+        dest.writeTypedList(stops);
+    }
+
+    @Override
+    public int describeContents()
+    {
+        return 0;
     }
 
     public long getId()
@@ -37,14 +60,14 @@ public class Group implements Comparable<Group>
         return name;
     }
 
-    public Set<Integer> getStopIds()
+    public List<Stop> getStops()
     {
-        return stopIds;
+        return stops;
     }
 
-    public void addStopId(int stopId)
+    public void addStop(Stop stop)
     {
-        stopIds.add(stopId);
+        stops.add(stop);
     }
 
     @Override
@@ -53,7 +76,7 @@ public class Group implements Comparable<Group>
         return "Group{" +
                 "id=" + id +
                 ", name='" + name + '\'' +
-                ", stopIds=" + stopIds +
+                ", stops=" + stops +
                 '}';
     }
 
@@ -67,6 +90,21 @@ public class Group implements Comparable<Group>
         }
         return ret;
     }
+
+    public static final Creator<Group> CREATOR = new Creator<Group>()
+    {
+        @Override
+        public Group createFromParcel(Parcel source)
+        {
+            return new Group(source);
+        }
+
+        @Override
+        public Group[] newArray(int size)
+        {
+            return new Group[size];
+        }
+    };
 
     /**
      * holds information on groups
@@ -85,5 +123,6 @@ public class Group implements Comparable<Group>
         public static final String TABLE_NAME = "GroupsStops";
         public static final String GROUP_ID = "GroupId";
         public static final String STOP_ID = "StopId";
+        public static final String STOP_NAME = "StopName";
     }
 }
