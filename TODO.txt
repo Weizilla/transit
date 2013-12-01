@@ -15,4 +15,6 @@ then use bus picker module as a way of adding stops to groups.
 =======
 seeing predicitons for a group
 -------
-modify bus predictions to take a list of stops. then allows group editor to just send a list of stops to bus prediction instead of having to create a new activity
+x modify bus predictions to take a list of stops. 
+then allows group editor to just send a list of stops to bus prediction instead of having to create a new activity
+need to modify to show diff stop names if multiple stops
