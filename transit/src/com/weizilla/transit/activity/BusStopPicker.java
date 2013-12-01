@@ -10,6 +10,7 @@ import com.weizilla.transit.R;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.data.StopList;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 /**
@@ -102,7 +103,7 @@ public class BusStopPicker extends Activity
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, dataProvider);
         intent.setClass(this, BusPrediction.class);
-        intent.putExtra(Stop.KEY, selectedStop);
+        intent.putExtra(StopList.INTENT_KEY, new StopList(selectedStop));
         startActivity(intent);
     }
 

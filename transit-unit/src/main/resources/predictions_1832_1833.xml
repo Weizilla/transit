@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<bustime-response>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>1901</vid>
+        <dstp>1492</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20130818 17:33</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Diversey</stpnm>
+        <stpid>1832</stpid>
+        <vid>4178</vid>
+        <dstp>3682</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 17:34</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>4178</vid>
+        <dstp>4078</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 17:55</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>1900</vid>
+        <dstp>8642</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20130818 18:04</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Diversey</stpnm>
+        <stpid>1832</stpid>
+        <vid>4202</vid>
+        <dstp>14719</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 13:08</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>4202</vid>
+        <dstp>15115</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 13:08</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Diversey</stpnm>
+        <stpid>1832</stpid>
+        <vid>4188</vid>
+        <dstp>17163</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 13:10</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>4188</vid>
+        <dstp>17559</dstp>
+        <rt>22</rt>
+        <rtdir>Southbound</rtdir>
+        <des>Harrison</des>
+        <prdtm>20130818 13:11</prdtm>
+    </prd>
+    <prd>
+        <tmstmp>20130818 12:49</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>1414</vid>
+        <dstp>17277</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20130818 13:16</prdtm>
+    </prd>
+</bustime-response>

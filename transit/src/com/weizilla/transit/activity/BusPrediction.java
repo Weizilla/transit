@@ -9,14 +9,19 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ListView;
+import com.google.common.base.Joiner;
+import com.google.common.base.Strings;
 import com.weizilla.transit.R;
 import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.data.StopList;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.ui.BusPredictionAdapter;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -33,6 +38,7 @@ public class BusPrediction extends Activity
     private TransitService transitService;
     private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
+    private StopList stopList;
 
     public void onCreate(Bundle savedInstanceState)
     {
@@ -50,15 +56,9 @@ public class BusPrediction extends Activity
         transitService = new TransitService(transitDataProvider);
 
         Intent intent = getIntent();
-        if (intent != null)
-        {
-            Stop stop = intent.getParcelableExtra(Stop.KEY);
-            if (stop != null)
-            {
-                busStopIdInput.setText(String.valueOf(stop.getId()));
-                retrievePredictions(null);
-            }
-        }
+        StopList stopList = intent.getParcelableExtra(StopList.INTENT_KEY);
+        updateUiStopIds(stopList);
+        retrievePredictions(null);
     }
 
     private TransitDataProvider getDataProvider()
@@ -70,13 +70,55 @@ public class BusPrediction extends Activity
         return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
-    public void retrievePredictions(View view)
+    private void updateUiStopIds(StopList stopList)
     {
-        int busStopId = Integer.parseInt(busStopIdInput.getText().toString());
-        new LookupPredictionsTask().execute(busStopId);
+        if (stopList == null || stopList.getStops().isEmpty())
+        {
+            return;
+        }
+
+        List<Integer> stopIds = new ArrayList<>();
+        for (Stop stop : stopList.getStops())
+        {
+            stopIds.add(stop.getId());
+        }
+        String stops = Joiner.on(" ").join(stopIds);
+        busStopIdInput.setText(stops);
     }
 
-    private void updateUI(List<Prediction> retrievedPredictions)
+    public void retrievePredictions(View view)
+    {
+        List<Integer> stopIds = parseUiStopIds();
+        if (! stopIds.isEmpty())
+        {
+            refreshPredictions(stopIds);
+        }
+    }
+
+    private List<Integer> parseUiStopIds()
+    {
+        String stops = busStopIdInput.getText().toString();
+        if (Strings.isNullOrEmpty(stops))
+        {
+            return Collections.emptyList();
+        }
+
+        List<Integer> stopIds = new ArrayList<>();
+        String[] stopsStr = stops.split(" ");
+        for (String stopStr : stopsStr)
+        {
+            stopIds.add(Integer.valueOf(stopStr));
+        }
+        return stopIds;
+    }
+
+    @SuppressWarnings({"unchecked", "varargs"})
+    private void refreshPredictions(List<Integer> stopIds)
+    {
+        new LookupPredictionsTask().execute(stopIds);
+    }
+
+    private void updateUiPredictions(List<Prediction> retrievedPredictions)
     {
         predictionAdapter.clear();
         predictionAdapter.addAll(retrievedPredictions);
@@ -102,12 +144,15 @@ public class BusPrediction extends Activity
         predictionAdapter.setRefTime(refTime);
     }
 
-    private class LookupPredictionsTask extends AsyncTask<Integer, Void, List<Prediction>>
+    private class LookupPredictionsTask extends AsyncTask<List<Integer>, Void, List<Prediction>>
     {
         @Override
-        protected List<Prediction> doInBackground(Integer... params)
+        @SuppressWarnings({"unchecked", "varargs"})
+        protected List<Prediction> doInBackground(List<Integer> ... params)
         {
-            return transitService.lookupPredictions(params[0]);
+            List<Integer> stopIds = params[0];
+            List<Integer> routeIds = Collections.emptyList();
+            return transitService.lookupPredictions(stopIds, routeIds);
         }
 
         @Override
@@ -115,7 +160,7 @@ public class BusPrediction extends Activity
         {
             super.onPostExecute(predictions);
 
-            updateUI(predictions);
+            updateUiPredictions(predictions);
         }
     }
 }

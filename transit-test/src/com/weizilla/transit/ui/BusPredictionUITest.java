@@ -19,6 +19,7 @@ import java.util.Date;
 public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPrediction>
 {
     private static final String BUS_STOP_ID = "123456";
+    private static final String MULTIPLE_STOP_IDS = "1832 1833";
     private Solo solo;
     private BusPrediction activity;
 
@@ -46,19 +47,53 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
         super.tearDown();
     }
 
-    public void testGetPredictionsPopulatesList()
+    public void testSingleBusIdGetsPredictions()
     {
         String[][] expected =
-        {
-            {"36", "Devon/Clark", "8"},
-            {"36", "Devon/Clark", "12"},
-            {"22", "Howard", "13"},
-            {"22", "Howard", "20"},
-        };
+                {
+                        {"36", "Devon/Clark", "8"},
+                        {"36", "Devon/Clark", "12"},
+                        {"22", "Howard", "13"},
+                        {"22", "Howard", "20"},
+                };
 
         EditText busStopIdInput = (EditText) solo.getView(R.id.uiBusStopIDInput);
         solo.clearEditText(busStopIdInput);
         solo.enterText(busStopIdInput, BUS_STOP_ID);
+
+        Button retrievePredictionsButton = (Button) solo.getView(R.id.uiRetrievePredictions);
+        solo.clickOnView(retrievePredictionsButton);
+
+        solo.waitForView(R.id.uiBusPredictionDisplay);
+
+        solo.scrollListToTop(0);
+        for (int i = 0; i < expected.length; i++)
+        {
+            ArrayList<TextView> views = solo.clickInList(i + 1, 0);
+            for (int j = 0; j < expected[i].length; j++)
+            {
+                String expectedStr = expected[i][j];
+                TextView textView = views.get(j);
+                solo.waitForView(textView);
+                assertEquals(expectedStr, textView.getText().toString());
+            }
+        }
+
+    }
+
+    public void testMultipleBusIdsGetsPredictions()
+    {
+        String[][] expected =
+        {
+            {"36", "LaSalle Metra Station", "10"},
+            {"22", "Harrison", "11"},
+            {"22", "Harrison", "32"},
+            {"36", "LaSalle Metra Station", "41"},
+        };
+
+        EditText busStopIdInput = (EditText) solo.getView(R.id.uiBusStopIDInput);
+        solo.clearEditText(busStopIdInput);
+        solo.enterText(busStopIdInput, MULTIPLE_STOP_IDS);
 
         Button retrievePredictionsButton = (Button) solo.getView(R.id.uiRetrievePredictions);
         solo.clickOnView(retrievePredictionsButton);

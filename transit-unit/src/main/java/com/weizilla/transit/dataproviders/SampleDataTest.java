@@ -1,5 +1,6 @@
 package com.weizilla.transit.dataproviders;
 
+import com.google.common.collect.Lists;
 import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
@@ -9,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Calendar;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.TimeZone;
@@ -35,10 +37,19 @@ public class SampleDataTest {
     }
 
     @Test
-    public void testGettingPrediction()
+    public void testGettingPredictionWithNulls()
     {
         List<Prediction> predictions = transitService.lookupPredictions(null, null);
         assertEquals(4, predictions.size());
+    }
+
+    @Test
+    public void testGettingPredictionWithStops()
+    {
+        List<Integer> stops = Lists.newArrayList(1833, 1832);
+        List<Integer> routes = Collections.emptyList();
+        List<Prediction> predictions = transitService.lookupPredictions(stops, routes);
+        assertEquals(9, predictions.size());
     }
 
     @Test
@@ -51,7 +62,7 @@ public class SampleDataTest {
     @Test
     public void testGettingDirections()
     {
-        List<Direction> directions = transitService.lookupDirections(null);
+        List<Direction> directions = transitService.lookupDirections(TEST_ROUTE);
         assertEquals(2, directions.size());
         assertEquals(Direction.Eastbound, directions.get(0));
     }
