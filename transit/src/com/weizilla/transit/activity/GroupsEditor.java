@@ -3,6 +3,7 @@ package com.weizilla.transit.activity;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,6 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
+import com.weizilla.transit.data.StopList;
 import com.weizilla.transit.db.GroupStore;
 import com.weizilla.transit.ui.GroupsAdapter;
 
@@ -24,7 +26,8 @@ import java.util.List;
  *         Date: 11/28/13
  *         Time: 12:58 PM
  */
-public class GroupsEditor extends Activity implements AdapterView.OnItemLongClickListener
+public class GroupsEditor extends Activity implements
+        AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
     private static final String TAG = "transit.GroupsActivity";
     private GroupStore store;
@@ -46,7 +49,7 @@ public class GroupsEditor extends Activity implements AdapterView.OnItemLongClic
         groupsAdapter = new GroupsAdapter(this);
         ListView uiGroupsDisplay = (ListView) findViewById(R.id.uiGroupList);
         uiGroupsDisplay.setAdapter(groupsAdapter);
-//        uiGroupsDisplay.setOnItemClickListener(this);
+        uiGroupsDisplay.setOnItemClickListener(this);
         uiGroupsDisplay.setLongClickable(true);
         uiGroupsDisplay.setOnItemLongClickListener(this);
     }
@@ -81,6 +84,16 @@ public class GroupsEditor extends Activity implements AdapterView.OnItemLongClic
         groupsAdapter.getFilter().filter(null);
 
         groupsAdapter.notifyDataSetChanged();
+    }
+
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        Group group = groupsAdapter.getItem(position);
+        Intent intent = new Intent();
+        intent.putExtra(StopList.INTENT_KEY, new StopList(group.getStops()));
+        intent.setClass(this, BusPrediction.class);
+        startActivity(intent);
     }
 
     @Override

@@ -1,6 +1,7 @@
 package com.weizilla.transit.ui;
 
 import android.test.ActivityInstrumentationTestCase2;
+import android.widget.EditText;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
@@ -19,6 +20,9 @@ import java.util.List;
  */
 public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEditor>
 {
+    private static final Stop TEST_STOP_1 = new Stop(123, "TEST_STOP_1", false);
+    private static final Stop TEST_STOP_2 = new Stop(456, "TEST_STOP_2", false);
+    private static final String TEST_IDS = TEST_STOP_1.getId() + " " + TEST_STOP_2.getId();
     private static final String TEST_GROUP_NAME = "TEST_GROUP_NAME";
     private static final String TEST_GROUP_NAME_2 = "TEST_GROUP_NAME_2";
     private static final int TIMEOUT = 1000;
@@ -55,7 +59,7 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
     public void testGroupsPopulatedByDb()
     {
-        addGroup(TEST_GROUP_NAME, 123, 234);
+        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
 
         activity.refreshGroups();
         solo.waitForView(R.id.uiGroupList);
@@ -66,8 +70,8 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
     public void testDeleteFirstGroup()
     {
-        addGroup(TEST_GROUP_NAME, 123, 234);
-        addGroup(TEST_GROUP_NAME_2, 123, 234);
+        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
+        addGroup(TEST_GROUP_NAME_2, TEST_STOP_1.getId(), TEST_STOP_2.getId());
         activity.refreshGroups();
 
         solo.waitForView(R.id.uiGroupList);
@@ -98,6 +102,22 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         assertEquals(TEST_GROUP_NAME, name);
     }
 
+    public void testClickOnGroupOpensPredictionsWithStopId()
+    {
+        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
+
+        activity.refreshGroups();
+        solo.waitForView(R.id.uiGroupList);
+
+        String name = clickInList(1);
+        assertEquals(TEST_GROUP_NAME, name);
+
+        solo.waitForView(R.id.uiBusPredStopIdInput);
+
+        EditText stopIdInput = solo.getEditText(0);
+        assertEquals(TEST_IDS, stopIdInput.getText().toString());
+    }
+
     private String clickInList(int line)
     {
         solo.scrollToTop();
@@ -118,8 +138,7 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
     {
         for (int stopId : stopIds)
         {
-            //TODO add name too?
-            Stop stop = new Stop(stopId, null, false);
+            Stop stop = new Stop(stopId, "TEST_STOP_" + stopId, false);
             store.addStop(groupName, stop);
         }
     }
