@@ -1,5 +1,6 @@
 package com.weizilla.transit;
 
+import android.util.Log;
 import com.weizilla.transit.data.BustimeResponse;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
@@ -30,12 +31,14 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
     private static final String TAG = "transit.TransitService";
     private TransitDataProvider dataProvider;
     private Serializer serializer;
+    private String dataProviderName;
 
     public TransitService(TransitDataProvider transitDataProvider)
     {
         Strategy strategy = new AnnotationStrategy();
         serializer = new Persister(strategy);
         dataProvider = transitDataProvider;
+        dataProviderName = transitDataProvider.getClass().getSimpleName();
     }
 
     public List<Route> getRoutes()
@@ -52,6 +55,7 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
         {
             BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
             results = response.getRoutes();
+            Log.d(TAG, "Got " + results.size() + " from " + dataProviderName);
         }
         catch (Exception e)
         {

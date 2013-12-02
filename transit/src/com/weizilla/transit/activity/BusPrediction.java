@@ -35,30 +35,35 @@ import java.util.List;
 public class BusPrediction extends Activity
 {
     private static final String TAG = "transit.BusPrediction";
+    private static final int BUS_PICKER_RESULT = 1;
     private TransitService transitService;
     private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
-    private StopList stopList;
+    private TransitDataProvider dataProvider;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
-        this.setContentView(R.layout.bus_pred);
+        initGui();
 
-        busStopIdInput = (EditText) findViewById(R.id.uiBusStopIDInput);
-
-        predictionAdapter = new BusPredictionAdapter(this);
-        ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiBusPredictionDisplay);
-        uiPredictionsDisplay.setAdapter(predictionAdapter);
-
-        TransitDataProvider transitDataProvider = getDataProvider();
-        transitService = new TransitService(transitDataProvider);
+        dataProvider = getDataProvider();
+        transitService = new TransitService(dataProvider);
 
         Intent intent = getIntent();
         StopList stopList = intent.getParcelableExtra(StopList.INTENT_KEY);
-        updateUiStopIds(stopList);
-        retrievePredictions(null);
+        List<Integer> stopIds = parseStopIds(stopList);
+        updateUiStopIds(stopIds);
+        refreshPredictions(stopIds);
+    }
+
+    private void initGui()
+    {
+        setContentView(R.layout.bus_pred);
+        busStopIdInput = (EditText) findViewById(R.id.uiBusPredStopIdInput);
+        predictionAdapter = new BusPredictionAdapter(this);
+        ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiBusPredDisplay);
+        uiPredictionsDisplay.setAdapter(predictionAdapter);
     }
 
     private TransitDataProvider getDataProvider()
@@ -70,46 +75,25 @@ public class BusPrediction extends Activity
         return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
-    private void updateUiStopIds(StopList stopList)
+    private void updateUiStopIds(List<Integer> stopIds)
     {
-        if (stopList == null || stopList.getStops().isEmpty())
+        if (stopIds == null || stopIds.isEmpty())
         {
             return;
         }
 
-        List<Integer> stopIds = new ArrayList<>();
-        for (Stop stop : stopList.getStops())
-        {
-            stopIds.add(stop.getId());
-        }
         String stops = Joiner.on(" ").join(stopIds);
         busStopIdInput.setText(stops);
     }
 
     public void retrievePredictions(View view)
     {
-        List<Integer> stopIds = parseUiStopIds();
+        String stopIdStr = busStopIdInput.getText().toString();
+        List<Integer> stopIds = parseStopIds(stopIdStr);
         if (! stopIds.isEmpty())
         {
             refreshPredictions(stopIds);
         }
-    }
-
-    private List<Integer> parseUiStopIds()
-    {
-        String stops = busStopIdInput.getText().toString();
-        if (Strings.isNullOrEmpty(stops))
-        {
-            return Collections.emptyList();
-        }
-
-        List<Integer> stopIds = new ArrayList<>();
-        String[] stopsStr = stops.split(" ");
-        for (String stopStr : stopsStr)
-        {
-            stopIds.add(Integer.valueOf(stopStr));
-        }
-        return stopIds;
     }
 
     @SuppressWarnings({"unchecked", "varargs"})
@@ -131,6 +115,26 @@ public class BusPrediction extends Activity
         hideKeyboard();
     }
 
+    public void lookUpStop(View view)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, BusStopPicker.class);
+        intent.putExtra(TransitDataProvider.KEY, dataProvider);
+        startActivityForResult(intent, BUS_PICKER_RESULT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == BUS_PICKER_RESULT && resultCode == Activity.RESULT_OK)
+        {
+            StopList stopList = data.getParcelableExtra(StopList.INTENT_KEY);
+            List<Integer> stopIds = parseStopIds(stopList);
+            updateUiStopIds(stopIds);
+            refreshPredictions(stopIds);
+        }
+    }
+
     private void hideKeyboard()
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(
@@ -142,6 +146,38 @@ public class BusPrediction extends Activity
     public void setRefTime(Date refTime)
     {
         predictionAdapter.setRefTime(refTime);
+    }
+
+    private static List<Integer> parseStopIds(StopList stopList)
+    {
+        if (stopList == null || stopList.getStops().isEmpty())
+        {
+            return Collections.emptyList();
+        }
+
+        List<Integer> stopIds = new ArrayList<>();
+        for (Stop stop : stopList.getStops())
+        {
+            stopIds.add(stop.getId());
+        }
+
+        return stopIds;
+    }
+
+    private static List<Integer> parseStopIds(String stopIds)
+    {
+        if (Strings.isNullOrEmpty(stopIds))
+        {
+            return Collections.emptyList();
+        }
+
+        List<Integer> stopIdList = new ArrayList<>();
+        String[] stopsStr = stopIds.split(" ");
+        for (String stopStr : stopsStr)
+        {
+            stopIdList.add(Integer.valueOf(stopStr));
+        }
+        return stopIdList;
     }
 
     private class LookupPredictionsTask extends AsyncTask<List<Integer>, Void, List<Prediction>>
@@ -159,7 +195,6 @@ public class BusPrediction extends Activity
         protected void onPostExecute(List<Prediction> predictions)
         {
             super.onPostExecute(predictions);
-
             updateUiPredictions(predictions);
         }
     }

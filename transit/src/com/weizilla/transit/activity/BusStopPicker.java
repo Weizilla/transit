@@ -11,10 +11,11 @@ import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.data.StopList;
+import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 /**
- * launches child activites for selecting route attributes and displays the currently selected ones
+ * launches activites to pick and return a bus stop
  *
  * @author wei
  *         Date: 9/2/13
@@ -29,10 +30,8 @@ public class BusStopPicker extends Activity
 
     private TextView uiSelectedRoute;
     private TextView uiSelectedDirection;
-    private TextView uiSelectedStop;
     private Route selectedRoute;
     private Direction selectedDirection;
-    private Stop selectedStop;
     private TransitDataProvider dataProvider;
 
 
@@ -41,14 +40,22 @@ public class BusStopPicker extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        dataProvider = (TransitDataProvider) getIntent().getSerializableExtra(TransitDataProvider.KEY);
+        dataProvider = getDataProvider();
 
         setContentView(R.layout.bus_stop_picker);
         uiSelectedRoute = (TextView) findViewById(R.id.uiSelectedRoute);
         uiSelectedDirection = (TextView) findViewById(R.id.uiSelectedDirection);
-        uiSelectedStop = (TextView) findViewById(R.id.uiSelectedStop);
 
         startNextStep(null);
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     public void startNextStep(View view)
@@ -61,13 +68,9 @@ public class BusStopPicker extends Activity
         {
             startSelectDirectionActivity();
         }
-        else if (selectedStop == null)
-        {
-            startSelectStopActivity();
-        }
         else
         {
-            startBusPredictionActivity();
+            startSelectStopActivity();
         }
     }
 
@@ -98,23 +101,26 @@ public class BusStopPicker extends Activity
         startActivityForResult(intent, STOP_REQUEST);
     }
 
-    private void startBusPredictionActivity()
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Intent intent = new Intent();
-        intent.putExtra(TransitDataProvider.KEY, dataProvider);
-        intent.setClass(this, BusPrediction.class);
-        intent.putExtra(StopList.INTENT_KEY, new StopList(selectedStop));
-        startActivity(intent);
-    }
-
-    public void startOver(View view)
-    {
-        selectedRoute = null;
-        uiSelectedRoute.setText("Route:");
-        selectedDirection = null;
-        uiSelectedDirection.setText("Direction:");
-        selectedStop = null;
-        uiSelectedStop.setText("Stop:");
+        if (requestCode == ROUTE_REQUEST && resultCode == RESULT_OK)
+        {
+            Route route = data.getParcelableExtra(BusRouteSelector.RETURN_INTENT_KEY);
+            setSelectedRoute(route);
+            startNextStep(null);
+        }
+        else if (requestCode == DIRECTION_REQUEST && resultCode == RESULT_OK)
+        {
+            Direction direction = data.getParcelableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
+            setSelectedDirection(direction);
+            startNextStep(null);
+        }
+        else if (requestCode == STOP_REQUEST && resultCode == RESULT_OK)
+        {
+            Stop stop = data.getParcelableExtra(BusStopSelector.RETURN_INTENT_KEY);
+            finishWithStop(stop);
+        }
     }
 
     private void setSelectedRoute(Route route)
@@ -131,46 +137,19 @@ public class BusStopPicker extends Activity
                 + selectedDirection);
     }
 
-    private void setSelectedStop(Stop stop)
+    private void finishWithStop(Stop stop)
     {
-        selectedStop = stop;
-        uiSelectedStop.setText("Stop: "
-                + selectedStop.getName());
+        Intent intent = new Intent();
+        intent.putExtra(StopList.INTENT_KEY, new StopList(stop));
+        setResult(Activity.RESULT_OK, intent);
+        finish();
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    public void startOver(View view)
     {
-        if (requestCode == ROUTE_REQUEST)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                Route route = data.getParcelableExtra(BusRouteSelector.RETURN_INTENT_KEY);
-                setSelectedRoute(route);
-                startNextStep(null);
-            }
-        }
-        else if (requestCode == DIRECTION_REQUEST)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                Direction direction = data.getParcelableExtra(BusDirectionSelector.RETURN_INTENT_KEY);
-                setSelectedDirection(direction);
-                startNextStep(null);
-            }
-        }
-        else if (requestCode == STOP_REQUEST)
-        {
-            if (resultCode == RESULT_OK)
-            {
-                Stop stop = data.getParcelableExtra(BusStopSelector.RETURN_INTENT_KEY);
-                setSelectedStop(stop);
-                startNextStep(null);
-            }
-        }
-        else
-        {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
+        selectedRoute = null;
+        uiSelectedRoute.setText("Route:");
+        selectedDirection = null;
+        uiSelectedDirection.setText("Direction:");
     }
 }

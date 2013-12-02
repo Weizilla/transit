@@ -26,12 +26,8 @@ import java.util.List;
  */
 public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopPicker>
 {
-    private static final Stop TEST_STOP = new Stop(0, "Clark & Addison", false);
+    private static final Stop TEST_STOP = new Stop(0, "XXXClark & Addison", false);
     private static final Route TEST_ROUTE = new Route("1234", "XXXBronzeville/Union Station", false);
-    private static final String TEST_PRED_ROUTE_ID = "36";
-    private static final String TEST_PRED_DEST = "Devon/Clark";
-
-    private BusStopPicker activity;
     private Solo solo;
 
     public BusStopPickerTest()
@@ -44,12 +40,11 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
     {
         super.setUp();
 
-
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
         setActivityIntent(intent);
 
-        activity = getActivity();
+        BusStopPicker activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);
 
         new FavStopStore(activity).deleteDb();
@@ -63,7 +58,7 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
         super.tearDown();
     }
 
-    public void testPickStopsAndGetPredictions()
+    public void testPickStops()
     {
         // test route
         solo.waitForView(R.id.uiBusRouteList);
@@ -86,23 +81,5 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
         List<TextView> stopViews = solo.clickInList(1, 0);
         Stop actualStop = BusStopSelectorUITest.parseStop(stopViews);
         assertEquals(TEST_STOP, actualStop);
-
-        // test prediction
-        solo.waitForView(R.id.uiBusPredictionDisplay);
-        solo.scrollToTop();
-        List<TextView> predViews = solo.clickInList(1, 0);
-
-        String predRouteId = predViews.get(0).getText().toString();
-        assertEquals(predRouteId, TEST_PRED_ROUTE_ID);
-
-        String predRouteDest = predViews.get(1).getText().toString();
-        assertEquals(predRouteDest, TEST_PRED_DEST);
-
-        // no way to set ref time for testing predicion
-        // so just assert is not zero
-        String predEtaStr = predViews.get(2).getText().toString();
-        long predEta = Integer.parseInt(predEtaStr);
-        assertTrue(predEta != 0);
-
     }
 }

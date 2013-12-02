@@ -6,14 +6,14 @@
               android:layout_height="match_parent">
 
     <EditText
-        android:id="@+id/uiBusStopIDInput"
+        android:id="@+id/uiBusPredStopIdInput"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:inputType="number"
         />
 
     <Button
-        android:id="@+id/uiRetrievePredictions"
+        android:id="@+id/uiBusPredRetrievePred"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
         android:onClick="retrievePredictions"
@@ -21,9 +21,17 @@
         />
 
     <ListView
-        android:id="@+id/uiBusPredictionDisplay"
+        android:id="@+id/uiBusPredDisplay"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
+        />
+
+    <Button
+        android:id="@+id/uiBusPredLookUpStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/look_up_stop"
+        android:onClick="lookUpStop"
         />
 
 </LinearLayout>

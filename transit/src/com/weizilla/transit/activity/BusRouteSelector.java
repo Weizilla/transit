@@ -91,8 +91,8 @@ public class BusRouteSelector extends Activity
 
         //TODO must occur after. do we really want to refresh automatically
         // when screne is activated?
-        refreshFavorites();
         retrieveRoutes();
+        refreshFavorites();
     }
 
     @Override
@@ -191,20 +191,27 @@ public class BusRouteSelector extends Activity
         {
             this.provider = provider;
             this.routes = routes;
-            providerName = provider.getClass().getName();
+            providerName = provider.getClass().getSimpleName();
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d(TAG, "Retrieving routes from " + providerName + "...");
         }
 
         @Override
         protected List<Route> doInBackground(Void... params)
         {
-            return provider.getRoutes();
+            List<Route> routes = provider.getRoutes();
+            Log.d(TAG, "Retrieved " + routes.size() + " routes from " + providerName);
+            return routes;
         }
 
         @Override
         protected void onPostExecute(List<Route> routes)
         {
             super.onPostExecute(routes);
-            Log.d(TAG, "Retrieved " + routes.size() + " routes from " + providerName);
             synchronized (this.routes)
             {
                 this.routes.clear();

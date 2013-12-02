@@ -29,7 +29,7 @@ import java.util.List;
 public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusStopSelector>
 {
     //reference data from transit-unit project, routes.xml in resources
-    private static final Stop STOP_1 = new Stop(1926, "Clark & Addison", false);
+    private static final Stop STOP_1 = new Stop(1926, "XXXClark & Addison", false);
     private static final Stop STOP_2 = new Stop(1939, "Clark & Ainslie", false);
     private static final Stop STOP_2_FAV = new Stop(1939, "Clark & Ainslie", true);
     private static final Stop STOP_3 = new Stop(1958, "Clark & Albion", false);
