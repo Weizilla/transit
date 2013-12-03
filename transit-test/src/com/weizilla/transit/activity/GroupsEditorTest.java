@@ -1,11 +1,10 @@
-package com.weizilla.transit.ui;
+package com.weizilla.transit.activity;
 
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.EditText;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
-import com.weizilla.transit.activity.GroupsEditor;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.db.GroupStore;
 
@@ -23,6 +22,8 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
     private static final Stop TEST_STOP_1 = new Stop(123, "TEST_STOP_1", false);
     private static final Stop TEST_STOP_2 = new Stop(456, "TEST_STOP_2", false);
     private static final String TEST_IDS = TEST_STOP_1.getId() + " " + TEST_STOP_2.getId();
+    private static final long TEST_GROUP_ID = 100;
+    private static final long TEST_GROUP_ID_2 = 200;
     private static final String TEST_GROUP_NAME = "TEST_GROUP_NAME";
     private static final String TEST_GROUP_NAME_2 = "TEST_GROUP_NAME_2";
     private static final int TIMEOUT = 1000;
@@ -59,8 +60,8 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
     public void testGroupsPopulatedByDb()
     {
-        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
-
+        boolean added = store.createGroup(TEST_GROUP_ID, TEST_GROUP_NAME);
+        assertTrue(added);
         activity.refreshGroups();
         solo.waitForView(R.id.uiGroupList);
 
@@ -70,8 +71,8 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
     public void testDeleteFirstGroup()
     {
-        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
-        addGroup(TEST_GROUP_NAME_2, TEST_STOP_1.getId(), TEST_STOP_2.getId());
+        addGroup(TEST_GROUP_ID, TEST_GROUP_NAME, TEST_STOP_1, TEST_STOP_2);
+        addGroup(TEST_GROUP_ID_2, TEST_GROUP_NAME_2, TEST_STOP_1, TEST_STOP_2);
         activity.refreshGroups();
 
         solo.waitForView(R.id.uiGroupList);
@@ -80,7 +81,7 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         assertEquals(TEST_GROUP_NAME, name);
 
         solo.waitForDialogToOpen(TIMEOUT);
-        solo.clickInList(1);
+        solo.clickInList(2);
 
         solo.waitForView(R.id.uiGroupList);
 
@@ -104,7 +105,7 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
     public void testClickOnGroupOpensPredictionsWithStopId()
     {
-        addGroup(TEST_GROUP_NAME, TEST_STOP_1.getId(), TEST_STOP_2.getId());
+        addGroup(TEST_GROUP_ID, TEST_GROUP_NAME, TEST_STOP_1, TEST_STOP_2);
 
         activity.refreshGroups();
         solo.waitForView(R.id.uiGroupList);
@@ -116,6 +117,25 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
 
         EditText stopIdInput = solo.getEditText(0);
         assertEquals(TEST_IDS, stopIdInput.getText().toString());
+    }
+
+    public void testEditGroupByContextMenu()
+    {
+        addGroup(TEST_GROUP_ID, TEST_GROUP_NAME, TEST_STOP_1, TEST_STOP_2);
+
+        activity.refreshGroups();
+        solo.waitForView(R.id.uiGroupList);
+
+        String name = clickLongInList(0);
+        assertEquals(TEST_GROUP_NAME, name);
+
+        solo.waitForDialogToOpen(TIMEOUT);
+        solo.clickInList(1);
+
+        solo.waitForView(R.id.uiGroupName);
+
+        TextView groupName = solo.getText(1);
+        assertEquals(TEST_GROUP_NAME, groupName.getText().toString());
     }
 
     private String clickInList(int line)
@@ -134,12 +154,12 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
         return textView.getText().toString();
     }
 
-    private void addGroup(String groupName, int ... stopIds)
+    private void addGroup(long groupId, String groupName, Stop ... stops)
     {
-        for (int stopId : stopIds)
+        store.createGroup(groupId, groupName);
+        for (Stop stop : stops)
         {
-            Stop stop = new Stop(stopId, "TEST_STOP_" + stopId, false);
-            store.addStop(groupName, stop);
+            store.addStop(groupId, stop);
         }
     }
 

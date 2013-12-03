@@ -12,6 +12,7 @@ import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -56,6 +57,12 @@ public class FavStopStore implements BusStopsProvider
 
     public long addStop(Route route, Direction direction, Stop stop)
     {
+        if (! database.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return -1;
+        }
+
         ContentValues values = new ContentValues();
         values.put(FavStop.DB.ID, stop.getId());
         values.put(FavStop.DB.NAME, stop.getName());
@@ -72,6 +79,12 @@ public class FavStopStore implements BusStopsProvider
 
     public List<Stop> getStops(Route route, Direction direction)
     {
+        if (! database.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return Collections.emptyList();
+        }
+
         String[] cols = {FavStop.DB.ID, FavStop.DB.NAME};
         String order = FavStop.DB.ID + " ASC";
         String selection = FavStop.DB.ROUTE_ID + " = ? AND " +
@@ -94,6 +107,11 @@ public class FavStopStore implements BusStopsProvider
 
     public boolean removeStop(Stop stop)
     {
+        if (! database.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return false;
+        }
         String where = FavStop.DB.ID + " = ?";
         String[] whereArgs = {String.valueOf(stop.getId())};
 

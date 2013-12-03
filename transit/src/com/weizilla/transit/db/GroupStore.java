@@ -27,7 +27,7 @@ import java.util.Map;
  */
 public class GroupStore
 {
-    private static final String TAG = "tansit.GroupStore";
+    private static final String TAG = "transit.GroupStore";
     private static final String DB_NAME = "Groups";
     private static final String CREATE_GROUPS_SQL =
             "CREATE TABLE " + Group.DB.TABLE_NAME + " (" +
@@ -74,6 +74,7 @@ public class GroupStore
 
     public void open()
     {
+        Log.d(TAG, "Opening Group Store db");
         db = dbHelper.getWritableDatabase();
     }
 
@@ -104,60 +105,34 @@ public class GroupStore
         catch (SQLiteConstraintException e)
         {
             // ignore duplicate name and return id of old row
-            id = queryGroupId(groupName);
+            id = getGroupId(groupName);
             Log.d(TAG, "Added group already exists. id: " + id + " group: " + groupName);
         }
 
         return id;
     }
 
-    public boolean removeGroup(String groupName)
+    public boolean createGroup(long groupId, String groupName)
     {
-        long groupId = queryGroupId(groupName);
+        assertValidGroupId(groupId);
+        ContentValues values = new ContentValues();
+        values.put(Group.DB._ID, groupId);
+        values.put(Group.DB.NAME, groupName);
 
+        long newId = db.replace(Group.DB.TABLE_NAME, null, values);
+        return newId != -1 && newId == groupId;
+    }
+
+    public boolean removeGroup(long groupId)
+    {
+        assertValidGroupId(groupId);
         String where = Group.DB._ID + " = ?";
         String[] whereArgs = {String.valueOf(groupId)};
         int numDeleted = db.delete(Group.DB.TABLE_NAME, where, whereArgs);
-        if (numDeleted > 0)
-        {
-            Log.w(TAG, "Multiple rows deleted when removing group: " + groupName);
-        }
-        else if (numDeleted == 1)
-        {
-            Log.d(TAG, "Removed group: " + groupName);
-        }
-        else
-        {
-            Log.i(TAG, "No rows removed when removing group: " + groupName);
-        }
-
+        Log.d(TAG, "Remove Group " + groupId + ". Deleted " + numDeleted + " rows");
         removeStopsForGroup(groupId);
-
         return numDeleted != 0;
     }
-
-//    public boolean removeGroup(long groupId)
-//    {
-//        String where = Group.DB._ID + " = ?";
-//        String[] whereArgs = {String.valueOf(groupId)};
-//        int numDeleted = db.delete(Group.DB.TABLE_NAME, where, whereArgs);
-//        if (numDeleted > 0)
-//        {
-//            Log.w(TAG, "Multiple rows deleted when removing group id: " + groupId);
-//        }
-//        else if (numDeleted == 1)
-//        {
-//            Log.d(TAG, "Removed group id: " + groupId);
-//        }
-//        else
-//        {
-//            Log.i(TAG, "No rows removed when removing group id: " + groupId);
-//        }
-//
-//        removeStopsForGroup(groupId);
-//
-//        return numDeleted != 0;
-//    }
 
     private void removeStopsForGroup(long groupId)
     {
@@ -166,26 +141,10 @@ public class GroupStore
         db.delete(Group.GroupsStopsDB.TABLE_NAME, where, whereArgs);
     }
 
-    /**
-     * Adds a Stop to the group, creating a new Group if necessary.
-     * Returns the id of the group the stop was added to. Returns
-     * -1 if an error occured while adding a group or stop
-     * @param groupName the name of the group for this stop
-     * @param stop the stop to add
-     * @return the id of the group, -1 if error occurred
-     */
-    public long addStop(String groupName, Stop stop)
+    public boolean addStop(long groupId, Stop stop)
     {
-        if (stop.getId() == ERROR_ID)
-        {
-            return ERROR_ID;
-        }
-
-        long groupId = createGroup(groupName);
-        if (groupId == ERROR_ID)
-        {
-            return ERROR_ID;
-        }
+        assertValidGroupId(groupId);
+        assertValidStop(stop);
 
         ContentValues values = new ContentValues();
         values.put(Group.GroupsStopsDB.GROUP_ID, groupId);
@@ -193,32 +152,25 @@ public class GroupStore
         values.put(Group.GroupsStopsDB.STOP_NAME, stop.getName());
 
         long newId = db.replace(Group.GroupsStopsDB.TABLE_NAME, null, values);
-        if (newId != ERROR_ID)
-        {
-            return groupId;
-        }
-        else
+        if (newId == ERROR_ID)
         {
             Log.w(TAG, "Error adding stop to group. Group id: " + groupId + " stop: " + stop);
-            return ERROR_ID;
         }
+        return newId != ERROR_ID;
     }
 
-    public boolean removeStop(String groupName, Stop stop)
+    public boolean removeStop(long groupId, Stop stop)
     {
+        assertValidGroupId(groupId);
+        assertValidStop(stop);
+
         String where = Group.GroupsStopsDB.GROUP_ID + " = ? AND " +
                 Group.GroupsStopsDB.STOP_ID + " = ?";
-        long groupId = queryGroupId(groupName);
-        if (groupId == ERROR_ID)
-        {
-            Log.w(TAG, "Can't remove stop from non-existant group:" + groupName);
-            return false;
-        }
         String[] whereArgs = {String.valueOf(groupId), String.valueOf(stop.getId())};
         int numDel = db.delete(Group.GroupsStopsDB.TABLE_NAME, where, whereArgs);
         if (numDel == 0)
         {
-            Log.w(TAG, "No rows deleted when removing stop. Group: " + groupName + " Stop: " + stop);
+            Log.w(TAG, "No rows deleted when removing stop. Group id: " + groupId + " Stop: " + stop);
         }
         return numDel != 0;
     }
@@ -241,6 +193,7 @@ public class GroupStore
 
     public Group getGroup(long groupId)
     {
+        assertValidGroupId(groupId);
         String sql = SELECT_GROUPS_SQL +
                 " WHERE g." + Group.DB._ID + " = ?";
         String[] selectArgs = {String.valueOf(groupId)};
@@ -267,19 +220,7 @@ public class GroupStore
         }
     }
 
-    public void close()
-    {
-        db.close();
-        dbHelper.close();
-    }
-
-    public void deleteDb()
-    {
-        boolean status = context.deleteDatabase(DB_NAME);
-        Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
-    }
-
-    private long queryGroupId(String groupName)
+    private long getGroupId(String groupName)
     {
         String[] cols = {Group.DB._ID, Group.DB.NAME};
         String selection = Group.DB.NAME + " = ?";
@@ -300,6 +241,19 @@ public class GroupStore
         }
     }
 
+    public void close()
+    {
+        Log.d(TAG, "Closing group store db");
+        db.close();
+        dbHelper.close();
+    }
+
+    public void deleteDb()
+    {
+        boolean status = context.deleteDatabase(DB_NAME);
+        Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
+    }
+
     /**
      * Returns the database helper for this store for testing
      * purposes
@@ -308,6 +262,26 @@ public class GroupStore
     SqliteDbHelper getDatabaseHelper()
     {
         return dbHelper;
+    }
+
+    private static void assertValidGroupId(long groupId)
+    {
+        if (groupId == ERROR_ID)
+        {
+            throw new IllegalArgumentException("Invalid group id: " + groupId);
+        }
+    }
+
+    private static void assertValidStop(Stop stop)
+    {
+        if (stop == null)
+        {
+            throw new IllegalArgumentException("Stop is null");
+        }
+        if (stop.getId() == ERROR_ID)
+        {
+            throw new IllegalArgumentException("Invalid stop id. Stop: " + stop);
+        }
     }
 
     private static List<Group> buildGroups(Cursor cursor)

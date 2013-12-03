@@ -4,16 +4,16 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.view.View;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
-import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.data.StopList;
+import com.weizilla.transit.dataproviders.CTADataProvider;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.GroupStore;
 import com.weizilla.transit.ui.GroupStopsAdapter;
-
-import java.util.Collections;
-import java.util.List;
 
 /**
  * Allows editing of stops for a group
@@ -25,10 +25,12 @@ import java.util.List;
 public class GroupStopsEditor extends Activity
 {
     private static final String TAG = "transit.GroupStopsEditor";
+    private static final int BUS_PICKER_RESULT = 0;
     private GroupStopsAdapter adapter;
     private TextView uiGroupName;
     private GroupStore store;
-    private Group group;
+    private Group group; //TODO only store group id?
+    private TransitDataProvider dataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -36,13 +38,22 @@ public class GroupStopsEditor extends Activity
         super.onCreate(savedInstanceState);
 
         store = new GroupStore(this);
+        dataProvider = getDataProvider();
 
         initGui();
 
         Intent intent = getIntent();
-        group = intent.getParcelableExtra(Group.INTENT_KEY);
+        Group group = intent.getParcelableExtra(Group.INTENT_KEY);
+        setSelectedGroup(group);
+    }
 
-        refreshUi();
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void initGui()
@@ -56,40 +67,75 @@ public class GroupStopsEditor extends Activity
         uiGroupStopDisplay.setAdapter(adapter);
     }
 
-    public void refresh()
+    private void setSelectedGroup(Group group)
     {
-        if (group != null)
+        if (group == null)
         {
-            new RefreshGroupTask().execute(group);
+            return;
         }
-    }
-
-    private void refreshUi()
-    {
-        String name = group != null ? group.getName() : "No Group";
-        List<Stop> stops = group != null ? group.getStops() : Collections.<Stop>emptyList();
-
-        uiGroupName.setText(name);
+        this.group = group;
+        uiGroupName.setText(group.getName());
         adapter.clear();
-        adapter.addAll(stops);
+        adapter.addAll(group.getStops());
         adapter.getFilter().filter(null); // TODO remove this requirement
         adapter.notifyDataSetChanged();
     }
 
-    private class RefreshGroupTask extends AsyncTask<Group, Void, Group>
+    @Override
+    protected void onResume()
+    {
+        super.onResume();
+        store.open();
+    }
+
+    @Override
+    protected void onPause()
+    {
+        super.onPause();
+        store.close();
+    }
+
+    public void addStop(View view)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, BusStopPicker.class);
+        intent.putExtra(TransitDataProvider.KEY, dataProvider);
+        startActivityForResult(intent, BUS_PICKER_RESULT);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data)
+    {
+        if (requestCode == BUS_PICKER_RESULT && resultCode == Activity.RESULT_OK)
+        {
+            //TODO seems ugly to put this here but this is called
+            // before onResume() which opens the store
+            store.open();
+
+            StopList stopList = data.getParcelableExtra(StopList.INTENT_KEY);
+            store.addStop(group.getId(), stopList.getFirstStop());
+            refreshGroup();
+        }
+    }
+
+    private void refreshGroup()
+    {
+        new RefreshGroupTask().execute();
+    }
+
+    private class RefreshGroupTask extends AsyncTask<Void, Void, Group>
     {
         @Override
-        protected Group doInBackground(Group ... params)
+        protected Group doInBackground(Void ... params)
         {
-            return store.getGroup(params[0].getId());
+            return store.getGroup(group.getId());
         }
 
         @Override
         protected void onPostExecute(Group group)
         {
             super.onPostExecute(group);
-            GroupStopsEditor.this.group = group;
-            refreshUi();
+            setSelectedGroup(group);
         }
     }
 }

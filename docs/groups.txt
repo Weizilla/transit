@@ -1,0 +1,23 @@
+groups editor
+---------------
+all groups with valid ids + names
+=================
+add group: give name -> refresh w/ valid id and name
+delete group: id -> refresh w/ valid id
+edit group: group obj
+
+
+group stops editor
+------------------
+holds group obj
+=================
+add stop: pick stop -> add by group id + stop -> refresh group w/ id
+delete stop: pick stop -> remove by group id + stop -> refresh w/ id
+
+
+stops prediction add group dialog
+--------------------
+add stop to existing group: get groups w/ name and id -> add by group id + stop
+add stop to new group: create group -> add stop by group id + stop
+
+

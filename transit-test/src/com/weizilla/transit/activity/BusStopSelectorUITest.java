@@ -1,4 +1,4 @@
-package com.weizilla.transit.ui;
+package com.weizilla.transit.activity;
 
 import android.content.Intent;
 import android.graphics.drawable.ColorDrawable;
@@ -9,7 +9,6 @@ import android.widget.TextView;
 import com.google.common.collect.Lists;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
-import com.weizilla.transit.activity.BusStopSelector;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;

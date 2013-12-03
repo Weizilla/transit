@@ -1,20 +1,14 @@
 =======
 features
 ------
-adding stops to groups
 removing stops from groups via right click
-seeing predictions for a group
-clicking on group brings up predictions. right click brings up edit menu
-
-=======
-adding stops to groups
--------
-change bus prediction to launch bus picker activity instead of other way around.
-then use bus picker module as a way of adding stops to groups.
 
 =======
 seeing predicitons for a group
 -------
-x modify bus predictions to take a list of stops. 
-then allows group editor to just send a list of stops to bus prediction instead of having to create a new activity
 need to modify to show diff stop names if multiple stops
+
+=======
+bugs
+-------
+when running whole suite, testClickOnGroupOpensPredictionsWithStopId fails because of extra stop id in bus predictions page

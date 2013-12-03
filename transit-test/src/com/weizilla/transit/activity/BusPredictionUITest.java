@@ -1,4 +1,4 @@
-package com.weizilla.transit.ui;
+package com.weizilla.transit.activity;
 
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
@@ -7,7 +7,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
-import com.weizilla.transit.activity.BusPrediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;

@@ -14,6 +14,8 @@ import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.StopList;
+import com.weizilla.transit.dataproviders.CTADataProvider;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.GroupStore;
 import com.weizilla.transit.ui.GroupsAdapter;
 
@@ -32,6 +34,7 @@ public class GroupsEditor extends Activity implements
     private static final String TAG = "transit.GroupsActivity";
     private GroupStore store;
     private GroupsAdapter groupsAdapter;
+    private TransitDataProvider dataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -39,8 +42,18 @@ public class GroupsEditor extends Activity implements
         super.onCreate(savedInstanceState);
 
         store = new GroupStore(this);
+        dataProvider = getDataProvider();
 
         initGui();
+    }
+
+    private TransitDataProvider getDataProvider()
+    {
+        String ctaApiKey = getString(R.string.ctaApiKey);
+        Intent intent = getIntent();
+        TransitDataProvider dataProvider =
+                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
+        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void initGui()
@@ -92,6 +105,7 @@ public class GroupsEditor extends Activity implements
         Group group = groupsAdapter.getItem(position);
         Intent intent = new Intent();
         intent.putExtra(StopList.INTENT_KEY, new StopList(group.getStops()));
+        intent.putExtra(TransitDataProvider.KEY, dataProvider);
         intent.setClass(this, BusPrediction.class);
         startActivity(intent);
     }
@@ -108,15 +122,33 @@ public class GroupsEditor extends Activity implements
     {
         AlertDialog.Builder builder = new AlertDialog.Builder(this);
         builder.setTitle(group.getName());
-        builder.setItems(new String[]{"Delete"}, new DialogInterface.OnClickListener(){
-            @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
-                store.removeGroup(group.getName());
-                refreshGroups();
-            }
-        });
+        builder.setItems(new String[]{"Edit", "Delete"},
+                new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        switch (which)
+                        {
+                            case 0:
+                                editGroup(group);
+                                break;
+                            case 1:
+                                store.removeGroup(group.getId());
+                                refreshGroups();
+                                break;
+                        }
+                    }
+                });
         builder.create().show();
+    }
+
+    private void editGroup(Group group)
+    {
+        Intent intent = new Intent();
+        intent.setClass(this, GroupStopsEditor.class);
+        intent.putExtra(Group.INTENT_KEY, group);
+        intent.putExtra(TransitDataProvider.KEY, dataProvider);
+        startActivity(intent);
     }
 
     public void newGroup(View view)

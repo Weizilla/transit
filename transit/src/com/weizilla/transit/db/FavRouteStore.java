@@ -10,6 +10,7 @@ import com.weizilla.transit.data.FavRoute;
 import com.weizilla.transit.data.Route;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -46,49 +47,51 @@ public class FavRouteStore implements BusRoutesProvider
         databaseHelper = new SqliteDbHelper(context,
             DB_NAME, CREATE_TABLE_SQL, DROP_TABLE_SQL);
         database = databaseHelper.getWritableDatabase();
-        Log.i(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
+        Log.d(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
     }
 
     public long addRoute(Route route)
     {
+        if (! database.isOpen())
+        {
+            Log.i(TAG, "Database closed");
+            return -1;
+        }
+
         ContentValues values = new ContentValues();
         values.put(FavRoute.DB.ID, route.getId());
         values.put(FavRoute.DB.NAME, route.getName());
         long newId = database.replace(FavRoute.DB.TABLE_NAME, null, values);
-
         if (newId != -1)
         {
             Log.d(TAG, "Added new fav route. _ID: " + newId + " Route: " + route);
         }
-
         return newId;
     }
 
     public boolean removeRoute(Route route)
     {
+        if (! database.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return false;
+        }
+
         String where = FavRoute.DB.ID + " = ?";
         String[] whereArgs = {route.getId()};
-
         int numDel = database.delete(FavRoute.DB.TABLE_NAME, where, whereArgs);
-
-        if (numDel > 1)
-        {
-            Log.w(TAG, "Multiple rows deleted for single route. Num: " + numDel + " Route: " + route);
-        }
-        else if (numDel == 1)
-        {
-            Log.d(TAG, "Deleted fav route: " + route);
-        }
-        else
-        {
-            Log.i(TAG, "No rows delete for route: " + route);
-        }
-
+        Log.d(TAG, "Removing route " + route.getName() + ". Num of rows deleted: " + numDel);
         return numDel != 0;
     }
 
     public List<Route> getRoutes()
     {
+        if (! database.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return Collections.emptyList();
+        }
+
         String[] cols = {FavRoute.DB.ID, FavRoute.DB.NAME};
         String order = FavRoute.DB.ID + " ASC";
         Cursor cursor = database.query(FavRoute.DB.TABLE_NAME, cols, null, null, null, null, order);
@@ -107,7 +110,9 @@ public class FavRouteStore implements BusRoutesProvider
 
     public void close()
     {
-        this.databaseHelper.close();
+        Log.d(TAG, "Fav Store db closed");
+        database.close();
+        databaseHelper.close();
     }
 
     public void deleteDb()

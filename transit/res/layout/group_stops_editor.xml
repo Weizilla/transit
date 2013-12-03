@@ -20,4 +20,12 @@
         android:layout_weight="1"
         />
 
+    <Button
+        android:id="@+id/uiGroupStopsAddStop"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/add_stop"
+        android:onClick="addStop"
+        />
+
 </LinearLayout>

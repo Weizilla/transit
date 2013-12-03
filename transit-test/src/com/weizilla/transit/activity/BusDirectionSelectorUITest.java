@@ -1,10 +1,9 @@
-package com.weizilla.transit.ui;
+package com.weizilla.transit.activity;
 
 import android.content.Intent;
 import android.test.ActivityInstrumentationTestCase2;
 import android.widget.Button;
 import com.jayway.android.robotium.solo.Solo;
-import com.weizilla.transit.activity.BusDirectionSelector;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;

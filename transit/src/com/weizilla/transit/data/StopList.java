@@ -33,6 +33,11 @@ public class StopList implements Parcelable
         parcel.readTypedList(stops, Stop.CREATOR);
     }
 
+    public Stop getFirstStop()
+    {
+        return stops.get(0);
+    }
+
     public List<Stop> getStops()
     {
         return stops;
