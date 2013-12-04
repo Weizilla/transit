@@ -15,7 +15,7 @@ import java.util.Date;
  *         Time: 5:42 PM
  */
 @Root(name = "prd")
-public class Prediction
+public class Prediction implements Comparable<Prediction>
 {
     @Element(name = "tmstmp")
     @Convert(TimeConverter.class)
@@ -48,6 +48,13 @@ public class Prediction
     @Element(name = "prdtm")
     @Convert(TimeConverter.class)
     private Date predictionTime;
+
+    @Override
+    public int compareTo(Prediction another)
+    {
+        //TODO what about delays?
+        return predictionTime.compareTo(another.predictionTime);
+    }
 
     public Date getTimestamp()
     {

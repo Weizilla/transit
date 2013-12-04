@@ -12,6 +12,7 @@ import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.GroupStore;
+import com.weizilla.transit.util.TestUtils;
 
 import java.util.List;
 
@@ -151,20 +152,21 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
         assertEquals(TEST_GROUP_NAME, text.getText());
 
         String stop1 = clickInList(1);
-        assertEquals(stop1, TEST_STOP.getName());
+        assertEquals(TEST_STOP.getName(), stop1);
 
         String stop2 = clickInList(2);
-        assertEquals(stop2, TEST_STOP_2.getName());
+        assertEquals(TEST_STOP_2.getName(), stop2);
 
         clickLongInList(1);
         solo.waitForDialogToOpen(TIMEOUT);
 
         // click on delete
         solo.clickInList(1);
+        TestUtils.sleep(1);
 
         solo.waitForView(R.id.uiGroupStopsDisplay);
         stop1 = clickInList(1);
-        assertEquals(stop1, TEST_STOP_2.getName());
+        assertEquals(TEST_STOP_2.getName(), stop1);
     }
 
     private String clickInList(int line)

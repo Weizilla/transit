@@ -11,6 +11,7 @@ import android.widget.Filterable;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -22,7 +23,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
  *         Date: 11/26/13
  *         Time: 4:34 PM
  */
-public abstract class ListAdapter<T> extends BaseAdapter implements Filterable
+public abstract class ListAdapter<T extends Comparable<T> > extends BaseAdapter implements Filterable
 {
     protected String TAG = "transit.ListAdapter[" + this.getClass().getSimpleName() + "]";
     protected LayoutInflater inflater;
@@ -152,7 +153,9 @@ public abstract class ListAdapter<T> extends BaseAdapter implements Filterable
     public void addAll(Collection<? extends T> items)
     {
         Log.d(TAG, "Adding " + items.size() + " items");
-        allItems.addAll(items);
+        List<? extends T> sorted = new ArrayList<>(items);
+        Collections.sort(sorted);
+        allItems.addAll(sorted);
     }
 
     public void clear()
