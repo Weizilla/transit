@@ -1,14 +1,18 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
+import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.data.StopList;
 import com.weizilla.transit.dataproviders.CTADataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
@@ -22,7 +26,7 @@ import com.weizilla.transit.ui.GroupStopsAdapter;
  *         Date: 11/29/13
  *         Time: 1:15 PM
  */
-public class GroupStopsEditor extends Activity
+public class GroupStopsEditor extends Activity implements AdapterView.OnItemLongClickListener
 {
     private static final String TAG = "transit.GroupStopsEditor";
     private static final int BUS_PICKER_RESULT = 0;
@@ -65,6 +69,31 @@ public class GroupStopsEditor extends Activity
 
         ListView uiGroupStopDisplay = (ListView) findViewById(R.id.uiGroupStopsDisplay);
         uiGroupStopDisplay.setAdapter(adapter);
+        uiGroupStopDisplay.setOnItemLongClickListener(this);
+    }
+
+    @Override
+    public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id)
+    {
+        final Stop stop = adapter.getItem(position);
+        showContextMenu(stop);
+        return true;
+    }
+
+    private void showContextMenu(final Stop stop)
+    {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setTitle(stop.getName());
+        builder.setItems(new String[]{"Remove"}, new DialogInterface.OnClickListener()
+        {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                store.removeStop(group.getId(), stop);
+                refreshGroup();
+            }
+        });
+        builder.create().show();
     }
 
     private void setSelectedGroup(Group group)
