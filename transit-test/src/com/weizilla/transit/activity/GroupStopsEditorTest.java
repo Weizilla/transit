@@ -61,6 +61,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
         {
             solo.finishOpenedActivities();
         }
+        store.deleteDb();
         super.tearDown();
     }
 
@@ -140,12 +141,21 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
 
     public void testDeleteStop()
     {
+        Group testGroup = createTestGroup(TEST_STOP, TEST_STOP_2);
+
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
-        intent.putExtra(Group.INTENT_KEY, createTestGroup(TEST_STOP, TEST_STOP_2));
+        intent.putExtra(Group.INTENT_KEY, testGroup);
         setActivityIntent(intent);
 
         init();
+
+        // can't init store until after activity is created but
+        // we've already gave the group to the activity so create
+        // it for real here
+        store.createGroup(testGroup.getId(), testGroup.getName());
+        store.addStop(testGroup.getId(), TEST_STOP);
+        store.addStop(testGroup.getId(), TEST_STOP_2);
 
         solo.waitForView(R.id.uiGroupName);
         TextView text = solo.getText(1);

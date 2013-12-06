@@ -11,7 +11,6 @@ import android.widget.Filterable;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -153,9 +152,7 @@ public abstract class ListAdapter<T extends Comparable<T> > extends BaseAdapter 
     public void addAll(Collection<? extends T> items)
     {
         Log.d(TAG, "Adding " + items.size() + " items");
-        List<? extends T> sorted = new ArrayList<>(items);
-        Collections.sort(sorted);
-        allItems.addAll(sorted);
+        allItems.addAll(items);
     }
 
     public void clear()

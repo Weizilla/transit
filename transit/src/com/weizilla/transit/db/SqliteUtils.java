@@ -2,6 +2,7 @@ package com.weizilla.transit.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.util.Log;
 
 /**
  * utility fuctions for sql lite
@@ -12,6 +13,7 @@ import android.database.sqlite.SQLiteDatabase;
  */
 public class SqliteUtils
 {
+    private static final String TAG = "transit.SqliteUtils";
     private static final String COUNT_TABLES_SQL = "SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?";
     private static final String COUNT_ROWS_SQL = "SELECT count(*) FROM ";
     private SqliteUtils()
@@ -19,7 +21,7 @@ public class SqliteUtils
         // empty
     }
 
-    public static String print(Cursor cursor)
+    public static void printResults(Cursor cursor)
     {
         StringBuilder builder = new StringBuilder();
 
@@ -44,7 +46,25 @@ public class SqliteUtils
         }
         while (cursor.moveToNext());
 
-        return builder.toString();
+        Log.d(TAG, builder.toString());
+    }
+
+    public static void printTable(SQLiteDatabase db, String table)
+    {
+        Cursor cursor = null;
+        String sql = "SELECT * FROM " + table;
+        try
+        {
+            cursor = db.rawQuery(sql, null);
+            printResults(cursor);
+        }
+        finally
+        {
+            if (cursor != null)
+            {
+                cursor.close();
+            }
+        }
     }
 
     public static int countTables(SQLiteDatabase db, String tableName)
