@@ -1,11 +1,6 @@
 package com.weizilla.transit;
 
-import android.util.Log;
-import com.weizilla.transit.data.BustimeResponse;
-import com.weizilla.transit.data.Direction;
-import com.weizilla.transit.data.Prediction;
-import com.weizilla.transit.data.Route;
-import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.data.*;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import org.simpleframework.xml.Serializer;
 import org.simpleframework.xml.convert.AnnotationStrategy;
@@ -55,10 +50,13 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
         {
             BustimeResponse response = serializer.read(BustimeResponse.class, inputStream);
             results = response.getRoutes();
-            Log.d(TAG, "Got " + results.size() + " from " + dataProviderName);
+
+            //TODO find logging framework that works in junit and android
+//            Log.d(TAG, "Got " + results.size() + " from " + dataProviderName);
         }
         catch (Exception e)
         {
+            //TODO find logging framework that works in junit and android
             e.printStackTrace();
         }
         finally
@@ -82,6 +80,7 @@ public class TransitService implements BusRoutesProvider, BusStopsProvider
         }
         catch (Exception e)
         {
+            //TODO find logging framework that works in junit and android
             e.printStackTrace();
         }
         finally

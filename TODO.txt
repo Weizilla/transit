@@ -1,14 +1,19 @@
 =======
 features
 ------
-removing stops from groups via right click
+add stop to group from stop menu
+filter by buses on stops
+filter by buses for stops in groups
+better ui for predictions from multiple stops
+mark prediction as delayed
 
 =======
-seeing predicitons for a group
+better ui for predictions from multiple stops
 -------
-need to modify to show diff stop names if multiple stops
+need to modify to show stop name for each prediction
 
 =======
 bugs
 -------
-when running whole suite, testClickOnGroupOpensPredictionsWithStopId fails because of extra stop id in bus predictions page
+still concurrency issues with databases. an activity would appear (db opens) then calls a store to do some db work. if the activity disappears from the foreground, it would call onPause() which will close the db. if this happens before the store starts the db work, then that call will fail. added checks in fav store to return empty values but not sure that's the best way to handle this
+logging framework that works in android and junit

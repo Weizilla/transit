@@ -12,7 +12,6 @@
         <des>Devon/Clark</des>
         <prdtm>20130818 17:31</prdtm>
     </prd>
-
     <prd>
         <tmstmp>20130818 17:23</tmstmp>
         <typ>A</typ>
@@ -25,7 +24,6 @@
         <des>Devon/Clark</des>
         <prdtm>20130818 17:35</prdtm>
     </prd>
-
     <prd>
         <tmstmp>20130818 17:23</tmstmp>
         <typ>A</typ>
@@ -38,7 +36,6 @@
         <des>Howard</des>
         <prdtm>20130818 17:36</prdtm>
     </prd>
-
     <prd>
         <tmstmp>20130818 17:23</tmstmp>
         <typ>A</typ>
@@ -50,6 +47,7 @@
         <rtdir>Northbound</rtdir>
         <des>Howard</des>
         <prdtm>20130818 17:43</prdtm>
+        <dly>true</dly>
     </prd>
 
 </bustime-response>

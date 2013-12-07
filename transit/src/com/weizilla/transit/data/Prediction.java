@@ -49,6 +49,9 @@ public class Prediction implements Comparable<Prediction>
     @Convert(TimeConverter.class)
     private Date predictionTime;
 
+    @Element(name = "dly", required = false)
+    private boolean delayed;
+
     @Override
     public int compareTo(Prediction another)
     {

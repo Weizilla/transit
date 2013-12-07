@@ -177,6 +177,12 @@ public class GroupStore
 
     public List<Group> getGroups()
     {
+        if (! db.isOpen())
+        {
+            Log.w(TAG, "Database closed");
+            return Collections.emptyList();
+        }
+
         Cursor cursor = db.rawQuery(SELECT_GROUPS_SQL, null);
         try
         {

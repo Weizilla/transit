@@ -9,7 +9,8 @@
         android:id="@+id/uiBusPredStopIdInput"
         android:layout_width="fill_parent"
         android:layout_height="wrap_content"
-        android:inputType="number"
+        android:hint="Stop Id(s)"
+        android:digits="1234567890 "
         />
 
     <Button
