@@ -10,6 +10,15 @@
         android:layout_height="wrap_content"
         android:text="Route:"
         />
+
+    <ProgressBar
+            android:id="@+id/uiBusDirProgress"
+            android:layout_width="fill_parent"
+            android:layout_height="10dp"
+            style="@android:style/Widget.ProgressBar.Horizontal"
+            android:indeterminate="true"
+            />
+
     <TableLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
@@ -66,7 +75,7 @@
                 android:textSize="30sp"
                 android:text="S"
                 />
-        </TableRow>-->
+        </TableRow>
 
     </TableLayout>
 </LinearLayout>

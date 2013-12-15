@@ -44,6 +44,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
     public void setUp() throws Exception
     {
         super.setUp();
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
     }
 
     private void init()
@@ -69,7 +70,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
     {
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
-        intent.putExtra(Group.INTENT_KEY, createTestGroup(TEST_STOP, TEST_STOP_2));
+        intent.putExtra(Group.KEY, createTestGroup(TEST_STOP, TEST_STOP_2));
         setActivityIntent(intent);
 
         init();
@@ -91,7 +92,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
-        intent.putExtra(Group.INTENT_KEY, group);
+        intent.putExtra(Group.KEY, group);
         setActivityIntent(intent);
 
         init();
@@ -145,7 +146,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
-        intent.putExtra(Group.INTENT_KEY, testGroup);
+        intent.putExtra(Group.KEY, testGroup);
         setActivityIntent(intent);
 
         init();

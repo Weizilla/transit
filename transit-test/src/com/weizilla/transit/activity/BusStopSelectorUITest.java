@@ -15,6 +15,7 @@ import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavStopStore;
+import com.weizilla.transit.util.TestUtils;
 
 import java.util.List;
 
@@ -51,6 +52,8 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
     public void setUp() throws Exception
     {
         super.setUp();
+
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
@@ -136,9 +139,9 @@ public class BusStopSelectorUITest extends ActivityInstrumentationTestCase2<BusS
         solo.waitForDialogToOpen(TIMEOUT);
         // remove route from favorite in dialog
         solo.clickInList(1);
+        solo.waitForDialogToClose(TIMEOUT);
 
         solo.waitForView(R.id.uiBusStopList);
-
         Stop actual = clickInList(1);
         assertEqualsUi(STOP_1, actual);
     }

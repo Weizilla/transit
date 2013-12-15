@@ -1,7 +1,9 @@
 package com.weizilla.transit.dataproviders;
 
+import android.content.Context;
 import android.text.TextUtils;
 import android.util.Log;
+import com.weizilla.transit.R;
 import com.weizilla.transit.data.Direction;
 
 import java.io.IOException;
@@ -22,9 +24,9 @@ public class CTADataProvider implements TransitDataProvider
     private static final String TAG = "transit.CTADataProvider";
     private String apiKey;
 
-    public CTADataProvider(String apiKey)
+    public CTADataProvider(Context context)
     {
-        this.apiKey = apiKey;
+        apiKey = context.getString(R.string.ctaApiKey);
     }
 
     @Override

@@ -1,8 +1,6 @@
 package com.weizilla.transit.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,10 +13,7 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.BusRoutesProvider;
 import com.weizilla.transit.R;
-import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Route;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavRouteStore;
 import com.weizilla.transit.ui.BusRouteAdapter;
 import com.weizilla.transit.ui.FilterTextWatcher;
@@ -33,15 +28,13 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 5:46 PM
  */
-public class BusRouteSelector extends Activity
+public class BusRouteSelector extends TransitActivity
         implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
-    public static final String RETURN_INTENT_KEY = BusRouteSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
     private static final String TAG = "transit.BusRouteSelector";
     private final List<Route> favoriteRoutes = new ArrayList<>();
     private final List<Route> retrievedRoutes = new ArrayList<>();
-    private TransitService transitService;
     private FavRouteStore favRouteStore;
     private BusRouteAdapter routesAdapter;
     private EditText busRouteInput;
@@ -54,21 +47,9 @@ public class BusRouteSelector extends Activity
         favoriteRoutes.clear();
         retrievedRoutes.clear();
 
-        TransitDataProvider transitDataProvider = getDataProvider();
-        transitService = new TransitService(transitDataProvider);
-
         favRouteStore = new FavRouteStore(this);
 
         initGui();
-    }
-
-    private TransitDataProvider getDataProvider()
-    {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void initGui()
@@ -82,6 +63,8 @@ public class BusRouteSelector extends Activity
         uiRoutesDisplay.setOnItemLongClickListener(this);
         busRouteInput = (EditText) findViewById(R.id.uiBusRouteInput);
         busRouteInput.addTextChangedListener(new FilterTextWatcher(routesAdapter));
+
+        setProgressBar(R.id.uiBusRouteProgress);
     }
 
     @Override
@@ -101,16 +84,31 @@ public class BusRouteSelector extends Activity
     {
         super.onPause();
         favRouteStore.close();
+        dismissProgress();
     }
 
     private void retrieveRoutes()
     {
-        new RetrieveRoutesTask(transitService, retrievedRoutes).execute();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new RetrieveRoutesTask(transitService, retrievedRoutes).execute();
+            }
+        });
     }
 
     public void refreshFavorites()
     {
-        new RetrieveRoutesTask(favRouteStore, favoriteRoutes).execute();
+        runOnUiThread(new Runnable()
+        {
+            @Override
+            public void run()
+            {
+                new RetrieveRoutesTask(favRouteStore, favoriteRoutes).execute();
+            }
+        });
     }
 
     private void updateAllRoutes()
@@ -132,7 +130,7 @@ public class BusRouteSelector extends Activity
     private void finishWithRoute(Route route)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, route);
+        result.putExtra(Route.KEY, route);
         setResult(RESULT_OK, result);
         finish();
     }
@@ -187,23 +185,19 @@ public class BusRouteSelector extends Activity
         private final List<Route> routes;
         private final BusRoutesProvider provider;
         private final String providerName;
-        private final ProgressDialog progressDialog;
 
         private RetrieveRoutesTask(BusRoutesProvider provider, List<Route> routes)
         {
             this.provider = provider;
             this.routes = routes;
             providerName = provider.getClass().getSimpleName();
-            progressDialog = new ProgressDialog(BusRouteSelector.this);
-            progressDialog.setMessage("Retrieving routes...");
-            progressDialog.setIndeterminate(true);
         }
 
         @Override
         protected void onPreExecute()
         {
             Log.d(TAG, "Retrieving routes from " + providerName + "...");
-            progressDialog.show();
+            showProgress();
         }
 
         @Override
@@ -224,7 +218,7 @@ public class BusRouteSelector extends Activity
                 this.routes.addAll(routes);
             }
             updateAllRoutes();
-            progressDialog.dismiss();
+            dismissProgress();
         }
     }
 }

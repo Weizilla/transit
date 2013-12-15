@@ -1,5 +1,9 @@
 package com.weizilla.transit.util;
 
+import android.app.Instrumentation;
+import com.weizilla.transit.TransitApplication;
+import com.weizilla.transit.dataproviders.MockTransitDataProvider;
+
 /**
  * generic test utilities
  *
@@ -24,5 +28,11 @@ public class TestUtils
         {
             // ignore
         }
+    }
+
+    public static void setMockTransitDataProvider(Instrumentation instrumentation)
+    {
+        TransitApplication app = (TransitApplication) instrumentation.getTargetContext().getApplicationContext();
+        app.setTransitDataProvider(new MockTransitDataProvider());
     }
 }

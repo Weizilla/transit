@@ -14,8 +14,6 @@ import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.data.StopList;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.GroupStore;
 import com.weizilla.transit.ui.GroupStopsAdapter;
 
@@ -34,7 +32,6 @@ public class GroupStopsEditor extends Activity implements AdapterView.OnItemLong
     private TextView uiGroupName;
     private GroupStore store;
     private Group group; //TODO only store group id?
-    private TransitDataProvider dataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,22 +39,12 @@ public class GroupStopsEditor extends Activity implements AdapterView.OnItemLong
         super.onCreate(savedInstanceState);
 
         store = new GroupStore(this);
-        dataProvider = getDataProvider();
 
         initGui();
 
         Intent intent = getIntent();
-        Group group = intent.getParcelableExtra(Group.INTENT_KEY);
+        Group group = intent.getParcelableExtra(Group.KEY);
         setSelectedGroup(group);
-    }
-
-    private TransitDataProvider getDataProvider()
-    {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
     }
 
     private void initGui()
@@ -128,7 +115,6 @@ public class GroupStopsEditor extends Activity implements AdapterView.OnItemLong
     {
         Intent intent = new Intent();
         intent.setClass(this, BusStopPicker.class);
-        intent.putExtra(TransitDataProvider.KEY, dataProvider);
         startActivityForResult(intent, BUS_PICKER_RESULT);
     }
 
@@ -141,7 +127,7 @@ public class GroupStopsEditor extends Activity implements AdapterView.OnItemLong
             // before onResume() which opens the store
             store.open();
 
-            StopList stopList = data.getParcelableExtra(StopList.INTENT_KEY);
+            StopList stopList = data.getParcelableExtra(StopList.KEY);
             store.addStop(group.getId(), stopList.getFirstStop());
             refreshGroup();
         }

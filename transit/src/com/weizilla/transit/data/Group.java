@@ -18,7 +18,7 @@ import java.util.List;
  */
 public class Group implements Parcelable, Comparable<Group>
 {
-    public static final String INTENT_KEY = "com.weizilla.transit.data.Group";
+    public static final String KEY = "com.weizilla.transit.data.Group";
     private long id = -1; // this is the rows's unique key (_id)
     private String name;
     private List<Stop> stops = new ArrayList<>();

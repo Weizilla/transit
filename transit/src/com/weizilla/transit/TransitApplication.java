@@ -1,6 +1,7 @@
 package com.weizilla.transit;
 
 import android.app.Application;
+import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 /**
  * custom application to hold transit global vars
@@ -11,15 +12,15 @@ import android.app.Application;
  */
 public class TransitApplication extends Application
 {
-    private String foo;
+    private TransitDataProvider transitDataProvider;
 
-    public void setFoo(String foo)
+    public void setTransitDataProvider(TransitDataProvider transitDataProvider)
     {
-        this.foo = foo;
+        this.transitDataProvider = transitDataProvider;
     }
 
-    public String getFoo()
+    public TransitDataProvider getTransitDataProvider()
     {
-        return foo;
+        return transitDataProvider;
     }
 }

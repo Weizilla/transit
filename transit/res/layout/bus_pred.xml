@@ -21,6 +21,14 @@
         android:text="Retrieve Predictions"
         />
 
+    <ProgressBar
+        android:id="@+id/uiBusPredProgress"
+        android:layout_width="fill_parent"
+        android:layout_height="10dp"
+        style="@android:style/Widget.ProgressBar.Horizontal"
+        android:indeterminate="true"
+        />
+
     <ListView
         android:id="@+id/uiBusPredDisplay"
         android:layout_width="fill_parent"

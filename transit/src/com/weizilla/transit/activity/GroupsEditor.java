@@ -14,8 +14,6 @@ import android.widget.ListView;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.StopList;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.GroupStore;
 import com.weizilla.transit.ui.GroupsAdapter;
 
@@ -34,7 +32,6 @@ public class GroupsEditor extends Activity implements
     private static final String TAG = "transit.GroupsActivity";
     private GroupStore store;
     private GroupsAdapter groupsAdapter;
-    private TransitDataProvider dataProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -42,22 +39,11 @@ public class GroupsEditor extends Activity implements
         super.onCreate(savedInstanceState);
 
         store = new GroupStore(this);
-        dataProvider = getDataProvider();
 
         initGui();
     }
 
-    private TransitDataProvider getDataProvider()
-    {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
-    }
-
-    private void initGui()
-    {
+    private void initGui()    {
         setContentView(R.layout.groups_editor);
         groupsAdapter = new GroupsAdapter(this);
         ListView uiGroupsDisplay = (ListView) findViewById(R.id.uiGroupList);
@@ -104,8 +90,7 @@ public class GroupsEditor extends Activity implements
     {
         Group group = groupsAdapter.getItem(position);
         Intent intent = new Intent();
-        intent.putExtra(StopList.INTENT_KEY, new StopList(group.getStops()));
-        intent.putExtra(TransitDataProvider.KEY, dataProvider);
+        intent.putExtra(StopList.KEY, new StopList(group.getStops()));
         intent.setClass(this, BusPrediction.class);
         startActivity(intent);
     }
@@ -146,8 +131,7 @@ public class GroupsEditor extends Activity implements
     {
         Intent intent = new Intent();
         intent.setClass(this, GroupStopsEditor.class);
-        intent.putExtra(Group.INTENT_KEY, group);
-        intent.putExtra(TransitDataProvider.KEY, dataProvider);
+        intent.putExtra(Group.KEY, group);
         startActivity(intent);
     }
 

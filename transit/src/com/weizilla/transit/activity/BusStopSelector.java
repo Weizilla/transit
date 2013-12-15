@@ -1,8 +1,6 @@
 package com.weizilla.transit.activity;
 
-import android.app.Activity;
 import android.app.AlertDialog;
-import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -15,12 +13,9 @@ import android.widget.EditText;
 import android.widget.ListView;
 import com.weizilla.transit.BusStopsProvider;
 import com.weizilla.transit.R;
-import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavStopStore;
 import com.weizilla.transit.ui.BusStopAdapter;
 import com.weizilla.transit.ui.FilterTextWatcher;
@@ -35,15 +30,13 @@ import java.util.List;
  *         Date: 9/2/13
  *         Time: 7:07 PM
  */
-public class BusStopSelector extends Activity
+public class BusStopSelector extends TransitActivity
         implements AdapterView.OnItemClickListener, AdapterView.OnItemLongClickListener
 {
-    public static final String RETURN_INTENT_KEY = BusStopSelector.class.getName() + ".intent.key";
     public static final int FAV_BACKGROUND_COLOR = Color.GREEN;
     private static final String TAG = "transit.BusStopSelector";
     private final List<Stop> retrievedStops = new ArrayList<>();
     private final List<Stop> favoriteStops = new ArrayList<>();
-    private TransitService transitService;
     private FavStopStore favStopStore;
     private BusStopAdapter stopsAdapter;
     private Route route;
@@ -54,10 +47,6 @@ public class BusStopSelector extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        TransitDataProvider transitDataProvider = getDataProvider();
-        transitService = new TransitService(transitDataProvider);
-
         favStopStore = new FavStopStore(this);
 
         Intent intent = getIntent();
@@ -65,6 +54,21 @@ public class BusStopSelector extends Activity
         direction = intent.getParcelableExtra(Direction.KEY);
 
         initGui();
+    }
+
+    private void initGui()
+    {
+        this.setContentView(R.layout.bus_stop_select);
+        stopsAdapter = new BusStopAdapter(this);
+        busStopInput = (EditText) findViewById(R.id.uiBusStopInput);
+        busStopInput.addTextChangedListener(new FilterTextWatcher(stopsAdapter));
+        ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
+        uiStopsDisplay.setAdapter(stopsAdapter);
+        uiStopsDisplay.setOnItemClickListener(this);
+        uiStopsDisplay.setLongClickable(true);
+        uiStopsDisplay.setOnItemLongClickListener(this);
+
+        setProgressBar(R.id.uiBusStopProgress);
     }
 
     @Override
@@ -84,35 +88,21 @@ public class BusStopSelector extends Activity
     {
         super.onPause();
         favStopStore.close();
-    }
-
-    private TransitDataProvider getDataProvider()
-    {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
-    }
-
-    private void initGui()
-    {
-        this.setContentView(R.layout.bus_stop_select);
-        stopsAdapter = new BusStopAdapter(this);
-        busStopInput = (EditText) findViewById(R.id.uiBusStopInput);
-        busStopInput.addTextChangedListener(new FilterTextWatcher(stopsAdapter));
-        ListView uiStopsDisplay = (ListView) findViewById(R.id.uiBusStopList);
-        uiStopsDisplay.setAdapter(stopsAdapter);
-        uiStopsDisplay.setOnItemClickListener(this);
-        uiStopsDisplay.setLongClickable(true);
-        uiStopsDisplay.setOnItemLongClickListener(this);
+        dismissProgress();
     }
 
     private void retrieveStops()
     {
         if (route != null || direction != null)
         {
-            new RetrieveStopsTask(retrievedStops).execute(transitService, route, direction);
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    new RetrieveStopsTask(retrievedStops).execute(transitService, route, direction);
+                }
+            });
         }
     }
 
@@ -120,7 +110,14 @@ public class BusStopSelector extends Activity
     {
         if (route != null || direction != null)
         {
-            new RetrieveStopsTask(favoriteStops).execute(favStopStore, route, direction);
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    new RetrieveStopsTask(favoriteStops).execute(favStopStore, route, direction);
+                }
+            });
         }
     }
 
@@ -143,7 +140,7 @@ public class BusStopSelector extends Activity
     private void finishWithStop(Stop stop)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, stop);
+        result.putExtra(Stop.KEY, stop);
         setResult(RESULT_OK, result);
         finish();
     }
@@ -192,21 +189,17 @@ public class BusStopSelector extends Activity
     private class RetrieveStopsTask extends AsyncTask<Object, Void, List<Stop>>
     {
         private final List<Stop> stops;
-        private final ProgressDialog progressDialog;
 
         private RetrieveStopsTask(List <Stop> stops)
         {
             this.stops = stops;
-            progressDialog = new ProgressDialog(BusStopSelector.this);
-            progressDialog.setMessage("Retrieving stops...");
-            progressDialog.setIndeterminate(true);
         }
 
         @Override
         protected void onPreExecute()
         {
             Log.d(TAG, "Retrieving stops...");
-            progressDialog.show();
+            showProgress();
         }
 
         @Override
@@ -225,7 +218,7 @@ public class BusStopSelector extends Activity
         }
 
         @Override
-        protected void onPostExecute(List <Stop> stops)
+        protected void onPostExecute(List<Stop> stops)
         {
             super.onPostExecute(stops);
             synchronized (this.stops)
@@ -234,7 +227,8 @@ public class BusStopSelector extends Activity
                 this.stops.addAll(stops);
             }
             updateAllStops();
-            progressDialog.dismiss();
+            dismissProgress();
+            Log.d(TAG, "Updating with " + stops.size() + " stops from provider");
         }
     }
 }

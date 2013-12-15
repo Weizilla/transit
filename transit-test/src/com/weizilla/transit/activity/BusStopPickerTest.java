@@ -6,13 +6,13 @@ import android.widget.Button;
 import android.widget.TextView;
 import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
-import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.db.FavRouteStore;
 import com.weizilla.transit.db.FavStopStore;
+import com.weizilla.transit.util.TestUtils;
 
 import java.util.List;
 
@@ -40,8 +40,7 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
     {
         super.setUp();
 
-        TransitApplication app = (TransitApplication) getInstrumentation().getTargetContext().getApplicationContext();
-        app.setFoo("BURRITOS");
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());

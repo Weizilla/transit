@@ -15,7 +15,7 @@ import java.util.List;
  */
 public class StopList implements Parcelable
 {
-    public static final String INTENT_KEY = "com.weizilla.transit.data.StopList";
+    public static final String KEY = "com.weizilla.transit.data.StopList";
     private List<Stop> stops = new ArrayList<>();
 
     public StopList(Stop stop)

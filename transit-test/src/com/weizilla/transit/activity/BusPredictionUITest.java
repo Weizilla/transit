@@ -11,6 +11,7 @@ import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.util.TestUtils;
 import com.weizilla.transit.util.TimeConverter;
 
 import java.text.ParseException;
@@ -36,6 +37,7 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
     public void setUp() throws Exception
     {
         super.setUp();
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
         this.setActivityIntent(intent);

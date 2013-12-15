@@ -7,6 +7,7 @@ import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.dataproviders.MockTransitDataProvider;
 import com.weizilla.transit.dataproviders.TransitDataProvider;
+import com.weizilla.transit.util.TestUtils;
 
 /**
  * tests the bus direction selection activity
@@ -28,6 +29,8 @@ public class BusDirectionSelectorUITest extends ActivityInstrumentationTestCase2
     public void setUp() throws Exception
     {
         super.setUp();
+
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());

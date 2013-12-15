@@ -1,7 +1,5 @@
 package com.weizilla.transit.activity;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -10,11 +8,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.weizilla.transit.R;
-import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 
 import java.util.HashMap;
 import java.util.List;
@@ -27,11 +22,9 @@ import java.util.Map;
  *         Date: 9/2/13
  *         Time: 5:46 PM
  */
-public class BusDirectionSelector extends Activity
+public class BusDirectionSelector extends TransitActivity
 {
-    public static final String RETURN_INTENT_KEY = BusDirectionSelector.class.getName() + ".intent.key";
     private static final String TAG = "BusDirectionSelector";
-    private TransitService transitService;
     private Map<Direction, Button> directionButtons;
     private Route route;
 
@@ -40,24 +33,23 @@ public class BusDirectionSelector extends Activity
     {
         super.onCreate(savedInstanceState);
 
-        this.setContentView(R.layout.bus_direction_select);
-        initButtons();
-
-        TransitDataProvider transitDataProvider = getDataProvider();
-        transitService = new TransitService(transitDataProvider);
+        setContentView(R.layout.bus_direction_select);
+        initGui();
 
         route = getIntent().getParcelableExtra(Route.KEY);
         disableAllDirection();
         retrieveDirections();
     }
 
-    private void initButtons()
+    private void initGui()
     {
         directionButtons = new HashMap<>();
         initButton(Direction.Northbound, R.id.uiBusDirNorth);
         initButton(Direction.Southbound, R.id.uiBusDirSouth);
         initButton(Direction.Eastbound, R.id.uiBusDirEast);
         initButton(Direction.Westbound, R.id.uiBusDirWest);
+
+        setProgressBar(R.id.uiBusDirProgress);
     }
 
     private void initButton(final Direction direction, int resId)
@@ -74,20 +66,25 @@ public class BusDirectionSelector extends Activity
         });
     }
 
-    private TransitDataProvider getDataProvider()
+    @Override
+    protected void onPause()
     {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
+        super.onPause();
+        dismissProgress();
     }
 
     private void retrieveDirections()
     {
         if (route != null)
         {
-            new LookupDirectionTask().execute(route);
+            runOnUiThread(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    new LookupDirectionTask().execute(route);
+                }
+            });
         }
     }
 
@@ -112,27 +109,18 @@ public class BusDirectionSelector extends Activity
     private void returnDirection(Direction direction)
     {
         Intent result = new Intent();
-        result.putExtra(RETURN_INTENT_KEY, (Parcelable) direction);
+        result.putExtra(Direction.KEY, (Parcelable) direction);
         setResult(RESULT_OK, result);
         finish();
     }
 
     private class LookupDirectionTask extends AsyncTask<Route, Void, List<Direction>>
     {
-        private final ProgressDialog progressDialog;
-
-        protected LookupDirectionTask()
-        {
-            progressDialog = new ProgressDialog(BusDirectionSelector.this);
-            progressDialog.setMessage("Retrieving directions...");
-            progressDialog.setIndeterminate(true);
-        }
-
         @Override
         protected void onPreExecute()
         {
             Log.d(TAG, "Retrieving directions...");
-            progressDialog.show();
+            showProgress();
         }
 
         @Override
@@ -147,7 +135,7 @@ public class BusDirectionSelector extends Activity
         {
             super.onPostExecute(directions);
             updateUI(directions);
-            progressDialog.dismiss();
+            dismissProgress();
         }
     }
 }

@@ -1,7 +1,6 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
@@ -14,13 +13,9 @@ import android.widget.ListView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.weizilla.transit.R;
-import com.weizilla.transit.TransitApplication;
-import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.data.StopList;
-import com.weizilla.transit.dataproviders.CTADataProvider;
-import com.weizilla.transit.dataproviders.TransitDataProvider;
 import com.weizilla.transit.ui.BusPredictionAdapter;
 
 import java.util.ArrayList;
@@ -35,31 +30,20 @@ import java.util.List;
  *         Date: 8/26/13
  *         Time: 7:26 PM
  */
-public class BusPrediction extends Activity
+public class BusPrediction extends TransitActivity
 {
     private static final String TAG = "transit.BusPrediction";
     private static final int BUS_PICKER_RESULT = 1;
-    private TransitService transitService;
     private BusPredictionAdapter predictionAdapter;
     private EditText busStopIdInput;
-    private TransitDataProvider dataProvider;
 
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        //TODO remove
-        TransitApplication app = (TransitApplication) getApplication();
-        Log.d(TAG, "Setting foo to TACOS");
-        app.setFoo("TACOS");
-
         initGui();
 
-        dataProvider = getDataProvider();
-        transitService = new TransitService(dataProvider);
-
         Intent intent = getIntent();
-        StopList stopList = intent.getParcelableExtra(StopList.INTENT_KEY);
+        StopList stopList = intent.getParcelableExtra(StopList.KEY);
         List<Integer> stopIds = parseStopIds(stopList);
         updateUiStopIds(stopIds);
         refreshPredictions(stopIds);
@@ -72,15 +56,15 @@ public class BusPrediction extends Activity
         predictionAdapter = new BusPredictionAdapter(this);
         ListView uiPredictionsDisplay = (ListView) findViewById(R.id.uiBusPredDisplay);
         uiPredictionsDisplay.setAdapter(predictionAdapter);
+
+        setProgressBar(R.id.uiBusPredProgress);
     }
 
-    private TransitDataProvider getDataProvider()
+    @Override
+    protected void onPause()
     {
-        String ctaApiKey = getString(R.string.ctaApiKey);
-        Intent intent = getIntent();
-        TransitDataProvider dataProvider =
-                (TransitDataProvider) intent.getSerializableExtra(TransitDataProvider.KEY);
-        return dataProvider != null ? dataProvider : new CTADataProvider(ctaApiKey);
+        super.onPause();
+        dismissProgress();
     }
 
     private void updateUiStopIds(List<Integer> stopIds)
@@ -127,7 +111,6 @@ public class BusPrediction extends Activity
     {
         Intent intent = new Intent();
         intent.setClass(this, BusStopPicker.class);
-        intent.putExtra(TransitDataProvider.KEY, dataProvider);
         startActivityForResult(intent, BUS_PICKER_RESULT);
     }
 
@@ -136,7 +119,7 @@ public class BusPrediction extends Activity
     {
         if (requestCode == BUS_PICKER_RESULT && resultCode == Activity.RESULT_OK)
         {
-            StopList stopList = data.getParcelableExtra(StopList.INTENT_KEY);
+            StopList stopList = data.getParcelableExtra(StopList.KEY);
             List<Integer> stopIds = parseStopIds(stopList);
             updateUiStopIds(stopIds);
             refreshPredictions(stopIds);
@@ -188,20 +171,11 @@ public class BusPrediction extends Activity
 
     private class LookupPredictionsTask extends AsyncTask<List<Integer>, Void, List<Prediction>>
     {
-        private final ProgressDialog progressDialog;
-
-        protected LookupPredictionsTask()
-        {
-            progressDialog = new ProgressDialog(BusPrediction.this);
-            progressDialog.setMessage("Retrieving predictions...");
-            progressDialog.setIndeterminate(true);
-        }
-
         @Override
         protected void onPreExecute()
         {
             Log.d(TAG, "Retrieving predictions...");
-            progressDialog.show();
+            showProgress();
         }
 
         @Override
@@ -218,7 +192,7 @@ public class BusPrediction extends Activity
         {
             super.onPostExecute(predictions);
             updateUiPredictions(predictions);
-            progressDialog.dismiss();
+            dismissProgress();
         }
     }
 }

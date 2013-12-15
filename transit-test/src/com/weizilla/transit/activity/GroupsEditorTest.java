@@ -7,6 +7,7 @@ import com.jayway.android.robotium.solo.Solo;
 import com.weizilla.transit.R;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.db.GroupStore;
+import com.weizilla.transit.util.TestUtils;
 
 import java.util.List;
 
@@ -40,6 +41,8 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
     public void setUp() throws Exception
     {
         super.setUp();
+
+        TestUtils.setMockTransitDataProvider(getInstrumentation());
 
         activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);

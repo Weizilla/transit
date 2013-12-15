@@ -121,7 +121,7 @@ public class FavStopStore implements BusStopsProvider
         {
             Log.w(TAG, "Multiple rows deleted for single fav stop removal. Stop: " + stop);
         }
-        else if (numDel == 0)
+        else if (numDel == 1)
         {
             Log.d(TAG, "Deleted fav stop: " + stop);
         }
