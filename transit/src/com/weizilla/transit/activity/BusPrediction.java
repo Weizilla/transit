@@ -14,6 +14,7 @@ import android.widget.ListView;
 import com.google.common.base.Joiner;
 import com.google.common.base.Strings;
 import com.weizilla.transit.R;
+import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.TransitService;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Stop;
@@ -46,6 +47,11 @@ public class BusPrediction extends Activity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        //TODO remove
+        TransitApplication app = (TransitApplication) getApplication();
+        Log.d(TAG, "Setting foo to TACOS");
+        app.setFoo("TACOS");
 
         initGui();
 

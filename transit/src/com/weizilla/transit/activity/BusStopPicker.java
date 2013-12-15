@@ -4,9 +4,11 @@ import android.app.Activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
 import com.weizilla.transit.R;
+import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
@@ -39,6 +41,10 @@ public class BusStopPicker extends Activity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
+
+        //TODO remove test code
+        TransitApplication app = (TransitApplication) getApplication();
+        Log.d(TAG, "FOO: " + app.getFoo());
 
         dataProvider = getDataProvider();
 
