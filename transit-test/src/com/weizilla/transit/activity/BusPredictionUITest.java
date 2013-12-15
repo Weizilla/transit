@@ -121,10 +121,10 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
     public void testGetStopIdAndPrediction()
     {
         String lookUpStop = solo.getString(R.string.look_up_stop);
+        solo.waitForText(lookUpStop);
         solo.clickOnButton(lookUpStop);
 
         // test route
-        solo.waitForView(R.id.uiBusRouteList);
         solo.waitForView(R.id.uiBusRouteList);
         solo.waitForView(R.id.uiBusRouteList);
         solo.scrollToTop();
