@@ -1,10 +1,12 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
@@ -139,7 +141,6 @@ public class BusPrediction extends Activity
     {
         InputMethodManager imm = (InputMethodManager) getSystemService(
                 Context.INPUT_METHOD_SERVICE);
-
         imm.hideSoftInputFromWindow(busStopIdInput.getWindowToken(), 0);
     }
 
@@ -160,7 +161,6 @@ public class BusPrediction extends Activity
         {
             stopIds.add(stop.getId());
         }
-
         return stopIds;
     }
 
@@ -182,6 +182,22 @@ public class BusPrediction extends Activity
 
     private class LookupPredictionsTask extends AsyncTask<List<Integer>, Void, List<Prediction>>
     {
+        private final ProgressDialog progressDialog;
+
+        protected LookupPredictionsTask()
+        {
+            progressDialog = new ProgressDialog(BusPrediction.this);
+            progressDialog.setMessage("Retrieving predictions...");
+            progressDialog.setIndeterminate(true);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d(TAG, "Retrieving predictions...");
+            progressDialog.show();
+        }
+
         @Override
         @SuppressWarnings({"unchecked", "varargs"})
         protected List<Prediction> doInBackground(List<Integer> ... params)
@@ -196,6 +212,7 @@ public class BusPrediction extends Activity
         {
             super.onPostExecute(predictions);
             updateUiPredictions(predictions);
+            progressDialog.dismiss();
         }
     }
 }

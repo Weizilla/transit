@@ -1,10 +1,12 @@
 package com.weizilla.transit.activity;
 
 import android.app.Activity;
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Parcelable;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import com.weizilla.transit.R;
@@ -117,6 +119,21 @@ public class BusDirectionSelector extends Activity
 
     private class LookupDirectionTask extends AsyncTask<Route, Void, List<Direction>>
     {
+        private final ProgressDialog progressDialog;
+
+        protected LookupDirectionTask()
+        {
+            progressDialog = new ProgressDialog(BusDirectionSelector.this);
+            progressDialog.setMessage("Retrieving directions...");
+            progressDialog.setIndeterminate(true);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d(TAG, "Retrieving directions...");
+            progressDialog.show();
+        }
 
         @Override
         protected List<Direction> doInBackground(Route... params)
@@ -130,6 +147,7 @@ public class BusDirectionSelector extends Activity
         {
             super.onPostExecute(directions);
             updateUI(directions);
+            progressDialog.dismiss();
         }
     }
 }

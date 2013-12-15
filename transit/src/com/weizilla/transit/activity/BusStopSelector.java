@@ -2,6 +2,7 @@ package com.weizilla.transit.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -191,10 +192,21 @@ public class BusStopSelector extends Activity
     private class RetrieveStopsTask extends AsyncTask<Object, Void, List<Stop>>
     {
         private final List<Stop> stops;
+        private final ProgressDialog progressDialog;
 
         private RetrieveStopsTask(List <Stop> stops)
         {
             this.stops = stops;
+            progressDialog = new ProgressDialog(BusStopSelector.this);
+            progressDialog.setMessage("Retrieving stops...");
+            progressDialog.setIndeterminate(true);
+        }
+
+        @Override
+        protected void onPreExecute()
+        {
+            Log.d(TAG, "Retrieving stops...");
+            progressDialog.show();
         }
 
         @Override
@@ -222,6 +234,7 @@ public class BusStopSelector extends Activity
                 this.stops.addAll(stops);
             }
             updateAllStops();
+            progressDialog.dismiss();
         }
     }
 }

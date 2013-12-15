@@ -2,6 +2,7 @@ package com.weizilla.transit.activity;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.ProgressDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
@@ -186,18 +187,23 @@ public class BusRouteSelector extends Activity
         private final List<Route> routes;
         private final BusRoutesProvider provider;
         private final String providerName;
+        private final ProgressDialog progressDialog;
 
         private RetrieveRoutesTask(BusRoutesProvider provider, List<Route> routes)
         {
             this.provider = provider;
             this.routes = routes;
             providerName = provider.getClass().getSimpleName();
+            progressDialog = new ProgressDialog(BusRouteSelector.this);
+            progressDialog.setMessage("Retrieving routes...");
+            progressDialog.setIndeterminate(true);
         }
 
         @Override
         protected void onPreExecute()
         {
             Log.d(TAG, "Retrieving routes from " + providerName + "...");
+            progressDialog.show();
         }
 
         @Override
@@ -218,6 +224,7 @@ public class BusRouteSelector extends Activity
                 this.routes.addAll(routes);
             }
             updateAllRoutes();
+            progressDialog.dismiss();
         }
     }
 }
