@@ -37,7 +37,7 @@ public class BusPredictionUITest extends ActivityInstrumentationTestCase2<BusPre
     public void setUp() throws Exception
     {
         super.setUp();
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
         this.setActivityIntent(intent);

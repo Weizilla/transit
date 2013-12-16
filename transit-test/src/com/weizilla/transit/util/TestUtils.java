@@ -13,6 +13,8 @@ import com.weizilla.transit.dataproviders.MockTransitDataProvider;
  */
 public class TestUtils
 {
+    private static final String DB_TEST_PREFIX = "test_";
+
     private TestUtils()
     {
         // empty
@@ -30,9 +32,10 @@ public class TestUtils
         }
     }
 
-    public static void setMockTransitDataProvider(Instrumentation instrumentation)
+    public static void setTestData(Instrumentation instrumentation)
     {
         TransitApplication app = (TransitApplication) instrumentation.getTargetContext().getApplicationContext();
         app.setTransitDataProvider(new MockTransitDataProvider());
+        app.setDbNamePrefix(DB_TEST_PREFIX);
     }
 }

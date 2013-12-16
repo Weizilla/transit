@@ -8,6 +8,7 @@ import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.google.common.base.Strings;
 import com.google.common.collect.Lists;
+import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.data.Group;
 import com.weizilla.transit.data.Stop;
 
@@ -28,7 +29,6 @@ import java.util.Map;
 public class GroupStore
 {
     private static final String TAG = "transit.GroupStore";
-    private static final String DB_NAME = "Groups";
     private static final String CREATE_GROUPS_SQL =
             "CREATE TABLE " + Group.DB.TABLE_NAME + " (" +
             Group.DB._ID + " INTEGER PRIMARY KEY, " +
@@ -63,18 +63,20 @@ public class GroupStore
     private Context context;
     private SqliteDbHelper dbHelper;
     private SQLiteDatabase db;
+    private String dbName = "Groups";
 
     public GroupStore(Context context)
     {
         this.context = context;
-
-        dbHelper = new SqliteDbHelper(context, DB_NAME,
-                CREATE_SQLS, DROP_SQLS);
+        TransitApplication app = (TransitApplication) context.getApplicationContext();
+        dbName = app.getDbNamePrefix() + dbName;
     }
 
     public void open()
     {
         Log.d(TAG, "Opening Group Store db");
+        dbHelper = new SqliteDbHelper(context, dbName,
+                CREATE_SQLS, DROP_SQLS);
         db = dbHelper.getWritableDatabase();
     }
 
@@ -256,8 +258,8 @@ public class GroupStore
 
     public void deleteDb()
     {
-        boolean status = context.deleteDatabase(DB_NAME);
-        Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
+        boolean status = context.deleteDatabase(dbName);
+        Log.i(TAG, "Database " + dbName + " deleted successfully: " + status);
     }
 
     /**

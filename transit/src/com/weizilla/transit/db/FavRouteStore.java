@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.weizilla.transit.BusRoutesProvider;
+import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.data.FavRoute;
 import com.weizilla.transit.data.Route;
 
@@ -24,7 +25,6 @@ import java.util.List;
 public class FavRouteStore implements BusRoutesProvider
 {
     private static final String TAG = "transit.FavRouteStore";
-    private static final String DB_NAME = "FavRoute";
     private static final String CREATE_TABLE_SQL =
         "CREATE TABLE " + FavRoute.DB.TABLE_NAME + " (" +
         FavRoute.DB._ID + " INTEGER PRIMARY KEY, " +
@@ -33,6 +33,7 @@ public class FavRouteStore implements BusRoutesProvider
         " )";
     private static final String DROP_TABLE_SQL =
         "DROP TABLE IF EXISTS " + FavRoute.DB.TABLE_NAME;
+    private String dbName = "FavRoute";
     private Context context;
     private SQLiteDatabase database;
     private SqliteDbHelper databaseHelper;
@@ -40,14 +41,16 @@ public class FavRouteStore implements BusRoutesProvider
     public FavRouteStore(Context context)
     {
         this.context = context;
+        TransitApplication app = (TransitApplication) context.getApplicationContext();
+        dbName = app.getDbNamePrefix() + dbName;
     }
 
     public void open()
     {
         databaseHelper = new SqliteDbHelper(context,
-            DB_NAME, CREATE_TABLE_SQL, DROP_TABLE_SQL);
+                dbName, CREATE_TABLE_SQL, DROP_TABLE_SQL);
         database = databaseHelper.getWritableDatabase();
-        Log.d(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
+        Log.d(TAG, "Database " + dbName + " open successful: " + (database != null));
     }
 
     public long addRoute(Route route)
@@ -117,8 +120,8 @@ public class FavRouteStore implements BusRoutesProvider
 
     public void deleteDb()
     {
-        boolean status = context.deleteDatabase(DB_NAME);
-        Log.i(TAG, "Database " + DB_NAME + " delete successful: " + status);
+        boolean status = context.deleteDatabase(dbName);
+        Log.i(TAG, "Database " + dbName + " delete successful: " + status);
     }
 
     /**

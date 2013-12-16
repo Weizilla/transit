@@ -30,7 +30,7 @@ public class BusDirectionSelectorUITest extends ActivityInstrumentationTestCase2
     {
         super.setUp();
 
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());

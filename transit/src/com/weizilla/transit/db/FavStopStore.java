@@ -6,6 +6,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 import com.weizilla.transit.BusStopsProvider;
+import com.weizilla.transit.TransitApplication;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.FavStop;
 import com.weizilla.transit.data.Route;
@@ -27,7 +28,6 @@ import java.util.List;
 public class FavStopStore implements BusStopsProvider
 {
     private static final String TAG = "transit.FavStopStore";
-    private static final String DB_NAME = "FavStop";
     private static final String CREATE_TABLE_SQL =
             "CREATE TABLE " + FavStop.DB.TABLE_NAME + " (" +
             FavStop.DB._ID + " INTEGER PRIMARY KEY, " +
@@ -38,6 +38,7 @@ public class FavStopStore implements BusStopsProvider
             ")";
     private static final String DROP_TABLE_SQL =
             "DROP TABLE IF EXISTS " + FavStop.DB.TABLE_NAME;
+    private String dbName = "FavStop";
     private Context context;
     private SQLiteDatabase database;
     private SqliteDbHelper databaseHelper;
@@ -45,14 +46,16 @@ public class FavStopStore implements BusStopsProvider
     public FavStopStore(Context context)
     {
         this.context = context;
+        TransitApplication app = (TransitApplication) context.getApplicationContext();
+        dbName = app.getDbNamePrefix() + dbName;
     }
 
     public void open()
     {
         databaseHelper = new SqliteDbHelper(
-                context, DB_NAME, CREATE_TABLE_SQL, DROP_TABLE_SQL);
+                context, dbName, CREATE_TABLE_SQL, DROP_TABLE_SQL);
         database = databaseHelper.getWritableDatabase();
-        Log.i(TAG, "Database " + DB_NAME + " open successful: " + (database != null));
+        Log.i(TAG, "Database " + dbName + " open successful: " + (database != null));
     }
 
     public long addStop(Route route, Direction direction, Stop stop)
@@ -140,8 +143,8 @@ public class FavStopStore implements BusStopsProvider
 
     public void deleteDb()
     {
-        boolean status = context.deleteDatabase(DB_NAME);
-        Log.i(TAG, "Database " + DB_NAME + " deleted successfully: " + status);
+        boolean status = context.deleteDatabase(dbName);
+        Log.i(TAG, "Database " + dbName + " deleted successfully: " + status);
     }
 
     SqliteDbHelper getDatabaseHelper()

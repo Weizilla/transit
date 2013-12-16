@@ -44,7 +44,7 @@ public class GroupStopsEditorTest extends ActivityInstrumentationTestCase2<Group
     public void setUp() throws Exception
     {
         super.setUp();
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
     }
 
     private void init()

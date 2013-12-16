@@ -45,7 +45,7 @@ public class BusRouteSelectorUITest extends ActivityInstrumentationTestCase2<Bus
     public void setUp() throws Exception
     {
         super.setUp();
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());
         this.setActivityIntent(intent);

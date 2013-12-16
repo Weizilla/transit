@@ -42,7 +42,7 @@ public class GroupsEditorTest extends ActivityInstrumentationTestCase2<GroupsEdi
     {
         super.setUp();
 
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
 
         activity = getActivity();
         solo = new Solo(getInstrumentation(), activity);

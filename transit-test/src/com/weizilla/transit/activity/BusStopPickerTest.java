@@ -40,7 +40,7 @@ public class BusStopPickerTest extends ActivityInstrumentationTestCase2<BusStopP
     {
         super.setUp();
 
-        TestUtils.setMockTransitDataProvider(getInstrumentation());
+        TestUtils.setTestData(getInstrumentation());
 
         Intent intent = new Intent();
         intent.putExtra(TransitDataProvider.KEY, new MockTransitDataProvider());

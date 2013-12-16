@@ -13,6 +13,7 @@ import com.weizilla.transit.dataproviders.TransitDataProvider;
 public class TransitApplication extends Application
 {
     private TransitDataProvider transitDataProvider;
+    private String dbNamePrefix = "";
 
     public void setTransitDataProvider(TransitDataProvider transitDataProvider)
     {
@@ -22,5 +23,15 @@ public class TransitApplication extends Application
     public TransitDataProvider getTransitDataProvider()
     {
         return transitDataProvider;
+    }
+
+    public String getDbNamePrefix()
+    {
+        return dbNamePrefix;
+    }
+
+    public void setDbNamePrefix(String dbNamePrefix)
+    {
+        this.dbNamePrefix = dbNamePrefix;
     }
 }
