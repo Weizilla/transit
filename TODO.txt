@@ -6,14 +6,8 @@ filter by buses on stops
 filter by buses for stops in groups
 better ui for predictions from multiple stops
 mark prediction as delayed
-alternative database between testing and real app
 use clock offset from cta data source for more accurate predictions
-
-=======
-alternative database between testing and real app
--------
-some sort of global variable or extend Application to store db name in context
-
+find logging framework that works with junit and android
 
 =======
 use clock offset from cta data source for more real accurate predictions
