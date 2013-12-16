@@ -88,7 +88,7 @@ public class Stop implements Parcelable, Comparable<Stop>
         {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
+        if (o == null || ((Object) this).getClass() != o.getClass())
         {
             return false;
         }
