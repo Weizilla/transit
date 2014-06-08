@@ -79,7 +79,7 @@ public class Route implements Parcelable, Comparable<Route>
         {
             return true;
         }
-        if (o == null || getClass() != o.getClass())
+        if (o == null || ((Object) this).getClass() != o.getClass())
         {
             return false;
         }
