@@ -9,6 +9,13 @@ Robotium-Solo
 Simple-XML
 
 Set up:
+1.) Download maven android sdk deployer https://github.com/mosabua/maven-android-sdk-deployer
+2.) Follow instructions for deployer and install
+3.) Set ANDROID_HOME to root android sdk installation directory for intellij
+4.) Add cta api key to transit/res/values/keys.xml with key of "ctaApiKey"
+4.) Build
+
+old:
 1.) Import
   a.) transit as android project
   b.) transit-test as android project
