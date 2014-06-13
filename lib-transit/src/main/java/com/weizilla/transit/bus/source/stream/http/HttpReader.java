@@ -7,6 +7,8 @@ import java.net.URL;
 
 public class HttpReader
 {
+    protected static final int READ_TIMEOUT_MS = 10000;
+    protected static final int CONNECT_TIMEOUT_MS = 10000;
     private HttpURLConnectionFactory connectionFactory;
 
     public HttpReader(HttpURLConnectionFactory connectionFactory)
@@ -17,8 +19,15 @@ public class HttpReader
     public InputStream connectAndReadStream(URL url) throws IOException
     {
         HttpURLConnection connection = connectionFactory.createConnection(url);
-        //TODO connection.connect();
-        //TODO check response code
+        connection.setReadTimeout(READ_TIMEOUT_MS);
+        connection.setConnectTimeout(CONNECT_TIMEOUT_MS);
+
+        connection.connect();
+        if (connection.getResponseCode() != HttpURLConnection.HTTP_OK)
+        {
+            throw new IOException("Http exception. Code: " + connection.getResponseCode());
+        }
+
         return connection.getInputStream();
     }
 

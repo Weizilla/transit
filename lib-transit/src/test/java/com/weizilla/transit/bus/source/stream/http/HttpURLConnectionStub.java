@@ -6,12 +6,25 @@ import java.net.HttpURLConnection;
 
 public class HttpURLConnectionStub extends HttpURLConnection
 {
-    private InputStream inputStream;
+    private final InputStream inputStream;
+    private final int responseCode;
 
-    public HttpURLConnectionStub(InputStream inputStream)
+    public HttpURLConnectionStub(int responseCode)
+    {
+        this(responseCode, null);
+    }
+
+    public HttpURLConnectionStub(int responseCode, InputStream inputStream)
     {
         super(null);
+        this.responseCode = responseCode;
         this.inputStream = inputStream;
+    }
+
+    @Override
+    public int getResponseCode() throws IOException
+    {
+        return responseCode;
     }
 
     @Override
