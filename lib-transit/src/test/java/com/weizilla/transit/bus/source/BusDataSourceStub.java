@@ -4,11 +4,11 @@ import com.weizilla.transit.bus.data.Route;
 
 import java.util.Collection;
 
-public class BusSourceStub implements BusSource
+public class BusDataSourceStub implements BusDataSource
 {
     private Collection<Route> routes;
 
-    public BusSourceStub(Collection<Route> routes)
+    public BusDataSourceStub(Collection<Route> routes)
     {
         this.routes = routes;
     }

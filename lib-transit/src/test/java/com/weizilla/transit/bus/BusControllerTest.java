@@ -1,7 +1,7 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.source.BusSourceStub;
+import com.weizilla.transit.bus.source.BusDataSourceStub;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ public class BusControllerTest
     public void getsRouteListFromSource() throws Exception
     {
         Collection<Route> expected = Collections.singletonList(new Route());
-        controller.setSource(new BusSourceStub(expected));
+        controller.setSource(new BusDataSourceStub(expected));
 
         Collection<Route> actual = controller.getRoutes();
 
