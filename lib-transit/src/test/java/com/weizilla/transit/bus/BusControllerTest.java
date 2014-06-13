@@ -12,19 +12,11 @@ import static org.junit.Assert.assertEquals;
 
 public class BusControllerTest
 {
-    private BusController controller;
-
-    @Before
-    public void setUp() throws Exception
-    {
-        controller = new BusController();
-    }
-
     @Test
     public void getsRouteListFromSource() throws Exception
     {
         Collection<Route> expected = Collections.singletonList(new Route());
-        controller.setSource(new BusDataSourceStub(expected));
+        BusController controller = new BusController(new BusDataSourceStub(expected));
 
         Collection<Route> actual = controller.getRoutes();
 

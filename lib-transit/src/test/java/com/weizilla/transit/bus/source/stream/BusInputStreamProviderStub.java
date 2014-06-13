@@ -1,12 +1,12 @@
-package com.weizilla.transit.bus.source;
+package com.weizilla.transit.bus.source.stream;
 
 import java.io.InputStream;
 
-public class BusDataInputStreamStub implements BusDataInputStream
+public class BusInputStreamProviderStub implements BusInputStreamProvider
 {
     private InputStream stream;
 
-    public BusDataInputStreamStub(InputStream stream)
+    public BusInputStreamProviderStub(InputStream stream)
     {
         this.stream = stream;
     }

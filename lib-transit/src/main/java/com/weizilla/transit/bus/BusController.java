@@ -7,15 +7,15 @@ import java.util.Collection;
 
 public class BusController
 {
-    private BusDataSource source;
+    private final BusDataSource source;
+
+    public BusController(BusDataSource source)
+    {
+        this.source = source;
+    }
 
     public Collection<Route> getRoutes()
     {
         return source.getRoutes();
-    }
-
-    public void setSource(BusDataSource source)
-    {
-        this.source = source;
     }
 }

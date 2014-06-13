@@ -1,4 +1,4 @@
-package com.weizilla.transit.bus.source;
+package com.weizilla.transit.bus.source.stream;
 
 import com.weizilla.transit.bus.data.Route;
 import org.junit.Test;
@@ -8,14 +8,14 @@ import java.util.Collection;
 
 import static org.junit.Assert.*;
 
-public class BusDataStreamSourceTest
+public class StreamingBusDataSourceTest
 {
     @Test
     public void readsRoutesFromXmlStream() throws Exception
     {
         InputStream inputStream = getClass().getResourceAsStream("/getroutes.xml");
-        BusDataStreamSource source = new BusDataStreamSource();
-        source.setDataInputStream(new BusDataInputStreamStub(inputStream));
+        BusInputStreamProviderStub streamProvider = new BusInputStreamProviderStub(inputStream);
+        StreamingBusDataSource source = new StreamingBusDataSource(streamProvider);
 
         Collection<Route> routes = source.getRoutes();
         assertNotNull(routes);

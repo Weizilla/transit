@@ -1,7 +1,8 @@
-package com.weizilla.transit.bus.source;
+package com.weizilla.transit.bus.source.stream;
 
 import com.weizilla.transit.bus.data.BustimeResponse;
 import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.source.BusDataSource;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -12,16 +13,17 @@ import java.io.InputStream;
 import java.util.Collection;
 import java.util.Collections;
 
-public class BusDataStreamSource implements BusDataSource
+public class StreamingBusDataSource implements BusDataSource
 {
-    private static final Logger logger = LoggerFactory.getLogger(BusDataStreamSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(StreamingBusDataSource.class);
     private final Persister serializer;
-    private BusDataInputStream dataInputStream;
+    private final BusInputStreamProvider streamProvider;
 
-    public BusDataStreamSource()
+    public StreamingBusDataSource(BusInputStreamProvider streamProvider)
     {
         Strategy strategy = new AnnotationStrategy();
         serializer = new Persister(strategy);
+        this.streamProvider = streamProvider;
     }
 
     @Override
@@ -29,7 +31,7 @@ public class BusDataStreamSource implements BusDataSource
     {
         try
         (
-            InputStream input = dataInputStream.getRoutes()
+            InputStream input = streamProvider.getRoutes()
         )
         {
             BustimeResponse response = serializer.read(BustimeResponse.class, input);
@@ -41,10 +43,5 @@ public class BusDataStreamSource implements BusDataSource
         }
 
         return Collections.emptyList();
-    }
-
-    public void setDataInputStream(BusDataInputStream dataInputStream)
-    {
-        this.dataInputStream = dataInputStream;
     }
 }
