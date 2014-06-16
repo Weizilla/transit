@@ -84,6 +84,7 @@
 
     <modules>
         <module>lib-transit</module>
+        <module>lib-favorites</module>
     </modules>
 
 </project>
