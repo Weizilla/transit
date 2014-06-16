@@ -1,7 +1,7 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.favorites.BusFavoriteStore;
+import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.bus.source.BusDataSource;
 
 import java.util.Collection;
@@ -9,9 +9,9 @@ import java.util.Collection;
 public class BusController
 {
     private final BusDataSource dataSource;
-    private final BusFavoriteStore favoriteStore;
+    private final BusFavoritesStore favoriteStore;
 
-    public BusController(BusDataSource dataSource, BusFavoriteStore favoriteStore)
+    public BusController(BusDataSource dataSource, BusFavoritesStore favoriteStore)
     {
         this.dataSource = dataSource;
         this.favoriteStore = favoriteStore;

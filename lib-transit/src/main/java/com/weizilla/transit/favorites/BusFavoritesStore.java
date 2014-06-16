@@ -4,7 +4,7 @@ import com.weizilla.transit.bus.data.Route;
 
 import java.util.Collection;
 
-public interface BusFavoriteStore
+public interface BusFavoritesStore
 {
     void saveFavorite(Route route);
     Collection<Route> getFavoriteRoutes();

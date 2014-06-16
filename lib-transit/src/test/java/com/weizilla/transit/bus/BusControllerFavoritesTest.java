@@ -1,8 +1,8 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.favorites.BusFavoriteStore;
-import com.weizilla.transit.favorites.BusFavoriteStoreStub;
+import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.favorites.BusFavoritesStoreStub;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -18,7 +18,7 @@ public class BusControllerFavoritesTest
     public void storesFavoriteRoutes() throws Exception
     {
         Route route = new Route();
-        BusFavoriteStore favoriteStore = mock(BusFavoriteStore.class);
+        BusFavoritesStore favoriteStore = mock(BusFavoritesStore.class);
         BusController controller = new BusController(null, favoriteStore);
 
         controller.saveFavorite(route);
@@ -31,7 +31,7 @@ public class BusControllerFavoritesTest
     {
         Collection<Route> routes = Collections.singletonList(new Route());
 
-        BusFavoriteStore favoriteStore = new BusFavoriteStoreStub(routes);
+        BusFavoritesStore favoriteStore = new BusFavoritesStoreStub(routes);
         BusController controller = new BusController(null, favoriteStore);
 
         Collection<Route> actual = controller.getFavoriteRoutes();
