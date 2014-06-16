@@ -1,7 +1,7 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.favorites.BusFavoriteStore;
+import com.weizilla.transit.favorites.BusFavoriteStore;
 import com.weizilla.transit.bus.source.BusDataSource;
 
 import java.util.Collection;

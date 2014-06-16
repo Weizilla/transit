@@ -1,4 +1,4 @@
-package com.weizilla.transit.bus.favorites;
+package com.weizilla.transit.favorites;
 
 import com.weizilla.transit.bus.data.Route;
 

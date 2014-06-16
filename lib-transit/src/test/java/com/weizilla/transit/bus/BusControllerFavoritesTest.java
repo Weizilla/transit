@@ -1,8 +1,8 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.favorites.BusFavoriteStore;
-import com.weizilla.transit.bus.favorites.BusFavoriteStoreStub;
+import com.weizilla.transit.favorites.BusFavoriteStore;
+import com.weizilla.transit.favorites.BusFavoriteStoreStub;
 import org.junit.Test;
 
 import java.util.Collection;
