@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<bustime-response>
+    <prd>
+        <tmstmp>20140702 18:04</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1380</vid>
+        <dstp>840</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Foster</des>
+        <prdtm>20140702 18:05</prdtm>
+        <tablockid>22 -569</tablockid>
+        <tatripid>1040944</tatripid>
+        <zone></zone>
+        <dly>true</dly>
+    </prd>
+</bustime-response>

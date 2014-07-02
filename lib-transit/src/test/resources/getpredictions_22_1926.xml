@@ -1,0 +1,138 @@
+<?xml version="1.0"?>
+<bustime-response>
+    <prd>
+        <tmstmp>20140702 18:04</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1380</vid>
+        <dstp>840</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Foster</des>
+        <prdtm>20140702 18:05</prdtm>
+        <tablockid>22 -569</tablockid>
+        <tatripid>1040944</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1778</vid>
+        <dstp>1452</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Foster</des>
+        <prdtm>20140702 18:06</prdtm>
+        <tablockid>22 -567</tablockid>
+        <tatripid>1040942</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 17:57</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1917</vid>
+        <dstp>9546</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20140702 18:10</prdtm>
+        <tablockid>22 -551</tablockid>
+        <tatripid>1040943</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1301</vid>
+        <dstp>8988</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20140702 18:15</prdtm>
+        <tablockid>22 -571</tablockid>
+        <tatripid>1040947</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1797</vid>
+        <dstp>9011</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Foster</des>
+        <prdtm>20140702 18:15</prdtm>
+        <tablockid>22 -509</tablockid>
+        <tatripid>1040946</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1771</vid>
+        <dstp>9026</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20140702 18:16</prdtm>
+        <tablockid>22 -570</tablockid>
+        <tatripid>1040945</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1783</vid>
+        <dstp>10964</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Foster</des>
+        <prdtm>20140702 18:19</prdtm>
+        <tablockid>22 -572</tablockid>
+        <tatripid>1040948</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1889</vid>
+        <dstp>11774</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20140702 18:19</prdtm>
+        <tablockid>22 -523</tablockid>
+        <tatripid>1040949</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20140702 18:03</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Addison</stpnm>
+        <stpid>1926</stpid>
+        <vid>1392</vid>
+        <dstp>17327</dstp>
+        <rt>22</rt>
+        <rtdir>Northbound</rtdir>
+        <des>Howard</des>
+        <prdtm>20140702 18:28</prdtm>
+        <tablockid>22 -574</tablockid>
+        <tatripid>1040951</tatripid>
+        <zone></zone>
+    </prd>
+</bustime-response>
