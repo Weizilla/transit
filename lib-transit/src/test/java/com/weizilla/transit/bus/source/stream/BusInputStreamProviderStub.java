@@ -13,6 +13,12 @@ public class BusInputStreamProviderStub implements BusInputStreamProvider
         return stream;
     }
 
+    @Override
+    public InputStream getDirections(String route) throws IOException
+    {
+        return stream;
+    }
+
     public void setStreamFromResource(String resourceName)
     {
         stream = getClass().getResourceAsStream(resourceName);
@@ -22,7 +28,10 @@ public class BusInputStreamProviderStub implements BusInputStreamProvider
     {
         try
         {
-            stream.close();
+            if (stream != null)
+            {
+                stream.close();
+            }
         }
         catch (IOException e)
         {

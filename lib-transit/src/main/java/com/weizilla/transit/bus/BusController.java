@@ -1,8 +1,9 @@
 package com.weizilla.transit.bus;
 
+import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.bus.source.BusDataSource;
+import com.weizilla.transit.favorites.BusFavoritesStore;
 
 import java.util.Collection;
 
@@ -20,6 +21,11 @@ public class BusController
     public Collection<Route> getRoutes()
     {
         return dataSource.getRoutes();
+    }
+
+    public Collection<Direction> getDirections(String route)
+    {
+        return dataSource.getDirections(route);
     }
 
     public void saveFavorite(Route route)

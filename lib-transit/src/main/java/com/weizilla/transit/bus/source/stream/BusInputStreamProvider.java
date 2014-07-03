@@ -6,4 +6,5 @@ import java.io.InputStream;
 public interface BusInputStreamProvider
 {
     InputStream getRoutes() throws IOException;
+    InputStream getDirections(String route) throws IOException;
 }

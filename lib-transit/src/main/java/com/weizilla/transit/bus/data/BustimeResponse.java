@@ -14,9 +14,9 @@ public class BustimeResponse
     @ElementList(inline = true, required = false)
     private List<Route> routes;
 
-//    @ElementList(inline = true, required = false)
-//    private List<Direction> directions;
-//
+    @ElementList(inline = true, required = false)
+    private List<Direction> directions;
+
 //    @ElementList(inline = true, required = false)
 //    private List<Stop> stops;
 //
@@ -29,10 +29,10 @@ public class BustimeResponse
 //        return predictions;
 //    }
 //
-//    public List<Direction> getDirections()
-//    {
-//        return directions;
-//    }
+    public List<Direction> getDirections()
+    {
+        return directions;
+    }
 
     public List<Route> getRoutes()
     {
