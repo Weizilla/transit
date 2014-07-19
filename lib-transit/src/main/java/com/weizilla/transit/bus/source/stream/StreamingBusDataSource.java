@@ -3,6 +3,7 @@ package com.weizilla.transit.bus.source.stream;
 import com.weizilla.transit.bus.data.BustimeResponse;
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
@@ -60,6 +61,25 @@ public class StreamingBusDataSource implements BusDataSource
         catch (Exception e)
         {
             logger.error("Error getting direction for route {}", route, e);
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<Stop> getStops(String route, Direction direction)
+    {
+        try
+        (
+            InputStream input = streamProvider.getStops(route, direction)
+        )
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            return response.getStops();
+        }
+        catch (Exception e)
+        {
+            logger.error("Error getting stops for route {} direction {}", route, direction);
         }
 
         return Collections.emptyList();

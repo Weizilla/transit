@@ -2,6 +2,7 @@ package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
 import com.weizilla.transit.favorites.BusFavoritesStore;
 
@@ -26,6 +27,11 @@ public class BusController
     public Collection<Direction> getDirections(String route)
     {
         return dataSource.getDirections(route);
+    }
+
+    public Collection<Stop> getStops(String route, Direction direction)
+    {
+        return dataSource.getStops(route, direction);
     }
 
     public void saveFavorite(Route route)

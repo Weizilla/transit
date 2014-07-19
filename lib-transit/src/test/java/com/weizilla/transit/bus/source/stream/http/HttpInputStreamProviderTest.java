@@ -1,5 +1,6 @@
 package com.weizilla.transit.bus.source.stream.http;
 
+import com.weizilla.transit.bus.data.Direction;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -12,7 +13,8 @@ import static org.mockito.Mockito.verify;
 public class HttpInputStreamProviderTest
 {
     private static final String API_KEY = "API_KEY";
-    public static final String ROUTE = "22";
+    private static final String ROUTE = "22";
+    private static final Direction DIRECTION = Direction.Northbound;
 
     @Test
     public void createsGetRoutesUrl() throws Exception
@@ -73,5 +75,36 @@ public class HttpInputStreamProviderTest
 
         provider.getDirections(ROUTE);
         verify(reader).connectAndReadStream(url);
+    }
+
+    @Test
+    public void createsGetStopsUrl() throws Exception
+    {
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getstops?rt=" + ROUTE + "&dir=" + DIRECTION + "&key=API_KEY");
+        URL actual = HttpInputStreamProvider.createGetStopsUrl(ROUTE, DIRECTION, API_KEY);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getsStopsReturnsInputStream() throws Exception
+    {
+        InputStream inputStream = mock(InputStream.class);
+        HttpReader connection = new HttpReaderStub(inputStream);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
+
+        InputStream actual = provider.getStops(ROUTE, DIRECTION);
+        assertEquals(inputStream, actual);
+    }
+
+    @Test
+    public void getStopsCallsReaderWithProperUrl() throws Exception
+    {
+        URL url = HttpInputStreamProvider.createGetStopsUrl(ROUTE, DIRECTION, API_KEY);
+        HttpReader reader = mock(HttpReader.class);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
+
+        provider.getStops(ROUTE, DIRECTION);
+        verify(reader).connectAndReadStream(url);
+
     }
 }

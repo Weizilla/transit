@@ -1,5 +1,6 @@
 package com.weizilla.transit.bus.source.stream.http;
 
+import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.source.stream.BusInputStreamProvider;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
 {
     private static final String GET_ROUTES = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key={0}";
     private static final String GET_DIRECTIONS = "http://www.ctabustracker.com/bustime/api/v1/getdirections?rt={0}&key={1}";
+    private static final String GET_STOPS = "http://www.ctabustracker.com/bustime/api/v1/getstops?rt={0}&dir={1}&key={2}";
     private final HttpReader reader;
     private final String apiKey;
 
@@ -34,6 +36,13 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
         return reader.connectAndReadStream(url);
     }
 
+    @Override
+    public InputStream getStops(String route, Direction direction) throws IOException
+    {
+        URL url = createGetStopsUrl(route, direction, apiKey);
+        return reader.connectAndReadStream(url);
+    }
+
     protected static URL createGetRoutesUrl(String apiKey) throws IOException
     {
         return new URL(MessageFormat.format(GET_ROUTES, apiKey));
@@ -42,5 +51,10 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
     protected static URL createGetDirectionsUrl(String route, String apiKey) throws IOException
     {
         return new URL(MessageFormat.format(GET_DIRECTIONS, route, apiKey));
+    }
+
+    protected static URL createGetStopsUrl(String route, Direction direction, String apiKey) throws IOException
+    {
+        return new URL(MessageFormat.format(GET_STOPS, route, direction, apiKey));
     }
 }

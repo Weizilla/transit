@@ -2,9 +2,11 @@ package com.weizilla.transit.bus.source.stream;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.data.Stop;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -64,6 +66,31 @@ public class StreamingBusDataSourceTest
 
         List<Direction> expected = Lists.newArrayList(Direction.Northbound, Direction.Southbound);
         assertEquals(expected, directions);
+    }
+
+    @Test
+    public void readsStopsFromXmlStream() throws Exception
+    {
+        streamProvider.setStreamFromResource("/getstops_22_N.xml");
+
+        String route = "22";
+        Direction direction = Direction.Northbound;
+
+        Collection<Stop> stops = source.getStops(route, direction);
+
+        assertNotNull(stops);
+        assertEquals(86, stops.size());
+
+        assertStop(1926, "Clark & Addison", 41.947086853598, -87.656360864639, Iterables.get(stops, 0));
+    }
+
+    private static void assertStop(int stopId, String stopName, double lat, double lon, Stop actual)
+    {
+        double delta = 0.01;
+        assertEquals(stopId, actual.getId());
+        assertEquals(stopName, actual.getName());
+        assertEquals(lat, actual.getLatitude(), delta);
+        assertEquals(lon, actual.getLongitude(), delta);
     }
 
     @Test
