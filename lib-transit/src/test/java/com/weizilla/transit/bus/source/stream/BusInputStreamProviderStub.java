@@ -21,7 +21,14 @@ public class BusInputStreamProviderStub implements BusInputStreamProvider
         return stream;
     }
 
+    @Override
     public InputStream getStops(String route, Direction direction) throws IOException
+    {
+        return stream;
+    }
+
+    @Override
+    public InputStream getPredictions(String route, int stopId) throws IOException
     {
         return stream;
     }

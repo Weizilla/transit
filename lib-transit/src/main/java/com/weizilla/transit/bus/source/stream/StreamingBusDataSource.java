@@ -2,6 +2,7 @@ package com.weizilla.transit.bus.source.stream;
 
 import com.weizilla.transit.bus.data.BustimeResponse;
 import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
@@ -80,6 +81,25 @@ public class StreamingBusDataSource implements BusDataSource
         catch (Exception e)
         {
             logger.error("Error getting stops for route {} direction {}", route, direction);
+        }
+
+        return Collections.emptyList();
+    }
+
+    @Override
+    public Collection<Prediction> getPredictions(String route, int stopId)
+    {
+        try
+        (
+            InputStream input = streamProvider.getPredictions(route, stopId)
+        )
+        {
+            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            return response.getPredictions();
+        }
+        catch (Exception e)
+        {
+            logger.error("Error getting predictions for route {} stopId {}", route, stopId, e);
         }
 
         return Collections.emptyList();

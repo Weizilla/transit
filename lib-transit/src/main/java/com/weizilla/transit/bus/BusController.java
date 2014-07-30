@@ -1,6 +1,7 @@
 package com.weizilla.transit.bus;
 
 import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
@@ -32,6 +33,11 @@ public class BusController
     public Collection<Stop> getStops(String route, Direction direction)
     {
         return dataSource.getStops(route, direction);
+    }
+
+    public Collection<Prediction> getPredictions(String route, int stopId)
+    {
+        return dataSource.getPredictions(route, stopId);
     }
 
     public void saveFavorite(Route route)

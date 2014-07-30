@@ -13,6 +13,7 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
     private static final String GET_ROUTES = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key={0}";
     private static final String GET_DIRECTIONS = "http://www.ctabustracker.com/bustime/api/v1/getdirections?rt={0}&key={1}";
     private static final String GET_STOPS = "http://www.ctabustracker.com/bustime/api/v1/getstops?rt={0}&dir={1}&key={2}";
+    private static final String GET_PREDICTIONS = "http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt={0}&stpid={1}&key={2}";
     private final HttpReader reader;
     private final String apiKey;
 
@@ -43,6 +44,13 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
         return reader.connectAndReadStream(url);
     }
 
+    @Override
+    public InputStream getPredictions(String route, int stopId) throws IOException
+    {
+        URL url = createGetPredictionsUrl(route, stopId, apiKey);
+        return reader.connectAndReadStream(url);
+    }
+
     protected static URL createGetRoutesUrl(String apiKey) throws IOException
     {
         return new URL(MessageFormat.format(GET_ROUTES, apiKey));
@@ -56,5 +64,10 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
     protected static URL createGetStopsUrl(String route, Direction direction, String apiKey) throws IOException
     {
         return new URL(MessageFormat.format(GET_STOPS, route, direction, apiKey));
+    }
+
+    protected static URL createGetPredictionsUrl(String route, int stop, String apiKey) throws IOException
+    {
+        return new URL(MessageFormat.format(GET_PREDICTIONS, route, stop, apiKey));
     }
 }

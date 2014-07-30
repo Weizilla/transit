@@ -7,6 +7,7 @@ import java.io.InputStream;
 import java.net.URL;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.verify;
 
@@ -15,6 +16,7 @@ public class HttpInputStreamProviderTest
     private static final String API_KEY = "API_KEY";
     private static final String ROUTE = "22";
     private static final Direction DIRECTION = Direction.Northbound;
+    private static final int STOP = 100;
 
     @Test
     public void createsGetRoutesUrl() throws Exception
@@ -32,8 +34,7 @@ public class HttpInputStreamProviderTest
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
 
         InputStream actual = provider.getRoutes();
-        assertEquals(inputStream, actual);
-
+        assertSame(inputStream, actual);
     }
 
     @Test
@@ -63,7 +64,7 @@ public class HttpInputStreamProviderTest
         HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
 
         InputStream actual = provider.getDirections(ROUTE);
-        assertEquals(inputStream, actual);
+        assertSame(inputStream, actual);
     }
 
     @Test
@@ -93,7 +94,7 @@ public class HttpInputStreamProviderTest
         HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
 
         InputStream actual = provider.getStops(ROUTE, DIRECTION);
-        assertEquals(inputStream, actual);
+        assertSame(inputStream, actual);
     }
 
     @Test
@@ -105,6 +106,35 @@ public class HttpInputStreamProviderTest
 
         provider.getStops(ROUTE, DIRECTION);
         verify(reader).connectAndReadStream(url);
+    }
 
+    @Test
+    public void createsGetPredictionsUrl() throws Exception
+    {
+        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt=" + ROUTE + "&stpid=" + STOP + "&key=API_KEY");
+        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, STOP, API_KEY);
+        assertEquals(exected, actual);
+    }
+
+    @Test
+    public void getsPredictionsReturnsInputStream() throws Exception
+    {
+        InputStream inputStream = mock(InputStream.class);
+        HttpReader connection = new HttpReaderStub(inputStream);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
+
+        InputStream actual = provider.getPredictions(ROUTE, STOP);
+        assertSame(inputStream, actual);
+    }
+
+    @Test
+    public void callsGetPredictionWithProperUrl() throws Exception
+    {
+        URL url = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, STOP, API_KEY);
+        HttpReader reader = mock(HttpReader.class);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
+
+        provider.getPredictions(ROUTE, STOP);
+        verify(reader).connectAndReadStream(url);
     }
 }

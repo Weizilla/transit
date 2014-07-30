@@ -10,4 +10,5 @@ public interface BusInputStreamProvider
     InputStream getRoutes() throws IOException;
     InputStream getDirections(String route) throws IOException;
     InputStream getStops(String route, Direction direction) throws IOException;
+    InputStream getPredictions(String route, int stopId) throws IOException;
 }

@@ -1,18 +1,21 @@
 package com.weizilla.transit.bus.source;
 
 import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 
 import java.util.Collection;
-import java.util.HashMap;
-import java.util.Map;
 
 public class BusDataSourceStub implements BusDataSource
 {
     private Collection<Route> routes;
-    private Map<String, Collection<Direction>> directions = new HashMap<>();
-    private Map<StopKey, Collection<Stop>> stops = new HashMap<>();
+    private String routeKey;
+    private Direction directionKey;
+    private int stopIdKey;
+    private Collection<Direction> directions;
+    private Collection<Stop> stops;
+    private Collection<Prediction> predictions;
 
     public BusDataSourceStub(Collection<Route> routes)
     {
@@ -21,12 +24,22 @@ public class BusDataSourceStub implements BusDataSource
 
     public BusDataSourceStub(String route, Collection<Direction> directions)
     {
-        this.directions.put(route, directions);
+        routeKey = route;
+        this.directions = directions;
     }
 
     public BusDataSourceStub(String route, Direction direction, Collection<Stop> stops)
     {
-        this.stops.put(new StopKey(route, direction), stops);
+        routeKey = route;
+        directionKey = direction;
+        this.stops = stops;
+    }
+
+    public BusDataSourceStub(String route, int stopId, Collection<Prediction> predictions)
+    {
+        routeKey = route;
+        stopIdKey = stopId;
+        this.predictions = predictions;
     }
 
     @Override
@@ -38,58 +51,18 @@ public class BusDataSourceStub implements BusDataSource
     @Override
     public Collection<Direction> getDirections(String route)
     {
-        return directions.get(route);
+        return route.equals(routeKey) ? directions : null;
     }
 
     @Override
     public Collection<Stop> getStops(String route, Direction direction)
     {
-        return stops.get(new StopKey(route, direction));
+        return route.equals(routeKey) && direction == directionKey ? stops : null;
     }
 
-    private static class StopKey
+    @Override
+    public Collection<Prediction> getPredictions(String route, int stopId)
     {
-        private final String route;
-        private final Direction direction;
-
-        private StopKey(String route, Direction direction)
-        {
-            this.route = route;
-            this.direction = direction;
-        }
-
-        @Override
-        public boolean equals(Object o)
-        {
-            if (this == o)
-            {
-                return true;
-            }
-            if (o == null || getClass() != o.getClass())
-            {
-                return false;
-            }
-
-            StopKey that = (StopKey) o;
-
-            if (direction != that.direction)
-            {
-                return false;
-            }
-            if (route != null ? !route.equals(that.route) : that.route != null)
-            {
-                return false;
-            }
-
-            return true;
-        }
-
-        @Override
-        public int hashCode()
-        {
-            int result = route != null ? route.hashCode() : 0;
-            result = 31 * result + (direction != null ? direction.hashCode() : 0);
-            return result;
-        }
+        return route.equals(routeKey) && stopId == stopIdKey ? predictions : null;
     }
 }

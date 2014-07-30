@@ -2,6 +2,7 @@ package com.weizilla.transit.bus;
 
 import com.google.common.collect.Lists;
 import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSourceStub;
@@ -46,6 +47,19 @@ public class BusControllerGetDataTest
         BusController controller = new BusController(new BusDataSourceStub(route, direction, expected), null);
 
         Collection<Stop> actual = controller.getStops(route, direction);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getsPredictionsFromSource() throws Exception
+    {
+        String route = "22";
+        int stopId = 100;
+        Collection<Prediction> expected = Collections.singletonList(new Prediction());
+        BusController controller = new BusController(new BusDataSourceStub(route, stopId, expected), null);
+
+        Collection<Prediction> actual = controller.getPredictions(route, stopId);
 
         assertEquals(expected, actual);
     }
