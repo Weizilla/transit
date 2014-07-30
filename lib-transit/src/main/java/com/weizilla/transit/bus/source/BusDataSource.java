@@ -10,7 +10,7 @@ import java.util.Collection;
 public interface BusDataSource
 {
     Collection<Route> getRoutes();
-    Collection<Direction> getDirections(String route);
-    Collection<Stop> getStops(String route, Direction direction);
-    Collection<Prediction> getPredictions(String route, int stopId);
+    Collection<Direction> getDirections(Route route);
+    Collection<Stop> getStops(Route route, Direction direction);
+    Collection<Prediction> getPredictions(Route route, Stop stop);
 }

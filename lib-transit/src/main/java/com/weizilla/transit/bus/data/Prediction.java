@@ -44,8 +44,6 @@ public class Prediction
     @Element(name = "dly", required = false)
     private boolean delayed;
 
-
-
     public DateTime getGenerated()
     {
         return generated;

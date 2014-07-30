@@ -61,8 +61,7 @@ public class StreamingBusDataSourceTest
     {
         streamProvider.setStreamFromResource("/getdirections_22.xml");
 
-        String route = "22";
-        Collection<Direction> directions = source.getDirections(route);
+        Collection<Direction> directions = source.getDirections(new Route("22"));
 
         assertNotNull(directions);
         assertEquals(2, directions.size());
@@ -76,10 +75,7 @@ public class StreamingBusDataSourceTest
     {
         streamProvider.setStreamFromResource("/getstops_22_N.xml");
 
-        String route = "22";
-        Direction direction = Direction.Northbound;
-
-        Collection<Stop> stops = source.getStops(route, direction);
+        Collection<Stop> stops = source.getStops(new Route("22"), Direction.Northbound);
 
         assertNotNull(stops);
         assertEquals(86, stops.size());
@@ -102,7 +98,7 @@ public class StreamingBusDataSourceTest
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = false;
 
-        Collection<Prediction> predictions = source.getPredictions(route, stopId);
+        Collection<Prediction> predictions = source.getPredictions(new Route(route), new Stop(stopId));
 
         assertNotNull(prediction);
         assertEquals(9, predictions.size());
@@ -126,7 +122,7 @@ public class StreamingBusDataSourceTest
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = true;
 
-        Collection<Prediction> predictions = source.getPredictions(route, stopId);
+        Collection<Prediction> predictions = source.getPredictions(new Route(route), new Stop(stopId));
 
         assertNotNull(prediction);
         assertEquals(1, predictions.size());
@@ -166,6 +162,6 @@ public class StreamingBusDataSourceTest
         logger.setLevel(Level.OFF);
 
         assertTrue(source.getRoutes().isEmpty());
-        assertTrue(source.getDirections("22").isEmpty());
+        assertTrue(source.getDirections(new Route("22")).isEmpty());
     }
 }

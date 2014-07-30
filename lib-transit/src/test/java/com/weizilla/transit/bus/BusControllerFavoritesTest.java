@@ -17,7 +17,7 @@ public class BusControllerFavoritesTest
     @Test
     public void storesFavoriteRoutes() throws Exception
     {
-        Route route = new Route();
+        Route route = new Route("20");
         BusFavoritesStore favoriteStore = mock(BusFavoritesStore.class);
         BusController controller = new BusController(null, favoriteStore);
 
@@ -29,7 +29,7 @@ public class BusControllerFavoritesTest
     @Test
     public void getsAllFavoriteRoutes() throws Exception
     {
-        Collection<Route> routes = Collections.singletonList(new Route());
+        Collection<Route> routes = Collections.singletonList(new Route("20"));
 
         BusFavoritesStore favoriteStore = new BusFavoritesStoreStub(routes);
         BusController controller = new BusController(null, favoriteStore);

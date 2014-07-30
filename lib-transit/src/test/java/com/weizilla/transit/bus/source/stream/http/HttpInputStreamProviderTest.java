@@ -1,6 +1,8 @@
 package com.weizilla.transit.bus.source.stream.http;
 
 import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.data.Stop;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -14,9 +16,9 @@ import static org.mockito.Mockito.verify;
 public class HttpInputStreamProviderTest
 {
     private static final String API_KEY = "API_KEY";
-    private static final String ROUTE = "22";
+    private static final Route ROUTE = new Route("22");
     private static final Direction DIRECTION = Direction.Northbound;
-    private static final int STOP = 100;
+    private static final Stop STOP = new Stop(100);
 
     @Test
     public void createsGetRoutesUrl() throws Exception
@@ -51,7 +53,7 @@ public class HttpInputStreamProviderTest
     @Test
     public void createsGetDirectionsUrl() throws Exception
     {
-        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getdirections?rt=" + ROUTE + "&key=API_KEY");
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getdirections?rt=" + ROUTE.getId() + "&key=API_KEY");
         URL actual = HttpInputStreamProvider.createGetDirectionsUrl(ROUTE, API_KEY);
         assertEquals(expected, actual);
     }
@@ -81,7 +83,7 @@ public class HttpInputStreamProviderTest
     @Test
     public void createsGetStopsUrl() throws Exception
     {
-        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getstops?rt=" + ROUTE + "&dir=" + DIRECTION + "&key=API_KEY");
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getstops?rt=" + ROUTE.getId() + "&dir=" + DIRECTION + "&key=API_KEY");
         URL actual = HttpInputStreamProvider.createGetStopsUrl(ROUTE, DIRECTION, API_KEY);
         assertEquals(expected, actual);
     }
@@ -111,7 +113,7 @@ public class HttpInputStreamProviderTest
     @Test
     public void createsGetPredictionsUrl() throws Exception
     {
-        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt=" + ROUTE + "&stpid=" + STOP + "&key=API_KEY");
+        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt=" + ROUTE.getId() + "&stpid=" + STOP.getId() + "&key=API_KEY");
         URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, STOP, API_KEY);
         assertEquals(exected, actual);
     }

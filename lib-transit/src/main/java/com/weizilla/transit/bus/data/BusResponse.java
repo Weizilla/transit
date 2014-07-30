@@ -7,7 +7,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Root(name = "bustime-response")
-public class BustimeResponse
+public class BusResponse
 {
 
     @ElementList(inline = true, required = false)

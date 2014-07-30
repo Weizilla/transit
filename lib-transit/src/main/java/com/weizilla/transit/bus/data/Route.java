@@ -10,6 +10,16 @@ public class Route
     @Element(name = "rtnm")
     private String name;
 
+    public Route()
+    {
+        /// for simple xml
+    }
+
+    public Route(String id)
+    {
+        this.id = id;
+    }
+
     public String getId()
     {
         return id;

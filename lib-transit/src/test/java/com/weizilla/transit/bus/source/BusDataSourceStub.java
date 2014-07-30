@@ -10,9 +10,9 @@ import java.util.Collection;
 public class BusDataSourceStub implements BusDataSource
 {
     private Collection<Route> routes;
-    private String routeKey;
+    private Route routeKey;
     private Direction directionKey;
-    private int stopIdKey;
+    private Stop stopKey;
     private Collection<Direction> directions;
     private Collection<Stop> stops;
     private Collection<Prediction> predictions;
@@ -22,23 +22,23 @@ public class BusDataSourceStub implements BusDataSource
         this.routes = routes;
     }
 
-    public BusDataSourceStub(String route, Collection<Direction> directions)
+    public BusDataSourceStub(Route route, Collection<Direction> directions)
     {
         routeKey = route;
         this.directions = directions;
     }
 
-    public BusDataSourceStub(String route, Direction direction, Collection<Stop> stops)
+    public BusDataSourceStub(Route route, Direction direction, Collection<Stop> stops)
     {
         routeKey = route;
         directionKey = direction;
         this.stops = stops;
     }
 
-    public BusDataSourceStub(String route, int stopId, Collection<Prediction> predictions)
+    public BusDataSourceStub(Route route, Stop stop, Collection<Prediction> predictions)
     {
         routeKey = route;
-        stopIdKey = stopId;
+        stopKey = stop;
         this.predictions = predictions;
     }
 
@@ -49,20 +49,20 @@ public class BusDataSourceStub implements BusDataSource
     }
 
     @Override
-    public Collection<Direction> getDirections(String route)
+    public Collection<Direction> getDirections(Route route)
     {
         return route.equals(routeKey) ? directions : null;
     }
 
     @Override
-    public Collection<Stop> getStops(String route, Direction direction)
+    public Collection<Stop> getStops(Route route, Direction direction)
     {
         return route.equals(routeKey) && direction == directionKey ? stops : null;
     }
 
     @Override
-    public Collection<Prediction> getPredictions(String route, int stopId)
+    public Collection<Prediction> getPredictions(Route route, Stop stop)
     {
-        return route.equals(routeKey) && stopId == stopIdKey ? predictions : null;
+        return route.equals(routeKey) && stop.equals(stopKey) ? predictions : null;
     }
 }

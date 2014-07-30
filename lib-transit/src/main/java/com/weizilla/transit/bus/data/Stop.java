@@ -5,7 +5,7 @@ import org.simpleframework.xml.Element;
 public class Stop
 {
     @Element(name = "stpid")
-    private int id = -1;
+    private int id;
 
     @Element(name = "stpnm")
     private String name;
@@ -15,6 +15,16 @@ public class Stop
 
     @Element(name = "lon")
     private double longitude;
+
+    public Stop()
+    {
+        // for simple xml
+    }
+
+    public Stop(int id)
+    {
+        this.id = id;
+    }
 
     public int getId()
     {

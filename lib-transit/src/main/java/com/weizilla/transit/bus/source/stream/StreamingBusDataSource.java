@@ -1,6 +1,6 @@
 package com.weizilla.transit.bus.source.stream;
 
-import com.weizilla.transit.bus.data.BustimeResponse;
+import com.weizilla.transit.bus.data.BusResponse;
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
@@ -37,7 +37,7 @@ public class StreamingBusDataSource implements BusDataSource
             InputStream input = streamProvider.getRoutes()
         )
         {
-            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            BusResponse response = serializer.read(BusResponse.class, input);
             return response.getRoutes();
         }
         catch (Exception e)
@@ -49,57 +49,57 @@ public class StreamingBusDataSource implements BusDataSource
     }
 
     @Override
-    public Collection<Direction> getDirections(String route)
+    public Collection<Direction> getDirections(Route route)
     {
         try
         (
             InputStream input = streamProvider.getDirections(route)
         )
         {
-            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            BusResponse response = serializer.read(BusResponse.class, input);
             return response.getDirections();
         }
         catch (Exception e)
         {
-            logger.error("Error getting direction for route {}", route, e);
+            logger.error("Error getting direction for route id {}", route.getId(), e);
         }
 
         return Collections.emptyList();
     }
 
     @Override
-    public Collection<Stop> getStops(String route, Direction direction)
+    public Collection<Stop> getStops(Route route, Direction direction)
     {
         try
         (
             InputStream input = streamProvider.getStops(route, direction)
         )
         {
-            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            BusResponse response = serializer.read(BusResponse.class, input);
             return response.getStops();
         }
         catch (Exception e)
         {
-            logger.error("Error getting stops for route {} direction {}", route, direction);
+            logger.error("Error getting stops for route id {} direction {}", route.getId(), direction, e);
         }
 
         return Collections.emptyList();
     }
 
     @Override
-    public Collection<Prediction> getPredictions(String route, int stopId)
+    public Collection<Prediction> getPredictions(Route route, Stop stop)
     {
         try
         (
-            InputStream input = streamProvider.getPredictions(route, stopId)
+            InputStream input = streamProvider.getPredictions(route, stop)
         )
         {
-            BustimeResponse response = serializer.read(BustimeResponse.class, input);
+            BusResponse response = serializer.read(BusResponse.class, input);
             return response.getPredictions();
         }
         catch (Exception e)
         {
-            logger.error("Error getting predictions for route {} stopId {}", route, stopId, e);
+            logger.error("Error getting predictions for route id {} stop Id {}", route.getId(), stop.getId(), e);
         }
 
         return Collections.emptyList();
