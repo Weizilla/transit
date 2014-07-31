@@ -1,0 +1,15 @@
+@(title: String, predictions: java.util.Collection[com.weizilla.transit.bus.data.Prediction])
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
+        <ul>
+        @for(prediction <- predictions) {
+            <li>@prediction.getPrediction</li>
+        }
+        </ul>
+    </body>
+</html>

@@ -10,5 +10,11 @@ libraryDependencies ++= Seq(
   javaJdbc,
   javaEbean,
   cache,
-  javaWs
+  javaWs,
+  "com.weizilla.transit" % "lib-transit" % "1.0.0-SNAPSHOT"
 )
+
+resolvers += (
+  "Local Maven Repository" at "file://" + Path.userHome.absolutePath + "/.m2/repository"
+)
+

@@ -1,0 +1,15 @@
+@(title: String, route: com.weizilla.transit.bus.data.Route, stops: java.util.Collection[com.weizilla.transit.bus.data.Stop])
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
+        <ul>
+        @for(stop <- stops) {
+            <li><a href="/predictions/@stop.getId/@route.getId">@stop.getName</a></li>
+        }
+        </ul>
+    </body>
+</html>

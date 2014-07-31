@@ -1,0 +1,15 @@
+@(title: String, route: com.weizilla.transit.bus.data.Route, directions: java.util.Collection[com.weizilla.transit.bus.data.Direction])
+<!DOCTYPE html>
+
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
+        <ul>
+        @for(direction <- directions) {
+            <li><a href="/stops/@route.getId/@direction">@direction</a></li>
+        }
+        </ul>
+    </body>
+</html>

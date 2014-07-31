@@ -1,7 +1,15 @@
-@(message: String)
+@(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route])
+<!DOCTYPE html>
 
-@main("Welcome to Play") {
-
-    @play20.welcome(message, style = "Java")
-
-}
+<html>
+    <head>
+        <title>@title</title>
+    </head>
+    <body>
+        <ul>
+        @for(route <- routes) {
+            <li><a href="/directions/@route.getId">@route.getId - @route.getName</a></li>
+        }
+        </ul>
+    </body>
+</html>
