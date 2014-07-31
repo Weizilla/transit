@@ -15,7 +15,8 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
     private static final String GET_ROUTES = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key={0}";
     private static final String GET_DIRECTIONS = "http://www.ctabustracker.com/bustime/api/v1/getdirections?rt={0}&key={1}";
     private static final String GET_STOPS = "http://www.ctabustracker.com/bustime/api/v1/getstops?rt={0}&dir={1}&key={2}";
-    private static final String GET_PREDICTIONS = "http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt={0}&stpid={1}&key={2}";
+    private static final String GET_PREDICTIONS =
+        "http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt={0}&stpid={1,number,#}&key={2}";
     private final HttpReader reader;
     private final String apiKey;
 

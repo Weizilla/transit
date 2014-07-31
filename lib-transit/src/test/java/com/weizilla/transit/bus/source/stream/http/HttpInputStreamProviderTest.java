@@ -119,6 +119,16 @@ public class HttpInputStreamProviderTest
     }
 
     @Test
+    public void predictionUrlDoesNotContainContainCommaSeparatorInStopId() throws Exception
+    {
+        Stop stop = new Stop(10000);
+        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt="
+            + ROUTE.getId() + "&stpid=" + stop.getId() + "&key=API_KEY");
+        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, stop, API_KEY);
+        assertEquals(exected, actual);
+    }
+
+    @Test
     public void getsPredictionsReturnsInputStream() throws Exception
     {
         InputStream inputStream = mock(InputStream.class);

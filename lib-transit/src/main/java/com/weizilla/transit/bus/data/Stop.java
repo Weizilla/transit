@@ -1,7 +1,9 @@
 package com.weizilla.transit.bus.data;
 
 import org.simpleframework.xml.Element;
+import org.simpleframework.xml.Root;
 
+@Root(strict = false)
 public class Stop
 {
     @Element(name = "stpid")

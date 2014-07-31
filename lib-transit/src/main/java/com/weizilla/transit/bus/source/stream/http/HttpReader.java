@@ -9,7 +9,7 @@ public class HttpReader
 {
     protected static final int READ_TIMEOUT_MS = 10000;
     protected static final int CONNECT_TIMEOUT_MS = 10000;
-    private HttpURLConnectionFactory connectionFactory;
+    private final HttpURLConnectionFactory connectionFactory;
 
     public HttpReader(HttpURLConnectionFactory connectionFactory)
     {
@@ -31,7 +31,7 @@ public class HttpReader
         return connection.getInputStream();
     }
 
-    protected static class HttpURLConnectionFactory
+    public static class HttpURLConnectionFactory
     {
         protected HttpURLConnection createConnection(URL url) throws IOException
         {

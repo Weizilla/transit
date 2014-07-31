@@ -6,7 +6,7 @@ import org.simpleframework.xml.Root;
 import java.util.Collections;
 import java.util.List;
 
-@Root(name = "bustime-response")
+@Root(name = "bustime-response", strict = false)
 public class BusResponse
 {
 
