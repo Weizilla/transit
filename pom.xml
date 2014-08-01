@@ -100,6 +100,7 @@
         <module>lib-transit</module>
         <module>favorites-android</module>
         <module>favorites-android-test</module>
+        <module>favorites-sqlite</module>
     </modules>
 
 </project>
