@@ -98,8 +98,8 @@
 
     <modules>
         <module>lib-transit</module>
-        <module>lib-favorites</module>
-        <module>lib-favorites-test</module>
+        <module>favorites-android</module>
+        <module>favorites-android-test</module>
     </modules>
 
 </project>

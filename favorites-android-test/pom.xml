@@ -8,9 +8,9 @@
         <artifactId>transit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>lib-favorites-test</artifactId>
+    <artifactId>favorites-android-test</artifactId>
     <packaging>apklib</packaging>
-    <name>lib-favorites-test</name>
+    <name>favorites-android-test</name>
 
     <dependencies>
         <dependency>
