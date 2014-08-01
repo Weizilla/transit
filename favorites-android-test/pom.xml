@@ -30,7 +30,7 @@
         </dependency>
         <dependency>
             <groupId>${project.groupId}</groupId>
-            <artifactId>lib-favorites</artifactId>
+            <artifactId>favorites-android</artifactId>
             <version>${project.version}</version>
         </dependency>
         <dependency>
