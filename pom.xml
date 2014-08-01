@@ -17,6 +17,11 @@
     <dependencyManagement>
         <dependencies>
             <dependency>
+                <groupId>org.xerial</groupId>
+                <artifactId>sqlite-jdbc</artifactId>
+                <version>3.7.2</version>
+            </dependency>
+            <dependency>
                 <groupId>org.simpleframework</groupId>
                 <artifactId>simple-xml</artifactId>
                 <version>2.7.1</version>
@@ -49,6 +54,12 @@
                 <groupId>joda-time</groupId>
                 <artifactId>joda-time</artifactId>
                 <version>2.3</version>
+            </dependency>
+            <dependency>
+                <groupId>org.dbunit</groupId>
+                <artifactId>dbunit</artifactId>
+                <version>2.5.0</version>
+                <scope>test</scope>
             </dependency>
             <dependency>
                 <groupId>org.robolectric</groupId>
