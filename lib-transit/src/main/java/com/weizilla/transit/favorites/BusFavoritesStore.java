@@ -7,5 +7,5 @@ import java.util.Collection;
 public interface BusFavoritesStore
 {
     void saveFavorite(Route route);
-    Collection<Route> getFavoriteRoutes();
+    Collection<String> getFavoriteRoutes();
 }

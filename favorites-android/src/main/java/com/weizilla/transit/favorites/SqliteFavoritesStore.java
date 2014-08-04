@@ -14,7 +14,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
     }
 
     @Override
-    public Collection<Route> getFavoriteRoutes()
+    public Collection<String> getFavoriteRoutes()
     {
         //TODO Auto-generated
         return null;

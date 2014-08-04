@@ -6,9 +6,9 @@ import java.util.Collection;
 
 public class BusFavoritesStoreStub implements BusFavoritesStore
 {
-    private Collection<Route> routes;
+    private Collection<String> routes;
 
-    public BusFavoritesStoreStub(Collection<Route> routes)
+    public BusFavoritesStoreStub(Collection<String> routes)
     {
         this.routes = routes;
     }
@@ -20,7 +20,7 @@ public class BusFavoritesStoreStub implements BusFavoritesStore
     }
 
     @Override
-    public Collection<Route> getFavoriteRoutes()
+    public Collection<String> getFavoriteRoutes()
     {
         return routes;
     }

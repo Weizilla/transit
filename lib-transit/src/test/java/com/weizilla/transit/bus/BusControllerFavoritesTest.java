@@ -29,12 +29,12 @@ public class BusControllerFavoritesTest
     @Test
     public void getsAllFavoriteRoutes() throws Exception
     {
-        Collection<Route> routes = Collections.singletonList(new Route("20"));
+        Collection<String> routes = Collections.singletonList("20");
 
         BusFavoritesStore favoriteStore = new BusFavoritesStoreStub(routes);
         BusController controller = new BusController(null, favoriteStore);
 
-        Collection<Route> actual = controller.getFavoriteRoutes();
+        Collection<String> actual = controller.getFavoriteRoutes();
         assertSame(routes, actual);
     }
 }

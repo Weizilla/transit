@@ -45,7 +45,7 @@ public class BusController
         favoriteStore.saveFavorite(route);
     }
 
-    public Collection<Route> getFavoriteRoutes()
+    public Collection<String> getFavoriteRoutes()
     {
         return favoriteStore.getFavoriteRoutes();
     }
