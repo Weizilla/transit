@@ -28,21 +28,25 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
+import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class SqliteFavoriteStoreTest
 {
     private static final Logger logger = LoggerFactory.getLogger(SqliteFavoriteStoreTest.class);
     private static final String TABLE_NAME = "fav_routes";
+    public static final String[] EMPTY = new String[]{};
     private JdbcDatabaseTester databaseTester;
     private Path dbPath;
-    private SqliteFavoriteStore store;
 
     @Before
     public void setUp() throws Exception
     {
-        initDb();
-        store = new SqliteFavoriteStore(dbPath);
+        dbPath = Files.createTempFile(getClass().getSimpleName() + "-", ".db");
+        logger.debug("Temp db file: {}", dbPath);
+
+        databaseTester = new JdbcDatabaseTester("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath);
     }
 
     @After
@@ -53,9 +57,40 @@ public class SqliteFavoriteStoreTest
     }
 
     @Test
+    public void createsFavRouteTableDuringInitialization() throws Exception
+    {
+        executeSql("drop_routes_table.sql");
+        assertArrayEquals(EMPTY, databaseTester.getConnection().createDataSet().getTableNames());
+        SqliteFavoriteStore.createStore(dbPath);
+        assertNotNull(databaseTester.getConnection().createDataSet().getTable(TABLE_NAME));
+    }
+
+    @Test
+    public void createsFavRouteTableIfDoesNotExist() throws Exception
+    {
+        executeSql("drop_routes_table.sql");
+        assertArrayEquals(EMPTY, databaseTester.getConnection().createDataSet().getTableNames());
+
+        IDatabaseConnection connection = databaseTester.getConnection();
+        try
+        (
+            Connection conn = connection.getConnection()
+        )
+        {
+            SqliteFavoriteStore.createTable(conn);
+        }
+        connection.close();
+
+        assertNotNull(databaseTester.getConnection().createDataSet().getTable(TABLE_NAME));
+    }
+
+    @Test
     public void getRoutesReturnsDbData() throws Exception
     {
-        Set<String> expected = Sets.newHashSet("22", "36");
+        SqliteFavoriteStore store = SqliteFavoriteStore.createStore(dbPath);
+        executeSql("create_routes_table.sql");
+
+        Set<String> expected = Sets.newHashSet("22", "36", "54A");
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), readDataSet("/get_routes.xml"));
 
         Collection<String> actualIds = store.getFavoriteRoutes();
@@ -65,7 +100,10 @@ public class SqliteFavoriteStoreTest
     @Test
     public void savesFavoriteRoutes() throws Exception
     {
-        Collection<String> routeIds = Lists.newArrayList("134", "156");
+        SqliteFavoriteStore store = SqliteFavoriteStore.createStore(dbPath);
+        executeSql("create_routes_table.sql");
+
+        Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");
         IDataSet expected = readDataSet("/save_routes.xml");
         ITable expectedTable = expected.getTable(TABLE_NAME);
 
@@ -82,12 +120,8 @@ public class SqliteFavoriteStoreTest
         Assertion.assertEquals(expectedTable, actualFiltered);
     }
 
-    private void initDb() throws Exception
+    private void executeSql(String filename) throws Exception
     {
-        dbPath = Files.createTempFile(getClass().getSimpleName() + "-", ".db");
-        logger.debug("Temp db file: {}", dbPath);
-
-        databaseTester = new JdbcDatabaseTester("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath);
         IDatabaseConnection connection = databaseTester.getConnection();
         try
         (
@@ -95,7 +129,7 @@ public class SqliteFavoriteStoreTest
             Statement statement = conn.createStatement()
         )
         {
-            URL url = Resources.getResource("create_routes_table.sql");
+            URL url = Resources.getResource(filename);
             String sql = Resources.toString(url, Charsets.UTF_8);
             statement.executeUpdate(sql);
         }
