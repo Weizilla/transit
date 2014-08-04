@@ -11,7 +11,8 @@ libraryDependencies ++= Seq(
   javaEbean,
   cache,
   javaWs,
-  "com.weizilla.transit" % "lib-transit" % "1.0.0-SNAPSHOT"
+  "com.weizilla.transit" % "lib-transit" % "1.0.0-SNAPSHOT",
+  "com.weizilla.transit" % "favorites-sqlite" % "1.0.0-SNAPSHOT"
 )
 
 resolvers += (

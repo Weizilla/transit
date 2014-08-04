@@ -1,4 +1,4 @@
-@(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route])
+@(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route], favRoutes: java.util.Collection[String])
 <!DOCTYPE html>
 
 <html>
@@ -7,9 +7,18 @@
     </head>
     <body>
         <ul>
-        @for(route <- routes) {
-            <li><a href="/directions/@route.getId">@route.getId - @route.getName</a></li>
-        }
+            @for(favRoute <- favRoutes) {
+                <li>@favRoute</li>
+            }
+        </ul>
+        <ul>
+            @for(route <- routes) {
+                <li>
+                    <a href="/directions/@route.getId">@route.getId - @route.getName</a>
+                    |
+                    <a href="/favorites/route/save/@route.getId">Save</a>
+                </li>
+            }
         </ul>
     </body>
 </html>
