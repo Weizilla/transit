@@ -6,6 +6,7 @@
     </appender>
 
     <logger name="org.dbunit" level="INFO"/>
+    <logger name="org.dbunit.dataset.AbstractTableMetaData" level="ERROR"/>
 
     <root level="debug">
         <appender-ref ref="STDOUT"/>

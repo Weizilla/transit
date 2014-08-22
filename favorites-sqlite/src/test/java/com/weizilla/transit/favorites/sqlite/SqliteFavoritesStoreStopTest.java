@@ -1,10 +1,10 @@
 package com.weizilla.transit.favorites.sqlite;
 
 import com.google.common.base.Charsets;
-import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
-import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.bus.data.Stop;
 import org.dbunit.Assertion;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
@@ -32,10 +32,10 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class SqliteFavoritesStoreRouteTest
+public class SqliteFavoritesStoreStopTest
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStoreRouteTest.class);
-    private static final String TABLE_NAME = "fav_routes";
+    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStoreStopTest.class);
+    private static final String TABLE_NAME = "fav_stops";
     public static final String[] EMPTY = new String[]{};
     private JdbcDatabaseTester databaseTester;
     private Path dbPath;
@@ -57,18 +57,18 @@ public class SqliteFavoritesStoreRouteTest
     }
 
     @Test
-    public void createsFavRoutesTableDuringInitialization() throws Exception
+    public void createsFavStopsTableDuringInitialization() throws Exception
     {
-        executeSql("drop_routes_table.sql");
+        executeSql("drop_stops_table.sql");
         assertArrayEquals(EMPTY, databaseTester.getConnection().createDataSet().getTableNames());
         SqliteFavoritesStore.createStore(dbPath);
         assertNotNull(databaseTester.getConnection().createDataSet().getTable(TABLE_NAME));
     }
 
     @Test
-    public void createsFavRoutesTableIfDoesNotExist() throws Exception
+    public void createsFavStopsTableIfDoesNotExist() throws Exception
     {
-        executeSql("drop_routes_table.sql");
+        executeSql("drop_stops_table.sql");
         assertArrayEquals(EMPTY, databaseTester.getConnection().createDataSet().getTableNames());
 
         IDatabaseConnection connection = databaseTester.getConnection();
@@ -77,7 +77,7 @@ public class SqliteFavoritesStoreRouteTest
             Connection conn = connection.getConnection()
         )
         {
-            SqliteFavoritesStore.createRoutesTable(conn);
+            SqliteFavoritesStore.createStopsTable(conn);
         }
         connection.close();
 
@@ -85,34 +85,35 @@ public class SqliteFavoritesStoreRouteTest
     }
 
     @Test
-    public void getRoutesReturnsDbData() throws Exception
+    public void getStopsReturnsDbData() throws Exception
     {
         SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
-        executeSql("create_routes_table.sql");
+        executeSql("create_stops_table.sql");
 
-        Set<String> expected = Sets.newHashSet("22", "36", "54A");
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), readDataSet("/get_routes.xml"));
+        String route = "22";
+        Direction direction = Direction.Northbound;
+        Set<Integer> expected = Sets.newHashSet(100, 400);
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), readDataSet("/get_stops.xml"));
 
-        Collection<String> actualIds = store.getFavoriteRoutes();
+        Collection<Integer> actualIds = store.getFavoriteStops(route, direction);
         assertEquals(expected, new HashSet<>(actualIds));
     }
 
     @Test
-    public void savesFavoriteRoutes() throws Exception
+    public void savesFavoriteStops() throws Exception
     {
         SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
-        executeSql("create_routes_table.sql");
+        executeSql("create_stops_table.sql");
 
-        Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");
-        IDataSet expected = readDataSet("/save_routes.xml");
+        IDataSet expected = readDataSet("/save_stops.xml");
         ITable expectedTable = expected.getTable(TABLE_NAME);
 
         DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
 
-        for (String routeId : routeIds)
-        {
-            store.saveFavorite(new Route(routeId));
-        }
+        store.saveFavorite(new Stop(100, "36", Direction.Northbound));
+        store.saveFavorite(new Stop(200, "N22", Direction.Westbound));
+        store.saveFavorite(new Stop(300, "156", Direction.Eastbound));
+        store.saveFavorite(new Stop(400, "N22", Direction.Westbound));
 
         ITable actual = databaseTester.getConnection().createDataSet().getTable(TABLE_NAME);
         ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual, expectedTable.getTableMetaData().getColumns());

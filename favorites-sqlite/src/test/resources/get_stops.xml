@@ -1,0 +1,6 @@
+<dataset>
+    <fav_stops id="100" route="22" direction="Northbound"/>
+    <fav_stops id="200" route="36" direction="Southbound"/>
+    <fav_stops id="300" route="151" direction="Eastbound"/>
+    <fav_stops id="400" route="22" direction="Northbound"/>
+</dataset>
