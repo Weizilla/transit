@@ -8,7 +8,7 @@ import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.stream.StreamingBusDataSource;
 import com.weizilla.transit.bus.source.stream.http.HttpInputStreamProvider;
 import com.weizilla.transit.bus.source.stream.http.HttpReader;
-import com.weizilla.transit.favorites.sqlite.SqliteFavoriteStore;
+import com.weizilla.transit.favorites.sqlite.SqliteFavoritesStore;
 import play.mvc.Controller;
 import play.mvc.Result;
 import views.html.*;
@@ -16,6 +16,7 @@ import views.html.*;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Collection;
 
 public class Application extends Controller
@@ -24,26 +25,33 @@ public class Application extends Controller
 
     private static Path createPath()
     {
-        try {
+        try
+        {
             Path favDbPath = Files.createTempFile("transit-play-", ".db");
             favDbPath.toFile().deleteOnExit();
             return favDbPath;
-        } catch (IOException e) {
+        }
+        catch (IOException e)
+        {
             e.printStackTrace();
         }
         return null;
     }
 
-    private static BusController createController() {
+    private static BusController createController()
+    {
         String apiKey = "vqfwTE6FQG778wgBkcy5vfFgh";
         HttpReader reader = new HttpReader(new HttpReader.HttpURLConnectionFactory());
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, apiKey);
         StreamingBusDataSource source = new StreamingBusDataSource(provider);
 
-        SqliteFavoriteStore store = null;
-        try {
-            store = SqliteFavoriteStore.createStore(favDbPath);
-        } catch (Exception e) {
+        SqliteFavoritesStore store = null;
+        try
+        {
+            store = SqliteFavoritesStore.createStore(favDbPath);
+        }
+        catch (Exception e)
+        {
             e.printStackTrace();
         }
 
@@ -68,10 +76,22 @@ public class Application extends Controller
 
     public static Result stops(String routeId, String direction)
     {
+        BusController controller = createController();
         //TODO generate route here using just id?
         Route route = new Route(routeId);
-        Collection<Stop> stps = createController().getStops(route, Direction.valueOf(direction));
-        return ok(stops.render("Bus - stops", route, stps));
+        Direction dir = Direction.valueOf(direction);
+        Collection<Stop> allStops = controller.getStops(route, dir);
+
+        Collection<Integer> favStopIds = controller.getFavoriteStops(routeId, dir);
+        Collection<Stop> favStops = new ArrayList<>(favStopIds.size());
+        for (Stop stop : allStops)
+        {
+            if (favStopIds.contains(stop.getId()))
+            {
+                favStops.add(stop);
+            }
+        }
+        return ok(stops.render("Bus - stops", route, allStops, favStops));
     }
 
     public static Result predictions(String routeId, int stopId)
@@ -94,5 +114,16 @@ public class Application extends Controller
         BusController controller = createController();
         controller.saveFavorite(new Route(routeId));
         return ok(message.render("Bus - Favorite", "Route " + routeId + " saved as favorite"));
+    }
+
+    public static Result saveFavoriteStop(String routeId, String direction, int stopId)
+    {
+        BusController controller = createController();
+        //TODO create stop here?
+        Stop stop = new Stop(stopId);
+        stop.setDirection(Direction.valueOf(direction));
+        stop.setRouteId(routeId);
+        controller.saveFavorite(stop);
+        return ok(message.render("Bus - Favorite", "Stop " + stopId + " saved as favorite"));
     }
 }
