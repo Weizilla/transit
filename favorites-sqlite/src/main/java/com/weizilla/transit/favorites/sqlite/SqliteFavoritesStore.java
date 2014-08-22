@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -48,17 +49,23 @@ public class SqliteFavoritesStore implements BusFavoritesStore
     public void saveFavorite(Route route)
     {
         String id = route.getId();
+        String sqlFile = "save_route.sql";
         try
         (
             Connection connection = createConnection();
-            Statement statement = connection.createStatement()
+            PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile))
         )
         {
-            int numUpdated = statement.executeUpdate("INSERT INTO fav_routes (id) VALUES ('" + id + "')");
+            statement.setString(1, id);
+            int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
                 logger.warn("No rows updated when saving favorite route id {}", id);
             }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
         }
         catch (SQLException e)
         {
@@ -71,18 +78,22 @@ public class SqliteFavoritesStore implements BusFavoritesStore
     public void saveFavorite(Stop stop)
     {
         int id = stop.getId();
+        String sqlFile = "save_stop.sql";
         try
         (
             Connection connection = createConnection();
-            Statement statement = connection.createStatement()
+            PreparedStatement statement = createSaveStopStatement(connection, stop, sqlFile)
         )
         {
-            int numUpdated = statement.executeUpdate(
-                "INSERT INTO fav_stops (id, route, direction) VALUES ('" + id + "', '" + stop.getRouteId() + "', '" + stop.getDirection() + "')");
+            int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
                 logger.warn("No rows updated when saving favorite stop id {}", id);
             }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
         }
         catch (SQLException e)
         {
@@ -90,21 +101,36 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         }
     }
 
+    private static PreparedStatement createSaveStopStatement(Connection connection, Stop stop, String sqlFile)
+        throws SQLException, IOException
+    {
+        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        statement.setInt(1, stop.getId());
+        statement.setString(2, stop.getRouteId());
+        statement.setObject(3, stop.getDirection());
+        return statement;
+    }
+
     @Override
     public Collection<String> getFavoriteRoutes()
     {
         Collection<String> routeIds = new TreeSet<>();
+        String sqlFile = "get_routes.sql";
         try
         (
             Connection connection = createConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT id FROM fav_routes")
+            ResultSet resultSet = statement.executeQuery(readSqlFromFile(sqlFile))
         )
         {
             while (resultSet.next())
             {
                 routeIds.add(resultSet.getString("id"));
             }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
         }
         catch (SQLException e)
         {
@@ -117,11 +143,12 @@ public class SqliteFavoritesStore implements BusFavoritesStore
     public Collection<Integer> getFavoriteStops(String route, Direction direction)
     {
         Collection<Integer> stopIds = new TreeSet<>();
+        String sqlFile = "get_stops.sql";
         try
         (
             Connection connection = createConnection();
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("SELECT id FROM fav_stops WHERE route = '" + route + "' AND direction = '" + direction + "'");
+            PreparedStatement statement = createGetStopsStatement(connection, sqlFile, route, direction);
+            ResultSet resultSet = statement.executeQuery()
         )
         {
             while (resultSet.next())
@@ -129,11 +156,25 @@ public class SqliteFavoritesStore implements BusFavoritesStore
                 stopIds.add(resultSet.getInt("id"));
             }
         }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
         catch (SQLException e)
         {
             logger.error("Sql error getting favorite stops: {}", e.getMessage(), e);
         }
         return stopIds;
+    }
+
+    private static PreparedStatement createGetStopsStatement(
+        Connection connection, String sqlFile, String route, Direction direction)
+        throws IOException, SQLException
+    {
+        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        statement.setString(1, route);
+        statement.setObject(2, direction);
+        return statement;
     }
 
     private Connection createConnection() throws SQLException
@@ -145,45 +186,37 @@ public class SqliteFavoritesStore implements BusFavoritesStore
 
     protected static void createRoutesTable(Connection connection)
     {
-        String sqlFile = "create_routes_table.sql";
+        createTable(connection, "create_routes_table.sql");
+    }
+
+    protected static void createStopsTable(Connection connection)
+    {
+        createTable(connection, "create_stops_table.sql");
+    }
+
+    private static void createTable(Connection connection, String sqlFile)
+    {
         try
         (
             Statement statement = connection.createStatement()
         )
         {
-            URL url = Resources.getResource(sqlFile);
-            String sql = Resources.toString(url, Charsets.UTF_8);
+            String sql = readSqlFromFile(sqlFile);
             statement.executeUpdate(sql);
         }
         catch (SQLException e)
         {
-            logger.error("Error creating favorite routes table: {}", e.getMessage(), e);
+            logger.error("Error creating table: {}", e.getMessage(), e);
         }
         catch (IOException e)
         {
-            logger.error("Error reading create table sql file {}: {}", sqlFile, e.getMessage(), e);
+            logger.error("Error reading sql file {}: {}", sqlFile, e.getMessage(), e);
         }
     }
 
-    protected static void createStopsTable(Connection connection)
+    private static String readSqlFromFile(String sqlFile) throws IOException
     {
-        String sqlFile = "create_stops_table.sql";
-        try
-            (
-                Statement statement = connection.createStatement()
-            )
-        {
-            URL url = Resources.getResource(sqlFile);
-            String sql = Resources.toString(url, Charsets.UTF_8);
-            statement.executeUpdate(sql);
-        }
-        catch (SQLException e)
-        {
-            logger.error("Error creating favorite routes table: {}", e.getMessage(), e);
-        }
-        catch (IOException e)
-        {
-            logger.error("Error reading create table sql file {}: {}", sqlFile, e.getMessage(), e);
-        }
+        URL url = Resources.getResource(sqlFile);
+        return Resources.toString(url, Charsets.UTF_8);
     }
 }
