@@ -32,9 +32,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class SqliteFavoriteStoreTest
+public class SqliteFavoritesStoreTest
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoriteStoreTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStoreTest.class);
     private static final String TABLE_NAME = "fav_routes";
     public static final String[] EMPTY = new String[]{};
     private JdbcDatabaseTester databaseTester;
@@ -61,7 +61,7 @@ public class SqliteFavoriteStoreTest
     {
         executeSql("drop_routes_table.sql");
         assertArrayEquals(EMPTY, databaseTester.getConnection().createDataSet().getTableNames());
-        SqliteFavoriteStore.createStore(dbPath);
+        SqliteFavoritesStore.createStore(dbPath);
         assertNotNull(databaseTester.getConnection().createDataSet().getTable(TABLE_NAME));
     }
 
@@ -77,7 +77,7 @@ public class SqliteFavoriteStoreTest
             Connection conn = connection.getConnection()
         )
         {
-            SqliteFavoriteStore.createTable(conn);
+            SqliteFavoritesStore.createTable(conn);
         }
         connection.close();
 
@@ -87,7 +87,7 @@ public class SqliteFavoriteStoreTest
     @Test
     public void getRoutesReturnsDbData() throws Exception
     {
-        SqliteFavoriteStore store = SqliteFavoriteStore.createStore(dbPath);
+        SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
         executeSql("create_routes_table.sql");
 
         Set<String> expected = Sets.newHashSet("22", "36", "54A");
@@ -100,7 +100,7 @@ public class SqliteFavoriteStoreTest
     @Test
     public void savesFavoriteRoutes() throws Exception
     {
-        SqliteFavoriteStore store = SqliteFavoriteStore.createStore(dbPath);
+        SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
         executeSql("create_routes_table.sql");
 
         Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");
@@ -138,6 +138,6 @@ public class SqliteFavoriteStoreTest
 
     private static IDataSet readDataSet(String filename) throws Exception
     {
-        return new FlatXmlDataSetBuilder().build(SqliteFavoriteStore.class.getResourceAsStream(filename));
+        return new FlatXmlDataSetBuilder().build(SqliteFavoritesStore.class.getResourceAsStream(filename));
     }
 }

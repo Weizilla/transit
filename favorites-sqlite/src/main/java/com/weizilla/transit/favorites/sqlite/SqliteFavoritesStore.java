@@ -18,19 +18,19 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class SqliteFavoriteStore implements BusFavoritesStore
+public class SqliteFavoritesStore implements BusFavoritesStore
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoriteStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStore.class);
     private final Path dbPath;
 
-    private SqliteFavoriteStore(Path dbPath)
+    private SqliteFavoritesStore(Path dbPath)
     {
         this.dbPath = dbPath;
     }
 
-    public static SqliteFavoriteStore createStore(Path dbPath) throws SQLException
+    public static SqliteFavoritesStore createStore(Path dbPath) throws SQLException
     {
-        SqliteFavoriteStore store = new SqliteFavoriteStore(dbPath);
+        SqliteFavoritesStore store = new SqliteFavoritesStore(dbPath);
         try
         (
             Connection connection = store.createConnection()
