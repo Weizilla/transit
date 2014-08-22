@@ -75,12 +75,15 @@ public class StreamingBusDataSourceTest
     {
         streamProvider.setStreamFromResource("/getstops_22_N.xml");
 
-        Collection<Stop> stops = source.getStops(new Route("22"), Direction.Northbound);
+        String routeId = "22";
+        Direction direction = Direction.Northbound;
+        Collection<Stop> stops = source.getStops(new Route(routeId), direction);
 
         assertNotNull(stops);
         assertEquals(86, stops.size());
 
-        assertStop(1926, "Clark & Addison", 41.947086853598, -87.656360864639, Iterables.get(stops, 0));
+        Stop actual = Iterables.get(stops, 0);
+        assertStop(1926, "Clark & Addison", 41.947, -87.656, routeId, direction, actual);
     }
 
     @Test
@@ -131,13 +134,16 @@ public class StreamingBusDataSourceTest
         assertPrediction(generated, stopName, stopId, distanceFt, route, direction, destination, prediction, delayed, actual);
     }
 
-    private static void assertStop(int stopId, String stopName, double lat, double lon, Stop actual)
+    private static void assertStop(int stopId, String stopName, double lat, double lon, String route,
+                                   Direction direction, Stop actual)
     {
         double delta = 0.01;
         assertEquals(stopId, actual.getId());
         assertEquals(stopName, actual.getName());
         assertEquals(lat, actual.getLatitude(), delta);
         assertEquals(lon, actual.getLongitude(), delta);
+        assertEquals(route, actual.getRouteId());
+        assertEquals(direction, actual.getDirection());
     }
 
     private static void assertPrediction(DateTime generated, String stopName, int stopId, int distanceFt,

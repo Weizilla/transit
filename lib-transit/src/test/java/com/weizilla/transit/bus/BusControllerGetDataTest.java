@@ -44,7 +44,7 @@ public class BusControllerGetDataTest
     public void getsStopFromSource() throws Exception
     {
         Direction direction = Direction.Eastbound;
-        Collection<Stop> expected = Collections.singletonList(new Stop(100));
+        Collection<Stop> expected = Collections.singletonList(new Stop());
         BusController controller = new BusController(new BusDataSourceStub(ROUTE, direction, expected), null);
 
         Collection<Stop> actual = controller.getStops(ROUTE, direction);

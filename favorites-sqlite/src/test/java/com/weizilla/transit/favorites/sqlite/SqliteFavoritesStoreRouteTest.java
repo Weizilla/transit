@@ -32,9 +32,9 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class SqliteFavoritesStoreTest
+public class SqliteFavoritesStoreRouteTest
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStoreTest.class);
+    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStoreRouteTest.class);
     private static final String TABLE_NAME = "fav_routes";
     public static final String[] EMPTY = new String[]{};
     private JdbcDatabaseTester databaseTester;

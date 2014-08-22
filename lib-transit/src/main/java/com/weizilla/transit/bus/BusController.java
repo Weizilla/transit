@@ -49,4 +49,14 @@ public class BusController
     {
         return favoriteStore.getFavoriteRoutes();
     }
+
+    public void saveFavorite(Stop stop)
+    {
+        favoriteStore.saveFavorite(stop);
+    }
+
+    public Collection<Integer> getFavoriteStops(String route, Direction direction)
+    {
+        return favoriteStore.getFavoriteStops(route, direction);
+    }
 }

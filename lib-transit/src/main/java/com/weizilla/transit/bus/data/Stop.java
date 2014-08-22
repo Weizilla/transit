@@ -18,6 +18,9 @@ public class Stop
     @Element(name = "lon")
     private double longitude;
 
+    private Direction direction;
+    private String routeId;
+
     public Stop()
     {
         // for simple xml
@@ -26,6 +29,13 @@ public class Stop
     public Stop(int id)
     {
         this.id = id;
+    }
+
+    public Stop(int id, String routeId, Direction direction)
+    {
+        this.id = id;
+        this.routeId = routeId;
+        this.direction = direction;
     }
 
     public int getId()
@@ -46,5 +56,25 @@ public class Stop
     public double getLongitude()
     {
         return longitude;
+    }
+
+    public Direction getDirection()
+    {
+        return direction;
+    }
+
+    public void setDirection(Direction direction)
+    {
+        this.direction = direction;
+    }
+
+    public String getRouteId()
+    {
+        return routeId;
+    }
+
+    public void setRouteId(String routeId)
+    {
+        this.routeId = routeId;
     }
 }

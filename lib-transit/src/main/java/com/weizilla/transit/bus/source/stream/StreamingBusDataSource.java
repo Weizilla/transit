@@ -76,7 +76,13 @@ public class StreamingBusDataSource implements BusDataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
-            return response.getStops();
+            Collection<Stop> stops = response.getStops();
+            for (Stop stop : stops)
+            {
+                stop.setRouteId(route.getId());
+                stop.setDirection(direction);
+            }
+            return stops;
         }
         catch (Exception e)
         {
