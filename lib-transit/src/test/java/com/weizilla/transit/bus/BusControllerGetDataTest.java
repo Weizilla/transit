@@ -22,7 +22,7 @@ public class BusControllerGetDataTest
     public void getsRouteListFromSource() throws Exception
     {
         Collection<Route> expected = Collections.singletonList(ROUTE);
-        BusController controller = new BusController(new BusDataSourceStub(expected), null);
+        BusController controller = new BusController(new BusDataSourceStub(expected), null, null);
 
         Collection<Route> actual = controller.getRoutes();
 
@@ -33,7 +33,7 @@ public class BusControllerGetDataTest
     public void getsDirectionsFromSource() throws Exception
     {
         Collection<Direction> expected = Lists.newArrayList(Direction.Northbound, Direction.Eastbound);
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, expected), null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE, expected), null, null);
 
         Collection<Direction> actual = controller.getDirections(ROUTE);
 
@@ -45,7 +45,7 @@ public class BusControllerGetDataTest
     {
         Direction direction = Direction.Eastbound;
         Collection<Stop> expected = Collections.singletonList(new Stop());
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, direction, expected), null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE, direction, expected), null, null);
 
         Collection<Stop> actual = controller.getStops(ROUTE, direction);
 
@@ -56,7 +56,7 @@ public class BusControllerGetDataTest
     public void getsPredictionsFromSource() throws Exception
     {
         Collection<Prediction> expected = Collections.singletonList(new Prediction());
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, STOP, expected), null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE, STOP, expected), null, null);
 
         Collection<Prediction> actual = controller.getPredictions(ROUTE, STOP);
 

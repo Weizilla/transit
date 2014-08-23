@@ -6,18 +6,21 @@ import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
 import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.groups.BusGroupsStore;
 
 import java.util.Collection;
 
 public class BusController
 {
     private final BusDataSource dataSource;
-    private final BusFavoritesStore favoriteStore;
+    private final BusFavoritesStore favoritesStore;
+    private final BusGroupsStore groupsStore;
 
-    public BusController(BusDataSource dataSource, BusFavoritesStore favoriteStore)
+    public BusController(BusDataSource dataSource, BusFavoritesStore favoritesStore, BusGroupsStore groupsStore)
     {
         this.dataSource = dataSource;
-        this.favoriteStore = favoriteStore;
+        this.favoritesStore = favoritesStore;
+        this.groupsStore = groupsStore;
     }
 
     public Collection<Route> getRoutes()
@@ -42,21 +45,26 @@ public class BusController
 
     public void saveFavorite(Route route)
     {
-        favoriteStore.saveFavorite(route);
+        favoritesStore.saveFavorite(route);
     }
 
     public Collection<String> getFavoriteRoutes()
     {
-        return favoriteStore.getFavoriteRoutes();
+        return favoritesStore.getFavoriteRoutes();
     }
 
     public void saveFavorite(Stop stop)
     {
-        favoriteStore.saveFavorite(stop);
+        favoritesStore.saveFavorite(stop);
     }
 
     public Collection<Integer> getFavoriteStops(String route, Direction direction)
     {
-        return favoriteStore.getFavoriteStops(route, direction);
+        return favoritesStore.getFavoriteStops(route, direction);
+    }
+
+    public int createGroup(String name)
+    {
+        return groupsStore.createGroup(name);
     }
 }
