@@ -112,6 +112,7 @@
         <module>favorites-android</module>
         <module>favorites-android-test</module>
         <module>favorites-sqlite</module>
+        <module>groups-sqlite</module>
     </modules>
 
 </project>
