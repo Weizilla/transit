@@ -71,9 +71,17 @@ public class SqliteGroupsStore implements BusGroupsStore
         catch (SQLException e)
         {
             logger.error("Sql error creating group name {}", name, e);
+            if (e.getMessage().contains("SQLITE_CONSTRAINT"))
+            {
+                throw new DuplicateGroupException(name);
+            }
         }
         //TODO don't use status return codes
         return -1;
+    }
+
+    private static void checkDuplicateException(SQLException exception)
+    {
     }
 
     private Connection createConnection() throws SQLException
