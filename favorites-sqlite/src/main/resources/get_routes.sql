@@ -1,0 +1,1 @@
+SELECT id FROM fav_routes

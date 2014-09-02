@@ -1,0 +1,1 @@
+INSERT INTO fav_routes (id) VALUES (?)
