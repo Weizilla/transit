@@ -137,4 +137,22 @@ public class SqliteGroupsStoreTest extends SqliteTest
         Set<Group> actualGroups = store.getAllGroups();
         assertEquals(expected, actualGroups);
     }
+
+    @Test
+    public void deleteGroupDeletesGroupFromDb() throws Exception
+    {
+        SqliteGroupsStore store = SqliteGroupsStore.createStore(dbPath);
+        executeSql("create_groups_table.sql");
+
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("delete_group_before.xml"));
+
+        store.deleteGroup(8);
+
+        IDataSet expected = readDataSet("delete_group_after.xml");
+        ITable expectedTable = expected.getTable(GROUPS_TABLE_NAME);
+        ITable actual = getTable(GROUPS_TABLE_NAME);
+
+        Assertion.assertEquals(expectedTable, actual);
+    }
 }

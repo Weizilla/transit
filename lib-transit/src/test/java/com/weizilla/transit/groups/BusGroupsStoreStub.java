@@ -22,4 +22,10 @@ public class BusGroupsStoreStub implements BusGroupsStore
         //TODO Auto-generated
         return null;
     }
+
+    @Override
+    public void deleteGroup(int id)
+    {
+        //TODO Auto-generated
+    }
 }

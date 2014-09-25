@@ -116,6 +116,40 @@ public class SqliteGroupsStore implements BusGroupsStore
         return Collections.emptySet();
     }
 
+    @Override
+    public void deleteGroup(int id)
+    {
+        String sqlFile = "delete_group.sql";
+        try
+        (
+            Connection connection = createConnection();
+            PreparedStatement statement = createDeleteGroupStatement(connection, sqlFile, id)
+        )
+        {
+            int numDeleted = statement.executeUpdate();
+            if (numDeleted == 0)
+            {
+                logger.warn("No rows deleted when deleting group id {}", id);
+            }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error getting all groups: {}", e.getMessage(), e);
+        }
+    }
+
+    private static PreparedStatement createDeleteGroupStatement(Connection connection, String sqlFile, int groupId)
+        throws SQLException, IOException
+    {
+        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        statement.setInt(1, groupId);
+        return statement;
+    }
+
     private Connection createConnection() throws SQLException
     {
         SQLiteDataSource dataSource = new SQLiteDataSource();
