@@ -1,5 +1,7 @@
 package com.weizilla.transit.groups;
 
+import java.util.Set;
+
 public class BusGroupsStoreStub implements BusGroupsStore
 {
     private final int newGroupId;
@@ -12,5 +14,12 @@ public class BusGroupsStoreStub implements BusGroupsStore
     public int createGroup(String groupName)
     {
         return newGroupId;
+    }
+
+    @Override
+    public Set<Group> getAllGroups()
+    {
+        //TODO Auto-generated
+        return null;
     }
 }

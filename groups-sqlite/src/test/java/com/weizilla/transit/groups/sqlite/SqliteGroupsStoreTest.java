@@ -2,6 +2,8 @@ package com.weizilla.transit.groups.sqlite;
 
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
+import com.google.common.collect.Sets;
+import com.weizilla.transit.groups.Group;
 import org.dbunit.Assertion;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -11,6 +13,7 @@ import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
+import java.util.Set;
 
 import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertEquals;
@@ -84,7 +87,6 @@ public class SqliteGroupsStoreTest extends SqliteTest
     @Test
     public void throwsErrorWhenDuplicateGroupName() throws Exception
     {
-
         SqliteGroupsStore store = SqliteGroupsStore.createStore(dbPath);
         executeSql("create_groups_table.sql");
 
@@ -115,5 +117,24 @@ public class SqliteGroupsStoreTest extends SqliteTest
         {
             assertEquals(groupName, e.getGroupName());
         }
+    }
+
+    @Test
+    public void getAllGroupsReturnsDbData() throws Exception
+    {
+        SqliteGroupsStore store = SqliteGroupsStore.createStore(dbPath);
+        executeSql("create_groups_table.sql");
+
+        Set<Group> expected = Sets.newHashSet(
+            new Group(4, "GROUP 4"),
+            new Group(5, "GROUP 5"),
+            new Group(6, "GROUP 6")
+        );
+
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("get_all_groups.xml"));
+
+        Set<Group> actualGroups = store.getAllGroups();
+        assertEquals(expected, actualGroups);
     }
 }

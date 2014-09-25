@@ -3,6 +3,7 @@ package com.weizilla.transit.groups.sqlite;
 import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
 import com.weizilla.transit.groups.BusGroupsStore;
+import com.weizilla.transit.groups.Group;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteDataSource;
@@ -15,6 +16,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 //TODO combine this with SqliteFavoritesStore
 public class SqliteGroupsStore implements BusGroupsStore
@@ -80,8 +84,36 @@ public class SqliteGroupsStore implements BusGroupsStore
         return -1;
     }
 
-    private static void checkDuplicateException(SQLException exception)
+    @Override
+    public Set<Group> getAllGroups()
     {
+        Set<Group> groups = new HashSet<>();
+        String sqlFile = "get_all_groups.sql";
+        try
+        (
+            Connection connection = createConnection();
+            PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+            ResultSet resultSet = statement.executeQuery();
+        )
+        {
+            while (resultSet.next())
+            {
+                int id = resultSet.getInt("_id");
+                String name = resultSet.getString("name");
+                groups.add(new Group(id, name));
+            }
+            return groups;
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error getting all groups: {}", e.getMessage(), e);
+        }
+
+        return Collections.emptySet();
     }
 
     private Connection createConnection() throws SQLException
@@ -99,9 +131,9 @@ public class SqliteGroupsStore implements BusGroupsStore
     private static void createTable(Connection connection, String sqlFile)
     {
         try
-            (
-                Statement statement = connection.createStatement()
-            )
+        (
+            Statement statement = connection.createStatement()
+        )
         {
             String sql = readSqlFromFile(sqlFile);
             statement.executeUpdate(sql);
