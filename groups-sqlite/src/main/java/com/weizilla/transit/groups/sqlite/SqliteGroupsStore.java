@@ -45,7 +45,7 @@ public class SqliteGroupsStore implements BusGroupsStore
     }
 
     @Override
-    public int createGroup(String name)
+    public Group createGroup(String name)
     {
         String sqlFile = "create_group.sql";
         try
@@ -65,7 +65,8 @@ public class SqliteGroupsStore implements BusGroupsStore
                 ResultSet key = statement.getGeneratedKeys()
             )
             {
-                return key.getInt(1);
+                int id = key.getInt(1);
+                return new Group(id, name);
             }
         }
         catch (IOException e)
@@ -81,7 +82,7 @@ public class SqliteGroupsStore implements BusGroupsStore
             }
         }
         //TODO don't use status return codes
-        return -1;
+        return null;
     }
 
     @Override
