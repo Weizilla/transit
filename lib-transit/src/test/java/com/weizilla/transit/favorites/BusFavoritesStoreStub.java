@@ -34,7 +34,7 @@ public class BusFavoritesStoreStub implements BusFavoritesStore
     }
 
     @Override
-    public Collection<String> getFavoriteRoutes()
+    public Collection<String> getFavoriteRouteIds()
     {
         return routes;
     }
@@ -46,7 +46,7 @@ public class BusFavoritesStoreStub implements BusFavoritesStore
     }
 
     @Override
-    public Collection<Integer> getFavoriteStops(String route, Direction direction)
+    public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
     {
         return stops;
     }

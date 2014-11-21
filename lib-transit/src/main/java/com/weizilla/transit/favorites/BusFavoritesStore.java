@@ -9,7 +9,7 @@ import java.util.Collection;
 public interface BusFavoritesStore
 {
     void saveFavorite(Route route);
-    Collection<String> getFavoriteRoutes();
+    Collection<String> getFavoriteRouteIds();
     void saveFavorite(Stop stop);
-    Collection<Integer> getFavoriteStops(String route, Direction direction);
+    Collection<Integer> getFavoriteStopIds(String route, Direction direction);
 }

@@ -63,7 +63,7 @@ public class SqliteFavoritesStoreStopTest extends SqliteTest
     }
 
     @Test
-    public void getStopsReturnsDbData() throws Exception
+    public void getStopIdsReturnsDbData() throws Exception
     {
         SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
         executeSql("create_stops_table.sql");
@@ -73,7 +73,7 @@ public class SqliteFavoritesStoreStopTest extends SqliteTest
         Set<Integer> expected = Sets.newHashSet(100, 400);
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), readDataSet("get_stops.xml"));
 
-        Collection<Integer> actualIds = store.getFavoriteStops(route, direction);
+        Collection<Integer> actualIds = store.getFavoriteStopIds(route, direction);
         assertEquals(expected, new HashSet<>(actualIds));
     }
 

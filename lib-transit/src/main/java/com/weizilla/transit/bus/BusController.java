@@ -49,9 +49,9 @@ public class BusController
         favoritesStore.saveFavorite(route);
     }
 
-    public Collection<String> getFavoriteRoutes()
+    public Collection<String> getFavoriteRouteIds()
     {
-        return favoritesStore.getFavoriteRoutes();
+        return favoritesStore.getFavoriteRouteIds();
     }
 
     public void saveFavorite(Stop stop)
@@ -59,9 +59,9 @@ public class BusController
         favoritesStore.saveFavorite(stop);
     }
 
-    public Collection<Integer> getFavoriteStops(String route, Direction direction)
+    public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
     {
-        return favoritesStore.getFavoriteStops(route, direction);
+        return favoritesStore.getFavoriteStopIds(route, direction);
     }
 
     public Group createGroup(String name)

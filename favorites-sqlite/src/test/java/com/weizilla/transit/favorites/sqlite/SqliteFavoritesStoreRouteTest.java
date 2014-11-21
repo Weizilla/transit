@@ -63,7 +63,7 @@ public class SqliteFavoritesStoreRouteTest extends SqliteTest
     }
 
     @Test
-    public void getRoutesReturnsDbData() throws Exception
+    public void getRouteIdsReturnsDbData() throws Exception
     {
         SqliteFavoritesStore store = SqliteFavoritesStore.createStore(dbPath);
         executeSql("create_routes_table.sql");
@@ -71,7 +71,7 @@ public class SqliteFavoritesStoreRouteTest extends SqliteTest
         Set<String> expected = Sets.newHashSet("22", "36", "54A");
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), readDataSet("get_routes.xml"));
 
-        Collection<String> actualIds = store.getFavoriteRoutes();
+        Collection<String> actualIds = store.getFavoriteRouteIds();
         assertEquals(expected, new HashSet<>(actualIds));
     }
 

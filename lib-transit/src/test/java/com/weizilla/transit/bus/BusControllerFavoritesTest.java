@@ -28,14 +28,14 @@ public class BusControllerFavoritesTest
     }
 
     @Test
-    public void getsAllFavoriteRoutes() throws Exception
+    public void getsAllFavoriteRouteIds() throws Exception
     {
         Collection<String> routes = Collections.singletonList("20");
 
         BusFavoritesStore favoriteStore = BusFavoritesStoreStub.createWithRoutes(routes);
         BusController controller = new BusController(null, favoriteStore, null);
 
-        Collection<String> actual = controller.getFavoriteRoutes();
+        Collection<String> actual = controller.getFavoriteRouteIds();
         assertSame(routes, actual);
     }
 
@@ -52,14 +52,14 @@ public class BusControllerFavoritesTest
     }
 
     @Test
-    public void getsAllFavoriteStops() throws Exception
+    public void getsAllFavoriteStopIds() throws Exception
     {
         Collection<Integer> stops = Collections.singletonList(100);
 
         BusFavoritesStore favoritesStore = BusFavoritesStoreStub.createWithStops(stops);
         BusController controller = new BusController(null, favoritesStore, null);
 
-        Collection<Integer> actual = controller.getFavoriteStops(null, null);
+        Collection<Integer> actual = controller.getFavoriteStopIds(null, null);
         assertSame(stops, actual);
     }
 }
