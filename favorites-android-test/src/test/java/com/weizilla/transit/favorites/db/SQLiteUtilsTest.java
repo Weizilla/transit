@@ -12,7 +12,7 @@ import java.io.File;
 
 import static org.junit.Assert.*;
 
-@Config(emulateSdk = 18)
+@Config(manifest = Config.NONE, emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
 public class SQLiteUtilsTest
 {

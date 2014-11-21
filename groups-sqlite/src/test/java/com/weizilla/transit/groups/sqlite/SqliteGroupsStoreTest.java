@@ -76,7 +76,7 @@ public class SqliteGroupsStoreTest extends SqliteTest
         for (int i = 0; i < 3; i++)
         {
             String groupName = "GROUP " + i;
-            Group expectedGroup = new Group(i, groupName);
+            Group expectedGroup = new Group(i + 1, groupName);
             Group actual = store.createGroup(groupName);
             assertEquals(expectedGroup, actual);
         }
