@@ -9,9 +9,14 @@ import com.weizilla.transit.bus.source.stream.StreamingBusDataSource;
 import com.weizilla.transit.bus.source.stream.http.HttpInputStreamProvider;
 import com.weizilla.transit.bus.source.stream.http.HttpReader;
 import com.weizilla.transit.favorites.sqlite.SqliteFavoritesStore;
+import com.weizilla.transit.groups.sqlite.SqliteGroupsStore;
 import play.mvc.Controller;
 import play.mvc.Result;
-import views.html.*;
+import views.html.directions;
+import views.html.index;
+import views.html.message;
+import views.html.predictions;
+import views.html.stops;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -22,6 +27,7 @@ import java.util.Collection;
 public class Application extends Controller
 {
     private static final Path favDbPath = createPath();
+    private static final Path groupDbPath = createPath();
 
     private static Path createPath()
     {
@@ -45,17 +51,17 @@ public class Application extends Controller
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, apiKey);
         StreamingBusDataSource source = new StreamingBusDataSource(provider);
 
-        SqliteFavoritesStore store = null;
         try
         {
-            store = SqliteFavoritesStore.createStore(favDbPath);
+            SqliteFavoritesStore favStore = SqliteFavoritesStore.createStore(favDbPath);
+            SqliteGroupsStore groupsStore = SqliteGroupsStore.createStore(groupDbPath);
+
+            return new BusController(source, favStore, groupsStore);
         }
         catch (Exception e)
         {
-            e.printStackTrace();
+            throw new RuntimeException("Unable to create bus controller", e);
         }
-
-        return new BusController(source, store);
     }
 
     public static Result index()
