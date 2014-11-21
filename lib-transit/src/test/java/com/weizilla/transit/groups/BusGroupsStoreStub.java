@@ -4,16 +4,22 @@ import java.util.Set;
 
 public class BusGroupsStoreStub implements BusGroupsStore
 {
-    private final int newGroupId;
+    private int newGroupId;
+    private Group group;
 
     public BusGroupsStoreStub(int newGroupId)
     {
         this.newGroupId = newGroupId;
     }
 
-    public int createGroup(String groupName)
+    public BusGroupsStoreStub(Group group)
     {
-        return newGroupId;
+        this.group = group;
+    }
+
+    public Group createGroup(String groupName)
+    {
+        return group;
     }
 
     @Override

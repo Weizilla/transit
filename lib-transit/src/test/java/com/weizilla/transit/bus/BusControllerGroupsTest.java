@@ -2,6 +2,7 @@ package com.weizilla.transit.bus;
 
 import com.weizilla.transit.groups.BusGroupsStore;
 import com.weizilla.transit.groups.BusGroupsStoreStub;
+import com.weizilla.transit.groups.Group;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -15,13 +16,14 @@ public class BusControllerGroupsTest
     {
         int newGroupId = 10;
         String groupName = "GROUP NAME";
+        Group expected = new Group(newGroupId, groupName);
 
-        BusGroupsStore store = spy(new BusGroupsStoreStub(newGroupId));
+        BusGroupsStore store = spy(new BusGroupsStoreStub(expected));
         BusController controller = new BusController(null, null, store);
 
-        int actual = controller.createGroup(groupName);
+        Group actual = controller.createGroup(groupName);
 
         verify(store).createGroup(groupName);
-        assertEquals(newGroupId, actual);
+        assertEquals(expected, actual);
     }
 }

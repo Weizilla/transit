@@ -7,6 +7,7 @@ import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
 import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.groups.BusGroupsStore;
+import com.weizilla.transit.groups.Group;
 
 import java.util.Collection;
 
@@ -63,7 +64,7 @@ public class BusController
         return favoritesStore.getFavoriteStops(route, direction);
     }
 
-    public int createGroup(String name)
+    public Group createGroup(String name)
     {
         return groupsStore.createGroup(name);
     }
