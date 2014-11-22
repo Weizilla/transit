@@ -1,4 +1,4 @@
-package com.weizilla.transit.favorites.db;
+package com.weizilla.transit.favorites.android.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import org.junit.After;
@@ -10,7 +10,8 @@ import org.robolectric.annotation.Config;
 
 import java.io.File;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 @Config(manifest = Config.NONE, emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
@@ -43,6 +44,7 @@ public class SQLiteUtilsTest
     @Test
     public void existingTableReturnsTrue() throws Exception
     {
+        assertFalse(SqliteUtils.tableExists(database, DB_NAME));
         database.execSQL("CREATE TABLE " + DB_NAME + " (id INTEGER PRIMARY KEY)");
         assertTrue(SqliteUtils.tableExists(database, DB_NAME));
     }

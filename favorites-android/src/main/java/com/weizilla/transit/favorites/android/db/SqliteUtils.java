@@ -1,4 +1,4 @@
-package com.weizilla.transit.favorites.db;
+package com.weizilla.transit.favorites.android.db;
 
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;

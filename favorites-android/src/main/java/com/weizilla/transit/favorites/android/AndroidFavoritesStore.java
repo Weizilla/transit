@@ -1,12 +1,13 @@
-package com.weizilla.transit.favorites;
+package com.weizilla.transit.favorites.android;
 
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.favorites.BusFavoritesStore;
 
 import java.util.Collection;
 
-public class SqliteFavoritesStore implements BusFavoritesStore
+public class AndroidFavoritesStore implements BusFavoritesStore
 {
     @Override
     public void saveFavorite(Route route)
