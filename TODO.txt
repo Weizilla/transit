@@ -1,4 +1,12 @@
 =======
+TODO 
+- find common logging framework
+- combine android favorites test
+- combine android favorites & sqlite projects
+
+=======
+OLD
+=======
 features
 ------
 add stop to group from stop menu
