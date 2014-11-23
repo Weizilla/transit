@@ -1,6 +1,8 @@
 package com.weizilla.transit.favorites.android.db;
 
 import android.database.sqlite.SQLiteDatabase;
+import com.weizilla.transit.favorites.android.db.Favorites.RouteEntry;
+import com.weizilla.transit.favorites.android.db.Favorites.StopEntry;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -10,6 +12,7 @@ import org.robolectric.annotation.Config;
 
 import java.io.File;
 
+import static com.weizilla.transit.favorites.android.db.AndroidDbUtils.tableExists;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -17,7 +20,6 @@ import static org.junit.Assert.assertTrue;
 @RunWith(RobolectricTestRunner.class)
 public class FavoritesDbHelperTest
 {
-    private static final String TABLE_NAME = "fav_routes"; //TODO put in single place
     private FavoritesDbHelper helper;
     private File dbFile;
     private SQLiteDatabase database;
@@ -41,8 +43,10 @@ public class FavoritesDbHelperTest
     @Test
     public void createsTablesOnCreate() throws Exception
     {
-        assertFalse(AndroidDbUtils.tableExists(database, TABLE_NAME));
+        assertFalse(tableExists(database, RouteEntry.TABLE_NAME));
+        assertFalse(tableExists(database, StopEntry.TABLE_NAME));
         helper.onCreate(database);
-        assertTrue(AndroidDbUtils.tableExists(database, TABLE_NAME));
+        assertTrue(tableExists(database, RouteEntry.TABLE_NAME));
+        assertTrue(tableExists(database, StopEntry.TABLE_NAME));
     }
 }
