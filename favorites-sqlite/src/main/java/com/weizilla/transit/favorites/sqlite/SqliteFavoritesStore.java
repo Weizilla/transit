@@ -21,6 +21,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
 
+@SuppressWarnings("Annotator")
 public class SqliteFavoritesStore implements BusFavoritesStore
 {
     private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStore.class);

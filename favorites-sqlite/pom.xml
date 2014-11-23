@@ -11,12 +11,13 @@
 
     <artifactId>favorites-sqlite</artifactId>
     <version>1.0.0-SNAPSHOT</version>
+    <packaging>jar</packaging>
 
     <dependencies>
         <dependency>
             <groupId>com.weizilla.transit</groupId>
             <artifactId>lib-transit</artifactId>
-            <version>1.0.0-SNAPSHOT</version>
+            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.xerial</groupId>

@@ -77,4 +77,17 @@ public class Stop
     {
         this.routeId = routeId;
     }
+
+    @Override
+    public String toString()
+    {
+        return "Stop{" +
+            "id=" + id +
+            ", name='" + name + '\'' +
+            ", latitude=" + latitude +
+            ", longitude=" + longitude +
+            ", direction=" + direction +
+            ", routeId='" + routeId + '\'' +
+            '}';
+    }
 }

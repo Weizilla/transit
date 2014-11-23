@@ -22,7 +22,7 @@ public class TimeConverter implements Converter<DateTime>
 
     public static DateTime parse(String dateTime)
     {
-        return FORMATTER.parseDateTime(dateTime).withZone(DateTimeZone.forID("America/Chicago"));
+        return FORMATTER.parseDateTime(dateTime).withZoneRetainFields(DateTimeZone.forID("America/Chicago"));
     }
 
     @Override

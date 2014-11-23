@@ -3,7 +3,7 @@ package com.weizilla.transit.favorites.android.db;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
-public class SqliteUtils
+public class AndroidDbUtils
 {
     private static final String COUNT_TABLES_SQL =
             "SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?";

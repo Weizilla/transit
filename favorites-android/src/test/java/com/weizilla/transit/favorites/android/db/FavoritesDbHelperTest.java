@@ -15,17 +15,19 @@ import static org.junit.Assert.assertTrue;
 
 @Config(manifest = Config.NONE, emulateSdk = 18)
 @RunWith(RobolectricTestRunner.class)
-public class SQLiteUtilsTest
+public class FavoritesDbHelperTest
 {
-    private static final String DB_NAME = "SQLiteUtilsTest";
+    private static final String TABLE_NAME = "fav_routes"; //TODO put in single place
+    private FavoritesDbHelper helper;
     private File dbFile;
     private SQLiteDatabase database;
 
     @Before
     public void setUp() throws Exception
     {
-        dbFile = File.createTempFile("SQLiteUtilsTest", ".db");
+        dbFile = File.createTempFile("FavoritesDbHelperTest-", ".db");
         database = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
+        helper = new FavoritesDbHelper(null);
     }
 
     @After
@@ -34,18 +36,13 @@ public class SQLiteUtilsTest
         SQLiteDatabase.deleteDatabase(dbFile);
     }
 
-    @Test
-    public void noTableReturnsFalse() throws Exception
-    {
-        database.execSQL("DROP TABLE IF EXISTS " + DB_NAME);
-        assertFalse(SqliteUtils.tableExists(database, DB_NAME));
-    }
+    //TODO test constructor
 
     @Test
-    public void existingTableReturnsTrue() throws Exception
+    public void createsTablesOnCreate() throws Exception
     {
-        assertFalse(SqliteUtils.tableExists(database, DB_NAME));
-        database.execSQL("CREATE TABLE " + DB_NAME + " (id INTEGER PRIMARY KEY)");
-        assertTrue(SqliteUtils.tableExists(database, DB_NAME));
+        assertFalse(AndroidDbUtils.tableExists(database, TABLE_NAME));
+        helper.onCreate(database);
+        assertTrue(AndroidDbUtils.tableExists(database, TABLE_NAME));
     }
 }
