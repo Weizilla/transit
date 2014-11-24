@@ -44,6 +44,13 @@
             <version>${project.version}</version>
         </dependency>
         <dependency>
+            <groupId>com.weizilla.transit</groupId>
+            <artifactId>favorites-sqlite</artifactId>
+            <type>test-jar</type>
+            <scope>test</scope>
+            <version>${project.version}</version>
+        </dependency>
+        <dependency>
             <groupId>org.simpleframework</groupId>
             <artifactId>simple-xml</artifactId>
         </dependency>

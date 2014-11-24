@@ -1,6 +1,4 @@
-package com.weizilla.transit.favorites.android.db;
-
-import android.provider.BaseColumns;
+package com.weizilla.transit.favorites.sqlite;
 
 public class Favorites
 {
@@ -8,13 +6,13 @@ public class Favorites
         // private
     }
 
-    public static abstract class RouteEntry implements BaseColumns {
+    public abstract static class RoutesEntry {
         public static final String TABLE_NAME = "fav_routes";
         public static final String ID = "id";
         public static final String NAME = "name";
     }
 
-    public static abstract class StopEntry implements BaseColumns {
+    public abstract static class StopsEntry {
         public static final String TABLE_NAME = "fav_stops";
         public static final String ID = "id";
         public static final String ROUTE = "route";

@@ -4,6 +4,8 @@ import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.StopsEntry;
 import com.weizilla.transit.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -19,20 +21,19 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
 
-@SuppressWarnings("Annotator")
-public class SqliteFavoritesStore implements BusFavoritesStore
+public class JdbcSqliteFavoritesStore implements BusFavoritesStore
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteFavoritesStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteFavoritesStore.class);
     private final Path dbPath;
 
-    private SqliteFavoritesStore(Path dbPath)
+    private JdbcSqliteFavoritesStore(Path dbPath)
     {
         this.dbPath = dbPath;
     }
 
-    public static SqliteFavoritesStore createStore(Path dbPath) throws SQLException
+    public static JdbcSqliteFavoritesStore createStore(Path dbPath) throws SQLException
     {
-        SqliteFavoritesStore store = new SqliteFavoritesStore(dbPath);
+        JdbcSqliteFavoritesStore store = new JdbcSqliteFavoritesStore(dbPath);
         try
         (
             Connection connection = store.createConnection()
@@ -125,7 +126,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         {
             while (resultSet.next())
             {
-                routeIds.add(resultSet.getString("id"));
+                routeIds.add(resultSet.getString(RoutesEntry.ID));
             }
         }
         catch (IOException e)
@@ -153,7 +154,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         {
             while (resultSet.next())
             {
-                stopIds.add(resultSet.getInt("id"));
+                stopIds.add(resultSet.getInt(StopsEntry.ID));
             }
         }
         catch (IOException e)

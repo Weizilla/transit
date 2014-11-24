@@ -1,6 +1,7 @@
 package com.weizilla.transit.favorites.sqlite;
 
 import com.google.common.io.Resources;
+import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.utils.ResourceUtils;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
@@ -9,29 +10,37 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.junit.After;
 import org.junit.Before;
+import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.Statement;
+import java.util.Arrays;
+
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
-public class SqliteTest
+public abstract class BaseSqliteTest
 {
-    protected static final String[] EMPTY = {};
+    protected final Logger logger = LoggerFactory.getLogger(getClass());
     protected JdbcDatabaseTester databaseTester;
     protected Path dbPath;
-    private final Logger logger = LoggerFactory.getLogger(getClass());
+    protected File dbFile;
+    protected BusFavoritesStore store;
 
     @Before
     public void setUp() throws Exception
     {
-        dbPath = Files.createTempFile(getClass().getSimpleName() + "-", ".db");
+        dbPath = Files.createTempFile(getClass().getSimpleName() + '-', ".db");
+        dbFile = dbPath.toFile();
         logger.debug("Temp db file: {}", dbPath);
-
         databaseTester = new JdbcDatabaseTester("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath);
     }
 
@@ -42,7 +51,13 @@ public class SqliteTest
         Files.delete(dbPath);
     }
 
-    protected void executeSql(String filename) throws Exception
+    @Test
+    public void storeIsSet() throws Exception
+    {
+        assertNotNull(store);
+    }
+
+    protected void executeSql(String sql) throws Exception
     {
         IDatabaseConnection connection = null;
         try
@@ -54,7 +69,6 @@ public class SqliteTest
                 Statement statement = conn.createStatement()
             )
             {
-                String sql = ResourceUtils.readFile(filename);
                 statement.executeUpdate(sql);
             }
         }
@@ -67,9 +81,29 @@ public class SqliteTest
         }
     }
 
+    protected void executeSqlFromFile(String filename) throws Exception
+    {
+        String sql = ResourceUtils.readFile(filename);
+        executeSql(sql);
+    }
+
     protected ITable getTable(String tableName) throws Exception
     {
         return databaseTester.getConnection().createDataSet().getTable(tableName);
+    }
+
+    protected void createTable(String table, String filename) throws Exception
+    {
+        executeSqlFromFile(filename);
+        String[] tableNames = databaseTester.getConnection().createDataSet().getTableNames();
+        assertTrue(Arrays.asList(tableNames).contains(table));
+    }
+
+    protected void dropTable(String table) throws Exception
+    {
+        executeSql("DROP TABLE IF EXISTS " + table);
+        String[] tableNames = databaseTester.getConnection().createDataSet().getTableNames();
+        assertFalse(Arrays.asList(tableNames).contains(table));
     }
 
     protected static IDataSet readDataSet(String filename) throws Exception

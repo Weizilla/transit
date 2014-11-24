@@ -8,6 +8,11 @@ public class AndroidDbUtils
     private static final String COUNT_TABLES_SQL =
             "SELECT count(name) FROM sqlite_master WHERE type='table' AND name=?";
 
+    private AndroidDbUtils()
+    {
+        // util class
+    }
+
     public static boolean tableExists(SQLiteDatabase db, String tableName)
     {
         try
