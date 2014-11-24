@@ -1,17 +1,15 @@
 package com.weizilla.transit.favorites.sqlite;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -54,7 +52,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         try
         (
             Connection connection = createConnection();
-            PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile))
+            PreparedStatement statement = connection.prepareStatement(ResourceUtils.readFile(sqlFile))
         )
         {
             statement.setString(1, id);
@@ -105,7 +103,8 @@ public class SqliteFavoritesStore implements BusFavoritesStore
     private static PreparedStatement createSaveStopStatement(Connection connection, Stop stop, String sqlFile)
         throws SQLException, IOException
     {
-        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        String sql = ResourceUtils.readFile(sqlFile);
+        PreparedStatement statement = connection.prepareStatement(sql);
         statement.setInt(1, stop.getId());
         statement.setString(2, stop.getRouteId());
         statement.setObject(3, stop.getDirection());
@@ -121,7 +120,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         (
             Connection connection = createConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(readSqlFromFile(sqlFile))
+            ResultSet resultSet = statement.executeQuery(ResourceUtils.readFile(sqlFile))
         )
         {
             while (resultSet.next())
@@ -172,7 +171,8 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         Connection connection, String sqlFile, String route, Direction direction)
         throws IOException, SQLException
     {
-        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        String sql = ResourceUtils.readFile(sqlFile);
+        PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, route);
         statement.setObject(2, direction);
         return statement;
@@ -202,7 +202,7 @@ public class SqliteFavoritesStore implements BusFavoritesStore
             Statement statement = connection.createStatement()
         )
         {
-            String sql = readSqlFromFile(sqlFile);
+            String sql = ResourceUtils.readFile(sqlFile);
             statement.executeUpdate(sql);
         }
         catch (SQLException e)
@@ -213,11 +213,5 @@ public class SqliteFavoritesStore implements BusFavoritesStore
         {
             logger.error("Error reading sql file {}: {}", sqlFile, e.getMessage(), e);
         }
-    }
-
-    private static String readSqlFromFile(String sqlFile) throws IOException
-    {
-        URL url = Resources.getResource(sqlFile);
-        return Resources.toString(url, Charsets.UTF_8);
     }
 }

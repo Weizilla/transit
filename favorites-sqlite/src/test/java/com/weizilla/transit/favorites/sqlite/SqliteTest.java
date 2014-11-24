@@ -1,7 +1,7 @@
 package com.weizilla.transit.favorites.sqlite;
 
-import com.google.common.base.Charsets;
 import com.google.common.io.Resources;
+import com.weizilla.transit.utils.ResourceUtils;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
@@ -54,8 +54,7 @@ public class SqliteTest
                 Statement statement = conn.createStatement()
             )
             {
-                URL url = Resources.getResource(filename);
-                String sql = Resources.toString(url, Charsets.UTF_8);
+                String sql = ResourceUtils.readFile(filename);
                 statement.executeUpdate(sql);
             }
         }

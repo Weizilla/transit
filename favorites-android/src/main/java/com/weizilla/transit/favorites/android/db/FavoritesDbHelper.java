@@ -4,11 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
+import com.weizilla.transit.utils.ResourceUtils;
 
 import java.io.IOException;
-import java.net.URL;
 
 public class FavoritesDbHelper extends SQLiteOpenHelper
 {
@@ -26,8 +24,8 @@ public class FavoritesDbHelper extends SQLiteOpenHelper
     {
         try
         {
-            db.execSQL(readSqlFromFile("create_routes_table.sql"));
-            db.execSQL(readSqlFromFile("create_stops_table.sql"));
+            db.execSQL(ResourceUtils.readFile("create_routes_table.sql"));
+            db.execSQL(ResourceUtils.readFile("create_stops_table.sql"));
         }
         catch (IOException e)
         {
@@ -39,12 +37,5 @@ public class FavoritesDbHelper extends SQLiteOpenHelper
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
     {
         throw new RuntimeException("on upgrade");
-    }
-
-    //TODO move into utils and combe w/ other function
-    private static String readSqlFromFile(String sqlFile) throws IOException
-    {
-        URL url = Resources.getResource(sqlFile);
-        return Resources.toString(url, Charsets.UTF_8);
     }
 }

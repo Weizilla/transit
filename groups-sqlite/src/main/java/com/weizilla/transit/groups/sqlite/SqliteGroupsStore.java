@@ -1,7 +1,5 @@
 package com.weizilla.transit.groups.sqlite;
 
-import com.google.common.base.Charsets;
-import com.google.common.io.Resources;
 import com.weizilla.transit.groups.BusGroupsStore;
 import com.weizilla.transit.groups.Group;
 import org.slf4j.Logger;
@@ -9,7 +7,6 @@ import org.slf4j.LoggerFactory;
 import org.sqlite.SQLiteDataSource;
 
 import java.io.IOException;
-import java.net.URL;
 import java.nio.file.Path;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -19,6 +16,8 @@ import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
+
+import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
 //TODO combine this with SqliteFavoritesStore
 public class SqliteGroupsStore implements BusGroupsStore
@@ -50,8 +49,8 @@ public class SqliteGroupsStore implements BusGroupsStore
         String sqlFile = "create_group.sql";
         try
         (
-            Connection connection = createConnection();
-            PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile))
+            Connection conn = createConnection();
+            PreparedStatement statement = conn.prepareStatement(readFile(sqlFile))
         )
         {
             statement.setString(1, name);
@@ -92,8 +91,8 @@ public class SqliteGroupsStore implements BusGroupsStore
         String sqlFile = "get_all_groups.sql";
         try
         (
-            Connection connection = createConnection();
-            PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+            Connection conn = createConnection();
+            PreparedStatement statement = conn.prepareStatement(readFile(sqlFile));
             ResultSet resultSet = statement.executeQuery();
         )
         {
@@ -146,7 +145,8 @@ public class SqliteGroupsStore implements BusGroupsStore
     private static PreparedStatement createDeleteGroupStatement(Connection connection, String sqlFile, int groupId)
         throws SQLException, IOException
     {
-        PreparedStatement statement = connection.prepareStatement(readSqlFromFile(sqlFile));
+        String sql = readFile(sqlFile);
+        PreparedStatement statement = connection.prepareStatement(sql);
         statement.setInt(1, groupId);
         return statement;
     }
@@ -170,7 +170,7 @@ public class SqliteGroupsStore implements BusGroupsStore
             Statement statement = connection.createStatement()
         )
         {
-            String sql = readSqlFromFile(sqlFile);
+            String sql = readFile(sqlFile);
             statement.executeUpdate(sql);
         }
         catch (SQLException e)
@@ -181,11 +181,5 @@ public class SqliteGroupsStore implements BusGroupsStore
         {
             logger.error("Error reading sql file {}: {}", sqlFile, e.getMessage(), e);
         }
-    }
-
-    private static String readSqlFromFile(String sqlFile) throws IOException
-    {
-        URL url = Resources.getResource(sqlFile);
-        return Resources.toString(url, Charsets.UTF_8);
     }
 }

@@ -1,13 +1,13 @@
 package com.weizilla.transit.favorites.android;
 
 import android.database.sqlite.SQLiteDatabase;
-import com.google.common.base.Charsets;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.google.common.io.Resources;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.favorites.android.db.AndroidDbUtils;
 import com.weizilla.transit.favorites.android.db.FileSqliteDbHelper;
+import com.weizilla.transit.utils.ResourceUtils;
 import org.dbunit.Assertion;
 import org.dbunit.IDatabaseTester;
 import org.dbunit.JdbcDatabaseTester;
@@ -106,9 +106,7 @@ public class AndroidFavoritesStoreRouteTest
 
     private void executeSql(String filename) throws Exception
     {
-        //TODO move into utils
-        URL url = Resources.getResource(filename);
-        String sql = Resources.toString(url, Charsets.UTF_8);
+        String sql = ResourceUtils.readFile(filename);
         database.execSQL(sql);
     }
 }
