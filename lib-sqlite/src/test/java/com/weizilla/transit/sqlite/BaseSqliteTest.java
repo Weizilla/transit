@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNotNull;
 
 
 public abstract class BaseSqliteTest
@@ -85,8 +85,7 @@ public abstract class BaseSqliteTest
     protected void createTable(String table, String filename) throws Exception
     {
         executeSqlFromFile(filename);
-        String[] tableNames = databaseTester.getConnection().createDataSet().getTableNames();
-        assertTrue(Arrays.asList(tableNames).contains(table));
+        assertNotNull(getTable(table));
     }
 
     protected void dropTable(String table) throws Exception

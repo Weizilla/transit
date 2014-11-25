@@ -1,7 +1,7 @@
 package com.weizilla.transit.favorites.android.db;
 
-import com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry;
-import com.weizilla.transit.favorites.sqlite.Favorites.StopsEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
@@ -28,10 +28,10 @@ public class FavoritesDbHelperTest extends AndroidSqliteTest
     @Test
     public void createsTablesOnCreate() throws Exception
     {
-        assertFalse(tableExists(database, RoutesEntry.TABLE_NAME));
-        assertFalse(tableExists(database, StopsEntry.TABLE_NAME));
+        assertFalse(tableExists(database, RouteEntry.TABLE_NAME));
+        assertFalse(tableExists(database, StopEntry.TABLE_NAME));
         helper.onCreate(database);
-        assertTrue(tableExists(database, RoutesEntry.TABLE_NAME));
-        assertTrue(tableExists(database, StopsEntry.TABLE_NAME));
+        assertTrue(tableExists(database, RouteEntry.TABLE_NAME));
+        assertTrue(tableExists(database, StopEntry.TABLE_NAME));
     }
 }

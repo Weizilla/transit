@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-import static com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry.TABLE_NAME;
+import static com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 

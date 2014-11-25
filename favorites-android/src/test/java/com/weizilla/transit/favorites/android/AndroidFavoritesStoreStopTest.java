@@ -12,7 +12,7 @@ import org.robolectric.RobolectricTestRunner;
 import org.robolectric.annotation.Config;
 import org.robolectric.shadows.ShadowLog;
 
-import static com.weizilla.transit.favorites.sqlite.Favorites.StopsEntry.TABLE_NAME;
+import static com.weizilla.transit.favorites.sqlite.Favorites.StopEntry.TABLE_NAME;
 import static org.junit.Assert.assertTrue;
 
 @Config(manifest = Config.NONE, emulateSdk = 18)

@@ -6,13 +6,15 @@ public class Favorites
         // private
     }
 
-    public abstract static class RoutesEntry {
+    public abstract static class RouteEntry
+    {
         public static final String TABLE_NAME = "fav_routes";
         public static final String ID = "id";
         public static final String NAME = "name";
     }
 
-    public abstract static class StopsEntry {
+    public abstract static class StopEntry
+    {
         public static final String TABLE_NAME = "fav_stops";
         public static final String ID = "id";
         public static final String ROUTE = "route";

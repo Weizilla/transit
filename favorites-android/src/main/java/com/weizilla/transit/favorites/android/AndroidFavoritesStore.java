@@ -9,8 +9,8 @@ import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.favorites.BusFavoritesStore;
-import com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry;
-import com.weizilla.transit.favorites.sqlite.Favorites.StopsEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 
 import java.util.Collection;
 import java.util.Set;
@@ -35,9 +35,9 @@ public class AndroidFavoritesStore implements BusFavoritesStore
         )
         {
             ContentValues values = new ContentValues();
-            values.put(RoutesEntry.ID, route.getId());
-            values.put(RoutesEntry.NAME, route.getName());
-            long newId = db.replace(RoutesEntry.TABLE_NAME, null, values);
+            values.put(RouteEntry.ID, route.getId());
+            values.put(RouteEntry.NAME, route.getName());
+            long newId = db.replace(RouteEntry.TABLE_NAME, null, values);
             if (newId != -1)
             {
                 Log.d(TAG, "Added new fav route. _ID: " + newId + " Route: " + route);
@@ -56,7 +56,7 @@ public class AndroidFavoritesStore implements BusFavoritesStore
         try
         (
             SQLiteDatabase db = dbHelper.getWritableDatabase();
-            Cursor cursor = db.query(RoutesEntry.TABLE_NAME, new String[]{RoutesEntry.ID},
+            Cursor cursor = db.query(RouteEntry.TABLE_NAME, new String[]{RouteEntry.ID},
                 null, null, null, null, null)
         )
         {
@@ -65,7 +65,7 @@ public class AndroidFavoritesStore implements BusFavoritesStore
                 cursor.moveToFirst();
                 do
                 {
-                    String id = cursor.getString(cursor.getColumnIndexOrThrow(RoutesEntry.ID));
+                    String id = cursor.getString(cursor.getColumnIndexOrThrow(RouteEntry.ID));
                     ids.add(id);
                 }
                 while (cursor.moveToNext());
@@ -85,10 +85,10 @@ public class AndroidFavoritesStore implements BusFavoritesStore
         )
         {
             ContentValues values = new ContentValues();
-            values.put(StopsEntry.ID, stop.getId());
-            values.put(StopsEntry.ROUTE, stop.getRouteId());
-            values.put(StopsEntry.DIRECTION, stop.getDirection().name());
-            long newId = db.replace(StopsEntry.TABLE_NAME, null, values);
+            values.put(StopEntry.ID, stop.getId());
+            values.put(StopEntry.ROUTE, stop.getRouteId());
+            values.put(StopEntry.DIRECTION, stop.getDirection().name());
+            long newId = db.replace(StopEntry.TABLE_NAME, null, values);
             if (newId != -1)
             {
                 Log.d(TAG, "Added new fav route. _ID: " + newId + " Stop: " + stop);
@@ -116,7 +116,7 @@ public class AndroidFavoritesStore implements BusFavoritesStore
                 cursor.moveToFirst();
                 do
                 {
-                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(StopsEntry.ID));
+                    int id = cursor.getInt(cursor.getColumnIndexOrThrow(StopEntry.ID));
                     ids.add(id);
                 }
                 while (cursor.moveToNext());
@@ -127,9 +127,9 @@ public class AndroidFavoritesStore implements BusFavoritesStore
 
     private static Cursor queryForStopIds(SQLiteDatabase db, String route, Direction direction)
     {
-        String[] cols = {StopsEntry.ID};
-        String selection = StopsEntry.ROUTE + " = ?  AND " + StopsEntry.DIRECTION + " = ?";
+        String[] cols = {StopEntry.ID};
+        String selection = StopEntry.ROUTE + " = ?  AND " + StopEntry.DIRECTION + " = ?";
         String[] selectArgs = {route, direction.name()};
-        return db.query(StopsEntry.TABLE_NAME, cols, selection, selectArgs, null, null, null);
+        return db.query(StopEntry.TABLE_NAME, cols, selection, selectArgs, null, null, null);
     }
 }

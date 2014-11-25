@@ -2,9 +2,10 @@ package com.weizilla.transit.groups.sqlite;
 
 import com.weizilla.transit.groups.BusGroupsStore;
 import com.weizilla.transit.groups.Group;
+import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
+import com.weizilla.transit.sqlite.SqliteStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sqlite.SQLiteDataSource;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -12,22 +13,19 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 
 import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
-//TODO combine this with SqliteFavoritesStore
-public class JdbcSqliteGroupsStore implements BusGroupsStore
+public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
 {
     private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteGroupsStore.class);
-    private final Path dbPath;
 
     private JdbcSqliteGroupsStore(Path dbPath)
     {
-        this.dbPath = dbPath;
+        super(dbPath);
     }
 
     public static JdbcSqliteGroupsStore createStore(Path dbPath) throws SQLException
@@ -38,7 +36,7 @@ public class JdbcSqliteGroupsStore implements BusGroupsStore
             Connection connection = store.createConnection()
         )
         {
-            createGroupsTable(connection);
+            executeSqlFromFile(connection, "create_groups_table.sql");
             return store;
         }
     }
@@ -98,8 +96,8 @@ public class JdbcSqliteGroupsStore implements BusGroupsStore
         {
             while (resultSet.next())
             {
-                int id = resultSet.getInt("_id");
-                String name = resultSet.getString("name");
+                int id = resultSet.getInt(GroupEntry._ID);
+                String name = resultSet.getString(GroupEntry.NAME);
                 groups.add(new Group(id, name));
             }
             return groups;
@@ -151,35 +149,4 @@ public class JdbcSqliteGroupsStore implements BusGroupsStore
         return statement;
     }
 
-    private Connection createConnection() throws SQLException
-    {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl("jdbc:sqlite:" + dbPath);
-        return dataSource.getConnection();
-    }
-
-    protected static void createGroupsTable(Connection connection)
-    {
-        createTable(connection, "create_groups_table.sql");
-    }
-
-    private static void createTable(Connection connection, String sqlFile)
-    {
-        try
-        (
-            Statement statement = connection.createStatement()
-        )
-        {
-            String sql = readFile(sqlFile);
-            statement.executeUpdate(sql);
-        }
-        catch (SQLException e)
-        {
-            logger.error("Error creating table: {}", e.getMessage(), e);
-        }
-        catch (IOException e)
-        {
-            logger.error("Error reading sql file {}: {}", sqlFile, e.getMessage(), e);
-        }
-    }
 }

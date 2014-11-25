@@ -15,13 +15,13 @@ import org.slf4j.LoggerFactory;
 
 import java.util.Set;
 
+import static com.weizilla.transit.groups.sqlite.Groups.GroupEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
 public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
 {
-    private static final String GROUPS_TABLE_NAME = "groups";
     protected BusGroupsStore store;
 
     @Test
@@ -34,7 +34,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     public void createsGroups() throws Exception
     {
         IDataSet expected = readDataSet("create_groups.xml");
-        ITable expectedTable = expected.getTable(GROUPS_TABLE_NAME);
+        ITable expectedTable = expected.getTable(TABLE_NAME);
 
         DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
 
@@ -46,7 +46,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             assertEquals(expectedGroup, actual);
         }
 
-        ITable actual = getTable(GROUPS_TABLE_NAME);
+        ITable actual = getTable(TABLE_NAME);
 
         Assertion.assertEquals(expectedTable, actual);
     }
@@ -54,8 +54,10 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void throwsErrorWhenDuplicateGroupName() throws Exception
     {
+        Logger logger = (Logger) LoggerFactory.getLogger(store.getClass());
+
         IDataSet expected = readDataSet("create_groups.xml");
-        ITable expectedTable = expected.getTable(GROUPS_TABLE_NAME);
+        ITable expectedTable = expected.getTable(TABLE_NAME);
 
         DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
 
@@ -65,13 +67,12 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             store.createGroup(groupName);
         }
 
-        ITable actual = getTable(GROUPS_TABLE_NAME);
+        ITable actual = getTable(TABLE_NAME);
         Assertion.assertEquals(expectedTable, actual);
 
         String groupName = "GROUP 0";
         try
         {
-            Logger logger = (Logger) LoggerFactory.getLogger(JdbcSqliteGroupsStore.class);
             logger.setLevel(Level.OFF);
 
             store.createGroup(groupName);
@@ -80,6 +81,10 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         catch (DuplicateGroupException e)
         {
             assertEquals(groupName, e.getGroupName());
+        }
+        finally
+        {
+            logger.setLevel(null);
         }
     }
 
@@ -108,8 +113,8 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         store.deleteGroup(8);
 
         IDataSet expected = readDataSet("delete_group_after.xml");
-        ITable expectedTable = expected.getTable(GROUPS_TABLE_NAME);
-        ITable actual = getTable(GROUPS_TABLE_NAME);
+        ITable expectedTable = expected.getTable(TABLE_NAME);
+        ITable actual = getTable(TABLE_NAME);
 
         Assertion.assertEquals(expectedTable, actual);
     }

@@ -4,12 +4,12 @@ import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.favorites.BusFavoritesStore;
-import com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry;
-import com.weizilla.transit.favorites.sqlite.Favorites.StopsEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
+import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
+import com.weizilla.transit.sqlite.SqliteStore;
 import com.weizilla.transit.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.sqlite.SQLiteDataSource;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -21,14 +21,13 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class JdbcSqliteFavoritesStore implements BusFavoritesStore
+public class JdbcSqliteFavoritesStore extends SqliteStore implements BusFavoritesStore
 {
     private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteFavoritesStore.class);
-    private final Path dbPath;
 
     private JdbcSqliteFavoritesStore(Path dbPath)
     {
-        this.dbPath = dbPath;
+        super(dbPath);
     }
 
     public static JdbcSqliteFavoritesStore createStore(Path dbPath) throws SQLException
@@ -39,10 +38,10 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
             Connection connection = store.createConnection()
         )
         {
-            createRoutesTable(connection);
-            createStopsTable(connection);
-            return store;
+            executeSqlFromFile(connection, "create_routes_table.sql");
+            executeSqlFromFile(connection, "create_stops_table.sql");
         }
+        return store;
     }
 
     @Override
@@ -82,7 +81,7 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
         try
         (
             Connection connection = createConnection();
-            PreparedStatement statement = createSaveStopStatement(connection, stop, sqlFile)
+            PreparedStatement statement = createSaveStopStmt(connection, stop, sqlFile)
         )
         {
             int numUpdated = statement.executeUpdate();
@@ -101,7 +100,7 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
         }
     }
 
-    private static PreparedStatement createSaveStopStatement(Connection connection, Stop stop, String sqlFile)
+    private static PreparedStatement createSaveStopStmt(Connection connection, Stop stop, String sqlFile)
         throws SQLException, IOException
     {
         String sql = ResourceUtils.readFile(sqlFile);
@@ -126,7 +125,7 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
         {
             while (resultSet.next())
             {
-                routeIds.add(resultSet.getString(RoutesEntry.ID));
+                routeIds.add(resultSet.getString(RouteEntry.ID));
             }
         }
         catch (IOException e)
@@ -147,14 +146,14 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
         String sqlFile = "get_stops.sql";
         try
         (
-            Connection connection = createConnection();
-            PreparedStatement statement = createGetStopsStatement(connection, sqlFile, route, direction);
+            Connection conn = createConnection();
+            PreparedStatement statement = createGetStopsStatement(conn, sqlFile, route, direction);
             ResultSet resultSet = statement.executeQuery()
         )
         {
             while (resultSet.next())
             {
-                stopIds.add(resultSet.getInt(StopsEntry.ID));
+                stopIds.add(resultSet.getInt(StopEntry.ID));
             }
         }
         catch (IOException e)
@@ -179,40 +178,4 @@ public class JdbcSqliteFavoritesStore implements BusFavoritesStore
         return statement;
     }
 
-    private Connection createConnection() throws SQLException
-    {
-        SQLiteDataSource dataSource = new SQLiteDataSource();
-        dataSource.setUrl("jdbc:sqlite:" + dbPath);
-        return dataSource.getConnection();
-    }
-
-    protected static void createRoutesTable(Connection connection)
-    {
-        createTable(connection, "create_routes_table.sql");
-    }
-
-    protected static void createStopsTable(Connection connection)
-    {
-        createTable(connection, "create_stops_table.sql");
-    }
-
-    private static void createTable(Connection connection, String sqlFile)
-    {
-        try
-        (
-            Statement statement = connection.createStatement()
-        )
-        {
-            String sql = ResourceUtils.readFile(sqlFile);
-            statement.executeUpdate(sql);
-        }
-        catch (SQLException e)
-        {
-            logger.error("Error creating table: {}", e.getMessage(), e);
-        }
-        catch (IOException e)
-        {
-            logger.error("Error reading sql file {}: {}", sqlFile, e.getMessage(), e);
-        }
-    }
 }
