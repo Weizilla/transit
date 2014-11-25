@@ -110,7 +110,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     }
 
     @Test
-    public void deleteGroupDeletesGroupFromDb() throws Exception
+    public void deleteGroupWithoutStop() throws Exception
     {
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
             readDataSet("delete_group_before.xml"));
@@ -122,15 +122,27 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         ITable actual = getTable(GroupEntry.TABLE_NAME);
 
         Assertion.assertEquals(expectedTable, actual);
+    }
 
-        //TODO update with delete stops
+    @Test
+    public void deleteGroupWithStops() throws Exception
+    {
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("delete_group_w_stops_before.xml"));
+
+        store.deleteGroup(2);
+
+        IDataSet expected = readDataSet("delete_group_w_stops_after.xml");
+        IDataSet actual = getDataSet();
+
+        assertTableEquals(GroupEntry.TABLE_NAME, expected, actual);
+        assertTableEquals(StopEntry.TABLE_NAME, expected, actual);
     }
 
     @Test
     public void addsStopsToGroup() throws Exception
     {
         IDataSet expected = readDataSet("add_stop.xml");
-        ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
 
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
             readDataSet("create_groups.xml"));
@@ -142,12 +154,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         store.addToGroup(2, new Stop(200, "STOP B"));
         store.addToGroup(3, new Stop(300, "STOP D"));
 
-        ITable actual = getTable(StopEntry.TABLE_NAME);
-        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual,
-            expectedTable.getTableMetaData().getColumns());
-
-        Assertion.assertEquals(new SortedTable(expectedTable),
-            new SortedTable(actualFiltered));
+        assertTableInDbEqualsFile(StopEntry.TABLE_NAME, "add_stop.xml");
     }
 
     @Test
@@ -224,5 +231,4 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     }
 
     //TODO test rename group
-    //TODO test delete group with stops
 }

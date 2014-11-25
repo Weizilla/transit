@@ -2,10 +2,13 @@ package com.weizilla.transit.sqlite;
 
 import com.google.common.io.Resources;
 import com.weizilla.transit.utils.ResourceUtils;
+import org.dbunit.Assertion;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
+import org.dbunit.dataset.SortedTable;
+import org.dbunit.dataset.filter.DefaultColumnFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.junit.After;
 import org.junit.Before;
@@ -77,9 +80,30 @@ public abstract class BaseSqliteTest
         executeSql(sql);
     }
 
+    protected IDataSet getDataSet() throws Exception
+    {
+        return databaseTester.getConnection().createDataSet();
+    }
+
     protected ITable getTable(String tableName) throws Exception
     {
         return databaseTester.getConnection().createDataSet().getTable(tableName);
+    }
+
+    protected void assertTableInDbEqualsFile(String table, String dataSetFile) throws Exception
+    {
+        IDataSet actual = getDataSet();
+        IDataSet expected = readDataSet(dataSetFile);
+        assertTableEquals(table, expected, actual);
+    }
+
+    protected void assertTableEquals(String table, IDataSet expected, IDataSet actual) throws Exception
+    {
+        ITable expectedTable = new SortedTable(expected.getTable(table));
+        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(
+            actual.getTable(table), expectedTable.getTableMetaData().getColumns());
+        ITable actualSorted = new SortedTable(actualFiltered);
+        Assertion.assertEquals(expectedTable, actualSorted);
     }
 
     protected void createTable(String table, String filename) throws Exception

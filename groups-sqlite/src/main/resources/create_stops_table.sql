@@ -3,6 +3,6 @@ CREATE TABLE IF NOT EXISTS stops (
   group_id int,
   stop_id int,
   stop_name VARCHAR,
-  FOREIGN KEY(group_id) REFERENCES groups(_id),
+  FOREIGN KEY(group_id) REFERENCES groups(_id) ON DELETE CASCADE,
   UNIQUE (group_id, stop_id) ON CONFLICT REPLACE
 )
