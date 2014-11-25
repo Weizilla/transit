@@ -5,7 +5,7 @@ import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class JdbcSqliteGroupsStoreTest extends BaseSqliteGroupsStoreTest
 {
@@ -24,7 +24,7 @@ public class JdbcSqliteGroupsStoreTest extends BaseSqliteGroupsStoreTest
     {
         dropTable(GroupEntry.TABLE_NAME);
         store = JdbcSqliteGroupsStore.createStore(dbPath);
-        assertNotNull(getTable(GroupEntry.TABLE_NAME));
+        assertTrue(tableExists(GroupEntry.TABLE_NAME));
     }
 
     @Test
@@ -32,6 +32,6 @@ public class JdbcSqliteGroupsStoreTest extends BaseSqliteGroupsStoreTest
     {
         dropTable(StopEntry.TABLE_NAME);
         store = JdbcSqliteGroupsStore.createStore(dbPath);
-        assertNotNull(getTable(StopEntry.TABLE_NAME));
+        assertTrue(tableExists(StopEntry.TABLE_NAME));
     }
 }

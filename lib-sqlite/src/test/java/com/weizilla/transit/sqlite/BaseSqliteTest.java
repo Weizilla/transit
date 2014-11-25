@@ -10,6 +10,7 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.SortedTable;
 import org.dbunit.dataset.filter.DefaultColumnFilter;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
+import org.dbunit.operation.DatabaseOperation;
 import org.junit.After;
 import org.junit.Before;
 import org.slf4j.Logger;
@@ -24,15 +25,15 @@ import java.sql.Statement;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 
 public abstract class BaseSqliteTest
 {
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    protected JdbcDatabaseTester databaseTester;
     protected Path dbPath;
     protected File dbFile;
+    private JdbcDatabaseTester databaseTester;
 
     @Before
     public void setUp() throws Exception
@@ -80,24 +81,29 @@ public abstract class BaseSqliteTest
         executeSql(sql);
     }
 
-    protected IDataSet getDataSet() throws Exception
+    protected void deleteFromDb(String dataSetFile) throws Exception
     {
-        return databaseTester.getConnection().createDataSet();
+        IDataSet dataSet = readDataSet(dataSetFile);
+        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), dataSet);
     }
 
-    protected ITable getTable(String tableName) throws Exception
+    protected void loadIntoDb(String dataSetFile) throws Exception
     {
-        return databaseTester.getConnection().createDataSet().getTable(tableName);
+        IDataSet dataSet = readDataSet(dataSetFile);
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(), dataSet);
     }
 
-    protected void assertTableInDbEqualsFile(String table, String dataSetFile) throws Exception
+    protected void assertTablesEqualFile(String dataSetFile, String ... tables) throws Exception
     {
-        IDataSet actual = getDataSet();
+        IDataSet actual = databaseTester.getConnection().createDataSet();
         IDataSet expected = readDataSet(dataSetFile);
-        assertTableEquals(table, expected, actual);
+        for (String table : tables)
+        {
+            assertTableEquals(table, expected, actual);
+        }
     }
 
-    protected void assertTableEquals(String table, IDataSet expected, IDataSet actual) throws Exception
+    private static void assertTableEquals(String table, IDataSet expected, IDataSet actual) throws Exception
     {
         ITable expectedTable = new SortedTable(expected.getTable(table));
         ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(
@@ -106,17 +112,22 @@ public abstract class BaseSqliteTest
         Assertion.assertEquals(expectedTable, actualSorted);
     }
 
+    protected boolean tableExists(String table) throws Exception
+    {
+        String[] tableNames = databaseTester.getConnection().createDataSet().getTableNames();
+        return Arrays.asList(tableNames).contains(table);
+    }
+
     protected void createTable(String table, String filename) throws Exception
     {
         executeSqlFromFile(filename);
-        assertNotNull(getTable(table));
+        assertTrue(tableExists(table));
     }
 
     protected void dropTable(String table) throws Exception
     {
         executeSql("DROP TABLE IF EXISTS " + table);
-        String[] tableNames = databaseTester.getConnection().createDataSet().getTableNames();
-        assertFalse(Arrays.asList(tableNames).contains(table));
+        assertFalse(tableExists(table));
     }
 
     protected static IDataSet readDataSet(String filename) throws Exception

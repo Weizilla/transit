@@ -9,12 +9,6 @@ import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
-import org.dbunit.Assertion;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.SortedTable;
-import org.dbunit.dataset.filter.DefaultColumnFilter;
-import org.dbunit.operation.DatabaseOperation;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
@@ -38,10 +32,8 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void createsGroups() throws Exception
     {
-        IDataSet expected = readDataSet("create_groups.xml");
-        ITable expectedTable = expected.getTable(GroupEntry.TABLE_NAME);
-
-        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
+        String dataSetFile = "create_groups.xml";
+        deleteFromDb(dataSetFile);
 
         for (int i = 0; i < 3; i++)
         {
@@ -51,41 +43,25 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             assertEquals(expectedGroup, actual);
         }
 
-        ITable actual = getTable(GroupEntry.TABLE_NAME);
-
-        Assertion.assertEquals(expectedTable, actual);
+        assertTablesEqualFile(dataSetFile, GroupEntry.TABLE_NAME);
     }
 
     @Test
     public void throwsErrorWhenDuplicateGroupName() throws Exception
     {
         Logger logger = (Logger) LoggerFactory.getLogger(store.getClass());
+        loadIntoDb("create_groups.xml");
 
-        IDataSet expected = readDataSet("create_groups.xml");
-        ITable expectedTable = expected.getTable(GroupEntry.TABLE_NAME);
-
-        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
-
-        for (int i = 0; i < 3; i++)
-        {
-            String groupName = "GROUP " + i;
-            store.createGroup(groupName);
-        }
-
-        ITable actual = getTable(GroupEntry.TABLE_NAME);
-        Assertion.assertEquals(expectedTable, actual);
-
-        String groupName = "GROUP 0";
+        String dupGroupName = "GROUP 0";
         try
         {
             logger.setLevel(Level.OFF);
-
-            store.createGroup(groupName);
+            store.createGroup(dupGroupName);
             fail("Should have thrown exception for duplicate group name");
         }
         catch (DuplicateGroupException e)
         {
-            assertEquals(groupName, e.getGroupName());
+            assertEquals(dupGroupName, e.getGroupName());
         }
         finally
         {
@@ -101,9 +77,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             new Group(5, "GROUP 5"),
             new Group(6, "GROUP 6")
         );
-
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("get_all_groups.xml"));
+        loadIntoDb("get_all_groups.xml");
 
         Set<Group> actualGroups = store.getAllGroups();
         assertEquals(expected, actualGroups);
@@ -112,59 +86,41 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void deleteGroupWithoutStop() throws Exception
     {
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("delete_group_before.xml"));
-
+        loadIntoDb("delete_group_before.xml");
         store.deleteGroup(8);
-
-        IDataSet expected = readDataSet("delete_group_after.xml");
-        ITable expectedTable = expected.getTable(GroupEntry.TABLE_NAME);
-        ITable actual = getTable(GroupEntry.TABLE_NAME);
-
-        Assertion.assertEquals(expectedTable, actual);
+        assertTablesEqualFile("delete_group_after.xml", GroupEntry.TABLE_NAME);
     }
 
     @Test
     public void deleteGroupWithStops() throws Exception
     {
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("delete_group_w_stops_before.xml"));
-
+        loadIntoDb("delete_group_w_stops_before.xml");
         store.deleteGroup(2);
-
-        IDataSet expected = readDataSet("delete_group_w_stops_after.xml");
-        IDataSet actual = getDataSet();
-
-        assertTableEquals(GroupEntry.TABLE_NAME, expected, actual);
-        assertTableEquals(StopEntry.TABLE_NAME, expected, actual);
+        assertTablesEqualFile("delete_group_w_stops_after.xml",
+            GroupEntry.TABLE_NAME, StopEntry.TABLE_NAME);
     }
 
     @Test
     public void addsStopsToGroup() throws Exception
     {
-        IDataSet expected = readDataSet("add_stop.xml");
-
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("create_groups.xml"));
-
-        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
+        loadIntoDb("create_groups.xml");
+        String dataSetFile = "add_stop.xml";
+        deleteFromDb(dataSetFile);
 
         store.addToGroup(2, new Stop(400, "STOP C"));
         store.addToGroup(1, new Stop(100, "STOP A"));
         store.addToGroup(2, new Stop(200, "STOP B"));
         store.addToGroup(3, new Stop(300, "STOP D"));
 
-        assertTableInDbEqualsFile(StopEntry.TABLE_NAME, "add_stop.xml");
+        assertTablesEqualFile(dataSetFile, StopEntry.TABLE_NAME);
     }
 
     @Test
     public void replacesDuplicateStopWithNewestName() throws Exception
     {
-        IDataSet expected = readDataSet("add_stop.xml");
-        ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("create_groups.xml"));
-        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
+        loadIntoDb("create_groups.xml");
+        String dataSetFile = "add_stop.xml";
+        deleteFromDb(dataSetFile);
 
         store.addToGroup(3, new Stop(300, "STOP D1"));
         store.addToGroup(2, new Stop(400, "STOP C"));
@@ -174,12 +130,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         store.addToGroup(3, new Stop(300, "STOP D3"));
         store.addToGroup(3, new Stop(300, "STOP D"));
 
-        ITable actual = getTable(StopEntry.TABLE_NAME);
-        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual,
-            expectedTable.getTableMetaData().getColumns());
-
-        Assertion.assertEquals(new SortedTable(expectedTable),
-            new SortedTable(actualFiltered));
+        assertTablesEqualFile(dataSetFile, StopEntry.TABLE_NAME);
     }
 
     @Test
@@ -201,26 +152,15 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void removeStopFromGroup() throws Exception
     {
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("remove_stop_before.xml"));
-
+        loadIntoDb("remove_stop_before.xml");
         store.removeFromGroup(2, 200);
-
-        IDataSet expected = readDataSet("remove_stop_after.xml");
-        ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
-        ITable actual = getTable(StopEntry.TABLE_NAME);
-        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual,
-            expectedTable.getTableMetaData().getColumns());
-
-        Assertion.assertEquals(new SortedTable(expectedTable),
-            new SortedTable(actualFiltered));
+        assertTablesEqualFile("remove_stop_after.xml", StopEntry.TABLE_NAME);
     }
 
     @Test
     public void getStopsForGroup() throws Exception
     {
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("get_stops.xml"));
+        loadIntoDb("get_stops.xml");
         Set<Stop> expected = Sets.newHashSet(
             new Stop(200, "STOP B"),
             new Stop(400, "STOP C")
@@ -233,11 +173,8 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void renameGroup() throws Exception
     {
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("rename_group_before.xml"));
-
+        loadIntoDb("rename_group_before.xml");
         store.renameGroup(2, "NEW GROUP");
-
-        assertTableInDbEqualsFile(GroupEntry.TABLE_NAME, "rename_group_after.xml");
+        assertTablesEqualFile("rename_group_after.xml", GroupEntry.TABLE_NAME);
     }
 }

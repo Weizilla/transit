@@ -4,7 +4,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import static com.weizilla.transit.favorites.sqlite.Favorites.StopEntry.TABLE_NAME;
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public class JdbcSqliteFavStoreStopTest extends BaseSqliteFavStoreStopTest
 {
@@ -22,6 +22,6 @@ public class JdbcSqliteFavStoreStopTest extends BaseSqliteFavStoreStopTest
     {
         dropTable(TABLE_NAME);
         JdbcSqliteFavoritesStore.createStore(dbPath);
-        assertNotNull(getTable(TABLE_NAME));
+        assertTrue(tableExists(TABLE_NAME));
     }
 }

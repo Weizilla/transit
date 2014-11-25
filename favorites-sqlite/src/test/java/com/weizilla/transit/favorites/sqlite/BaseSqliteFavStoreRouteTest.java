@@ -5,11 +5,6 @@ import com.google.common.collect.Sets;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
-import org.dbunit.Assertion;
-import org.dbunit.dataset.IDataSet;
-import org.dbunit.dataset.ITable;
-import org.dbunit.dataset.filter.DefaultColumnFilter;
-import org.dbunit.operation.DatabaseOperation;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -33,9 +28,8 @@ public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
     @Test
     public void getRouteIdsReturnsDbData() throws Exception
     {
+        loadIntoDb("get_routes.xml");
         Set<String> expected = Sets.newHashSet("22", "36", "54A");
-        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
-            readDataSet("get_routes.xml"));
 
         Collection<String> actualIds = store.getFavoriteRouteIds();
         assertEquals(expected, new HashSet<>(actualIds));
@@ -44,22 +38,16 @@ public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
     @Test
     public void savesFavoriteRoutes() throws Exception
     {
+        String dataSetFile = "save_routes.xml";
+        deleteFromDb(dataSetFile);
+
         Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");
-        IDataSet expected = readDataSet("save_routes.xml");
-        ITable expectedTable = expected.getTable(TABLE_NAME);
-
-        DatabaseOperation.DELETE_ALL.execute(databaseTester.getConnection(), expected);
-
         for (String routeId : routeIds)
         {
             store.saveFavorite(new Route(routeId));
         }
 
-        ITable actual = getTable(TABLE_NAME);
-        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual,
-            expectedTable.getTableMetaData().getColumns());
-
-        Assertion.assertEquals(expectedTable, actualFiltered);
+        assertTablesEqualFile(dataSetFile, TABLE_NAME);
     }
 
 }
