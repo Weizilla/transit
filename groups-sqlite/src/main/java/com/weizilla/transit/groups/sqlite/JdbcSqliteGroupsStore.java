@@ -20,19 +20,19 @@ import java.util.Set;
 import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
 //TODO combine this with SqliteFavoritesStore
-public class SqliteGroupsStore implements BusGroupsStore
+public class JdbcSqliteGroupsStore implements BusGroupsStore
 {
-    private static final Logger logger = LoggerFactory.getLogger(SqliteGroupsStore.class);
+    private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteGroupsStore.class);
     private final Path dbPath;
 
-    private SqliteGroupsStore(Path dbPath)
+    private JdbcSqliteGroupsStore(Path dbPath)
     {
         this.dbPath = dbPath;
     }
 
-    public static SqliteGroupsStore createStore(Path dbPath) throws SQLException
+    public static JdbcSqliteGroupsStore createStore(Path dbPath) throws SQLException
     {
-        SqliteGroupsStore store = new SqliteGroupsStore(dbPath);
+        JdbcSqliteGroupsStore store = new JdbcSqliteGroupsStore(dbPath);
         try
         (
             Connection connection = store.createConnection()
