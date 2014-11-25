@@ -3,6 +3,8 @@ package com.weizilla.transit.favorites.sqlite;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
 import com.weizilla.transit.bus.data.Route;
+import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.sqlite.BaseSqliteTest;
 import org.dbunit.Assertion;
 import org.dbunit.dataset.IDataSet;
 import org.dbunit.dataset.ITable;
@@ -16,9 +18,18 @@ import java.util.Set;
 
 import static com.weizilla.transit.favorites.sqlite.Favorites.RoutesEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
 {
+    protected BusFavoritesStore store;
+
+    @Test
+    public void storeIsSet() throws Exception
+    {
+        assertNotNull(store);
+    }
+
     @Test
     public void getRouteIdsReturnsDbData() throws Exception
     {

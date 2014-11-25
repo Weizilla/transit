@@ -109,9 +109,10 @@
 
     <modules>
         <module>lib-transit</module>
+        <module>lib-sqlite</module>
         <module>favorites-sqlite</module>
-        <module>favorites-android</module>
         <module>groups-sqlite</module>
+        <module>favorites-android</module>
         <module>transit-android</module>
     </modules>
 

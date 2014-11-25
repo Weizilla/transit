@@ -1,7 +1,6 @@
-package com.weizilla.transit.favorites.sqlite;
+package com.weizilla.transit.sqlite;
 
 import com.google.common.io.Resources;
-import com.weizilla.transit.favorites.BusFavoritesStore;
 import com.weizilla.transit.utils.ResourceUtils;
 import org.dbunit.JdbcDatabaseTester;
 import org.dbunit.database.IDatabaseConnection;
@@ -10,7 +9,6 @@ import org.dbunit.dataset.ITable;
 import org.dbunit.dataset.xml.FlatXmlDataSetBuilder;
 import org.junit.After;
 import org.junit.Before;
-import org.junit.Test;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,7 +21,6 @@ import java.sql.Statement;
 import java.util.Arrays;
 
 import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 
@@ -33,7 +30,6 @@ public abstract class BaseSqliteTest
     protected JdbcDatabaseTester databaseTester;
     protected Path dbPath;
     protected File dbFile;
-    protected BusFavoritesStore store;
 
     @Before
     public void setUp() throws Exception
@@ -49,12 +45,6 @@ public abstract class BaseSqliteTest
     {
         databaseTester.onTearDown();
         Files.delete(dbPath);
-    }
-
-    @Test
-    public void storeIsSet() throws Exception
-    {
-        assertNotNull(store);
     }
 
     protected void executeSql(String sql) throws Exception
