@@ -174,6 +174,22 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             new SortedTable(actualFiltered));
     }
 
+    @Test
+    public void addStopToInvalidGroupIdThrowException() throws Exception
+    {
+        int invalidGroupId = 100;
+        try
+        {
+
+            store.addToGroup(invalidGroupId, new Stop(200, "STOP A"));
+            fail("Exception expected for invalid group id");
+        }
+        catch (InvalidGroupException e)
+        {
+            assertEquals(invalidGroupId, e.getId());
+        }
+    }
+
     //TODO test add stop with invalid id
     //TODO test rename group
     //TODO test get stops

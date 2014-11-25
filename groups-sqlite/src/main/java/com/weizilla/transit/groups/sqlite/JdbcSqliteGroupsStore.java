@@ -7,6 +7,7 @@ import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.sqlite.SqliteStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.sqlite.SQLiteErrorCode;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -75,9 +76,9 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         catch (SQLException e)
         {
             logger.error("Sql error creating group name {}", name, e);
-            if (e.getMessage().contains("SQLITE_CONSTRAINT"))
+            if (isConstraintException(e))
             {
-                throw new DuplicateGroupException(name);
+                throw new DuplicateGroupException(name, e);
             }
         }
         //TODO don't use status return codes
@@ -176,7 +177,15 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         }
         catch (SQLException e)
         {
+            if (isConstraintException(e)) {
+                throw new InvalidGroupException(id, e);
+            }
             logger.error("Sql error adding stop {} to group {}", stop, id, e);
         }
+    }
+
+    private static boolean isConstraintException(SQLException e)
+    {
+        return e.getMessage().contains(SQLiteErrorCode.SQLITE_CONSTRAINT.message);
     }
 }

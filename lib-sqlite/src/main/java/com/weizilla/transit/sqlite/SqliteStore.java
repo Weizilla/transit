@@ -26,7 +26,20 @@ public abstract class SqliteStore
     {
         SQLiteDataSource dataSource = new SQLiteDataSource();
         dataSource.setUrl("jdbc:sqlite:" + dbPath);
-        return dataSource.getConnection();
+        Connection connection = dataSource.getConnection();
+        enableForeignKeyConstraints(connection);
+        return connection;
+    }
+
+    private void enableForeignKeyConstraints(Connection conn) throws SQLException
+    {
+        try
+        (
+            Statement statement = conn.createStatement()
+        )
+        {
+            statement.execute("PRAGMA foreign_keys = ON");
+        }
     }
 
     protected static void executeSqlFromFile(Connection connection, String sqlFile)

@@ -2,10 +2,11 @@ package com.weizilla.transit.groups.sqlite;
 
 public class DuplicateGroupException extends RuntimeException
 {
-    private String groupName;
+    private final String groupName;
 
-    public DuplicateGroupException(String groupName)
+    public DuplicateGroupException(String groupName, Throwable t)
     {
+        super(t);
         this.groupName = groupName;
     }
 
