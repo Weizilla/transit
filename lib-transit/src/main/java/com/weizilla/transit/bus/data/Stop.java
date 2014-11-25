@@ -31,6 +31,12 @@ public class Stop
         this.id = id;
     }
 
+    public Stop(int id, String name)
+    {
+        this.id = id;
+        this.name = name;
+    }
+
     public Stop(int id, String routeId, Direction direction)
     {
         this.id = id;

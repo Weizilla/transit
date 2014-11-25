@@ -1,5 +1,7 @@
 package com.weizilla.transit.groups;
 
+import com.weizilla.transit.bus.data.Stop;
+
 import java.util.Set;
 
 public class BusGroupsStoreStub implements BusGroupsStore
@@ -25,13 +27,18 @@ public class BusGroupsStoreStub implements BusGroupsStore
     @Override
     public Set<Group> getAllGroups()
     {
-        //TODO Auto-generated
-        return null;
+        throw new RuntimeException("not used in stub");
     }
 
     @Override
     public void deleteGroup(int id)
     {
-        //TODO Auto-generated
+        throw new RuntimeException("not used in stub");
+    }
+
+    @Override
+    public void addToGroup(int id, Stop stop)
+    {
+        throw new RuntimeException("not used in stub");
     }
 }

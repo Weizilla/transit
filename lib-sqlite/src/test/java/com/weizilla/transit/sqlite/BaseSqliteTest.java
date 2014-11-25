@@ -100,4 +100,5 @@ public abstract class BaseSqliteTest
         URL file = Resources.getResource(filename);
         return new FlatXmlDataSetBuilder().build(file);
     }
+
 }

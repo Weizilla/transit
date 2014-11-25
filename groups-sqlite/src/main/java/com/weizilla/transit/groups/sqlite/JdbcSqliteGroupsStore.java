@@ -1,5 +1,6 @@
 package com.weizilla.transit.groups.sqlite;
 
+import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.groups.BusGroupsStore;
 import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
@@ -37,6 +38,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         )
         {
             executeSqlFromFile(connection, "create_groups_table.sql");
+            executeSqlFromFile(connection, "create_stops_table.sql");
             return store;
         }
     }
@@ -149,4 +151,32 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         return statement;
     }
 
+    @Override
+    public void addToGroup(int id, Stop stop)
+    {
+        String sqlFile = "add_stop.sql";
+        try
+        (
+            Connection conn = createConnection();
+            PreparedStatement stmt = conn.prepareStatement(readFile(sqlFile))
+        )
+        {
+            stmt.setInt(1, id);
+            stmt.setInt(2, stop.getId());
+            stmt.setString(3, stop.getName());
+            int numUpdated = stmt.executeUpdate();
+            if (numUpdated == 0)
+            {
+                logger.warn("No rows updated when adding stop {} to group {}", stop, id);
+            }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error adding stop {} to group {}", stop, id, e);
+        }
+    }
 }
