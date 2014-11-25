@@ -16,6 +16,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
@@ -87,7 +88,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
     }
 
     @Override
-    public Set<Group> getAllGroups()
+    public Collection<Group> getAllGroups()
     {
         Set<Group> groups = new HashSet<>();
         String sqlFile = "get_all_groups.sql";
@@ -208,7 +209,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
     }
 
     @Override
-    public Set<Stop> getStops(int groupId)
+    public Collection<Stop> getStops(int groupId)
     {
         Set<Stop> stops = new HashSet<>();
         String sqlFile = "get_stops.sql";

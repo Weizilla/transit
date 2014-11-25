@@ -2,21 +2,30 @@ package com.weizilla.transit.groups;
 
 import com.weizilla.transit.bus.data.Stop;
 
-import java.util.Set;
+import java.util.Collection;
+import java.util.List;
 
 public class BusGroupsStoreStub implements BusGroupsStore
 {
-    private int newGroupId;
+    private int groupId;
+    private List<Stop> stops;
     private Group group;
-
-    public BusGroupsStoreStub(int newGroupId)
-    {
-        this.newGroupId = newGroupId;
-    }
+    private List<Group> groups;
 
     public BusGroupsStoreStub(Group group)
     {
         this.group = group;
+    }
+
+    public BusGroupsStoreStub(List<Group> groups)
+    {
+        this.groups = groups;
+    }
+
+    public BusGroupsStoreStub(int groupId, List<Stop> stops)
+    {
+        this.groupId = groupId;
+        this.stops = stops;
     }
 
     public Group createGroup(String groupName)
@@ -25,9 +34,9 @@ public class BusGroupsStoreStub implements BusGroupsStore
     }
 
     @Override
-    public Set<Group> getAllGroups()
+    public Collection<Group> getAllGroups()
     {
-        throw new RuntimeException("not used in stub");
+        return groups;
     }
 
     @Override
@@ -55,8 +64,15 @@ public class BusGroupsStoreStub implements BusGroupsStore
     }
 
     @Override
-    public Set<Stop> getStops(int groupId)
+    public Collection<Stop> getStops(int groupId)
     {
-        throw new RuntimeException("not used in stub");
+        if (this.groupId == groupId)
+        {
+            return stops;
+        }
+        else
+        {
+            throw new RuntimeException("getStops() argument does not match stub input");
+        }
     }
 }

@@ -68,4 +68,34 @@ public class BusController
     {
         return groupsStore.createGroup(name);
     }
+
+    public void renameGroup(int id, String newName)
+    {
+        groupsStore.renameGroup(id, newName);
+    }
+
+    public Collection<Group> getAllGroups()
+    {
+        return groupsStore.getAllGroups();
+    }
+
+    public void deleteGroup(int id)
+    {
+        groupsStore.deleteGroup(id);
+    }
+
+    public void addStopToGroup(int groupId, Stop stop)
+    {
+        groupsStore.addToGroup(groupId, stop);
+    }
+
+    public void removeStopFromGroup(int groupId, int stopId)
+    {
+        groupsStore.removeFromGroup(groupId, stopId);
+    }
+
+    public Collection<Stop> getStops(int groupId)
+    {
+        return groupsStore.getStops(groupId);
+    }
 }
