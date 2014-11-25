@@ -18,6 +18,7 @@ import org.dbunit.operation.DatabaseOperation;
 import org.junit.Test;
 import org.slf4j.LoggerFactory;
 
+import java.util.Collection;
 import java.util.Set;
 
 import static org.junit.Assert.assertEquals;
@@ -208,8 +209,20 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             new SortedTable(actualFiltered));
     }
 
+    @Test
+    public void getStopsForGroup() throws Exception
+    {
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("get_stops.xml"));
+        Set<Stop> expected = Sets.newHashSet(
+            new Stop(200, "STOP B"),
+            new Stop(400, "STOP C")
+        );
+
+        Collection<Stop> actual = store.getStops(2);
+        assertEquals(expected, actual);
+    }
+
     //TODO test rename group
-    //TODO test get stops
-    //TODO test remove stop
-    //TODO test delete group
+    //TODO test delete group with stops
 }

@@ -13,4 +13,6 @@ public interface BusGroupsStore
 
     void addToGroup(int groupId, Stop stop);
     void removeFromGroup(int groupId, int stopId);
+
+    Set<Stop> getStops(int groupId);
 }

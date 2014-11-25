@@ -53,4 +53,10 @@ public class BusGroupsStoreStub implements BusGroupsStore
     {
         throw new RuntimeException("not used in stub");
     }
+
+    @Override
+    public Set<Stop> getStops(int groupId)
+    {
+        throw new RuntimeException("not used in stub");
+    }
 }

@@ -4,6 +4,7 @@ import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.groups.BusGroupsStore;
 import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
+import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
 import com.weizilla.transit.sqlite.SqliteStore;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -204,6 +205,46 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
                 e.getMessage(), e);
         }
 
+    }
+
+    @Override
+    public Set<Stop> getStops(int groupId)
+    {
+        Set<Stop> stops = new HashSet<>();
+        String sqlFile = "get_stops.sql";
+        try
+        (
+            Connection connection = createConnection();
+            PreparedStatement statement = createGetStopsStatement(connection, sqlFile, groupId);
+            ResultSet results = statement.executeQuery();
+        )
+        {
+            while (results.next())
+            {
+                int stopId = results.getInt(StopEntry.STOP_ID);
+                String stopName = results.getString(StopEntry.STOP_NAME);
+                stops.add(new Stop(stopId, stopName));
+            }
+            return stops;
+
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error getting stops from group {}. {}", groupId, e.getMessage(), e);
+        }
+        return Collections.emptySet();
+    }
+
+    private static PreparedStatement createGetStopsStatement(Connection connection,
+        String sqlFile, int groupId) throws SQLException, IOException
+    {
+        PreparedStatement statement = connection.prepareStatement(readFile(sqlFile));
+        statement.setInt(1, groupId);
+        return statement;
     }
 
     @Override

@@ -96,4 +96,62 @@ public class Stop
             ", routeId='" + routeId + '\'' +
             '}';
     }
+
+    @Override
+    public boolean equals(Object o)
+    {
+        if (this == o)
+        {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass())
+        {
+            return false;
+        }
+
+        Stop stop = (Stop) o;
+
+        if (id != stop.id)
+        {
+            return false;
+        }
+        if (Double.compare(stop.latitude, latitude) != 0)
+        {
+            return false;
+        }
+        if (Double.compare(stop.longitude, longitude) != 0)
+        {
+            return false;
+        }
+        if (direction != stop.direction)
+        {
+            return false;
+        }
+        if (name != null ? !name.equals(stop.name) : stop.name != null)
+        {
+            return false;
+        }
+        if (routeId != null ? !routeId.equals(stop.routeId) : stop.routeId != null)
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode()
+    {
+        int result;
+        long temp;
+        result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        temp = Double.doubleToLongBits(latitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        temp = Double.doubleToLongBits(longitude);
+        result = 31 * result + (int) (temp ^ (temp >>> 32));
+        result = 31 * result + (direction != null ? direction.hashCode() : 0);
+        result = 31 * result + (routeId != null ? routeId.hashCode() : 0);
+        return result;
+    }
 }
