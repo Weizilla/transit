@@ -37,7 +37,19 @@ public class BusGroupsStoreStub implements BusGroupsStore
     }
 
     @Override
-    public void addToGroup(int id, Stop stop)
+    public void addToGroup(int groupId, Stop stop)
+    {
+        throw new RuntimeException("not used in stub");
+    }
+
+    @Override
+    public void renameGroup(int id, String newName)
+    {
+        throw new RuntimeException("not used in stub");
+    }
+
+    @Override
+    public void removeFromGroup(int groupId, int stopId)
     {
         throw new RuntimeException("not used in stub");
     }

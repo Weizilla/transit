@@ -124,9 +124,10 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         try
         (
             Connection connection = createConnection();
-            PreparedStatement statement = createDeleteGroupStatement(connection, sqlFile, id)
+            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
         )
         {
+            statement.setInt(1, id);
             int numDeleted = statement.executeUpdate();
             if (numDeleted == 0)
             {
@@ -139,21 +140,12 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         }
         catch (SQLException e)
         {
-            logger.error("Sql error getting all groups: {}", e.getMessage(), e);
+            logger.error("Sql error deleting group: {}", e.getMessage(), e);
         }
     }
 
-    private static PreparedStatement createDeleteGroupStatement(Connection connection, String sqlFile, int groupId)
-        throws SQLException, IOException
-    {
-        String sql = readFile(sqlFile);
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, groupId);
-        return statement;
-    }
-
     @Override
-    public void addToGroup(int id, Stop stop)
+    public void addToGroup(int groupId, Stop stop)
     {
         String sqlFile = "add_stop.sql";
         try
@@ -162,13 +154,13 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
             PreparedStatement stmt = conn.prepareStatement(readFile(sqlFile))
         )
         {
-            stmt.setInt(1, id);
+            stmt.setInt(1, groupId);
             stmt.setInt(2, stop.getId());
             stmt.setString(3, stop.getName());
             int numUpdated = stmt.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when adding stop {} to group {}", stop, id);
+                logger.warn("No rows updated when adding stop {} to group {}", stop, groupId);
             }
         }
         catch (IOException e)
@@ -178,10 +170,46 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
         catch (SQLException e)
         {
             if (isConstraintException(e)) {
-                throw new InvalidGroupException(id, e);
+                throw new InvalidGroupException(groupId, e);
             }
-            logger.error("Sql error adding stop {} to group {}", stop, id, e);
+            logger.error("Sql error adding stop {} to group {}", stop, groupId, e);
         }
+    }
+
+    @Override
+    public void removeFromGroup(int groupId, int stopId)
+    {
+        String sqlFile = "remove_stop.sql";
+        try
+        (
+            Connection connection = createConnection();
+            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile));
+        )
+        {
+            statement.setInt(1, groupId);
+            statement.setInt(2, stopId);
+            int numDeleted = statement.executeUpdate();
+            if (numDeleted == 0)
+            {
+                logger.warn("No rows deleted when delete stop {} from group {}", stopId, groupId);
+            }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error removing stop {} from group {}: {}", stopId, groupId,
+                e.getMessage(), e);
+        }
+
+    }
+
+    @Override
+    public void renameGroup(int id, String newName)
+    {
+
     }
 
     private static boolean isConstraintException(SQLException e)

@@ -128,7 +128,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void addsStopsToGroup() throws Exception
     {
-        IDataSet expected = readDataSet("add_stops.xml");
+        IDataSet expected = readDataSet("add_stop.xml");
         ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
 
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
@@ -152,7 +152,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void replacesDuplicateStopWithNewestName() throws Exception
     {
-        IDataSet expected = readDataSet("add_stops.xml");
+        IDataSet expected = readDataSet("add_stop.xml");
         ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
         DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
             readDataSet("create_groups.xml"));
@@ -190,7 +190,24 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         }
     }
 
-    //TODO test add stop with invalid id
+    @Test
+    public void removeStopFromGroup() throws Exception
+    {
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("remove_stop_before.xml"));
+
+        store.removeFromGroup(2, 200);
+
+        IDataSet expected = readDataSet("remove_stop_after.xml");
+        ITable expectedTable = expected.getTable(StopEntry.TABLE_NAME);
+        ITable actual = getTable(StopEntry.TABLE_NAME);
+        ITable actualFiltered = DefaultColumnFilter.includedColumnsTable(actual,
+            expectedTable.getTableMetaData().getColumns());
+
+        Assertion.assertEquals(new SortedTable(expectedTable),
+            new SortedTable(actualFiltered));
+    }
+
     //TODO test rename group
     //TODO test get stops
     //TODO test remove stop

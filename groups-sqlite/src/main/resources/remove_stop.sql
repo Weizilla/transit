@@ -1,0 +1,1 @@
+DELETE FROM stops WHERE group_id = ? AND stop_id = ?
