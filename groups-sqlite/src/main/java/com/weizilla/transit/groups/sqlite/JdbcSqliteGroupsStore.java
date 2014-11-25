@@ -250,7 +250,29 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
     @Override
     public void renameGroup(int id, String newName)
     {
-
+        String sqlFile = "rename_group.sql";
+        try
+        (
+            Connection connection = createConnection();
+            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
+        )
+        {
+            statement.setString(1, newName);
+            statement.setInt(2, id);
+            int rowsUpdated = statement.executeUpdate();
+            if (rowsUpdated == 0)
+            {
+                logger.warn("No rows updated when renaming group {}", id);
+            }
+        }
+        catch (IOException e)
+        {
+            logger.error("Error reading sql file {}", sqlFile, e);
+        }
+        catch (SQLException e)
+        {
+            logger.error("Sql error renaming group {}. {}", id, e.getMessage(), e);
+        }
     }
 
     private static boolean isConstraintException(SQLException e)

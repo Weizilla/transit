@@ -230,5 +230,14 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         assertEquals(expected, actual);
     }
 
-    //TODO test rename group
+    @Test
+    public void renameGroup() throws Exception
+    {
+        DatabaseOperation.CLEAN_INSERT.execute(databaseTester.getConnection(),
+            readDataSet("rename_group_before.xml"));
+
+        store.renameGroup(2, "NEW GROUP");
+
+        assertTableInDbEqualsFile(GroupEntry.TABLE_NAME, "rename_group_after.xml");
+    }
 }

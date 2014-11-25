@@ -1,0 +1,1 @@
+UPDATE groups SET name = ? WHERE _id = ?
