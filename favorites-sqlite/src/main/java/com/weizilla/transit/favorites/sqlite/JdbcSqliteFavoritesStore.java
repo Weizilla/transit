@@ -1,13 +1,10 @@
 package com.weizilla.transit.favorites.sqlite;
 
 import com.weizilla.transit.data.Direction;
-import com.weizilla.transit.data.Route;
-import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 import com.weizilla.transit.sqlite.SqliteStore;
-import com.weizilla.transit.utils.ResourceUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,6 +17,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
+
+import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
 public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesStore
 {
@@ -45,21 +44,20 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     }
 
     @Override
-    public void saveFavorite(Route route)
+    public void saveFavorite(String routeId)
     {
-        String id = route.getId();
         String sqlFile = "save_route.sql";
         try
         (
             Connection connection = createConnection();
-            PreparedStatement statement = connection.prepareStatement(ResourceUtils.readFile(sqlFile))
+            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
         )
         {
-            statement.setString(1, id);
+            statement.setString(1, routeId);
             int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when saving favorite route id {}", id);
+                logger.warn("No rows updated when saving favorite route id {}", routeId);
             }
         }
         catch (IOException e)
@@ -68,26 +66,28 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         }
         catch (SQLException e)
         {
-            logger.error("Sql error saving favorite route id {}: {}", id, e.getMessage(), e);
+            logger.error("Sql error saving favorite route id {}: {}", routeId, e.getMessage(), e);
         }
     }
 
 
     @Override
-    public void saveFavorite(Stop stop)
+    public void saveFavorite(int stopId, String routeId, Direction direction)
     {
-        int id = stop.getId();
         String sqlFile = "save_stop.sql";
         try
         (
             Connection connection = createConnection();
-            PreparedStatement statement = createSaveStopStmt(connection, stop, sqlFile)
+            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
         )
         {
+            statement.setInt(1, stopId);
+            statement.setString(2, routeId);
+            statement.setObject(3, direction);
             int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when saving favorite stop id {}", id);
+                logger.warn("No rows updated when saving favorite stop id {}", stopId);
             }
         }
         catch (IOException e)
@@ -96,23 +96,12 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         }
         catch (SQLException e)
         {
-            logger.error("Sql error saving favorite stop id {}: {}", id, e.getMessage(), e);
+            logger.error("Sql error saving favorite stop id {}: {}", stopId, e.getMessage(), e);
         }
     }
 
-    private static PreparedStatement createSaveStopStmt(Connection connection, Stop stop, String sqlFile)
-        throws SQLException, IOException
-    {
-        String sql = ResourceUtils.readFile(sqlFile);
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setInt(1, stop.getId());
-        statement.setString(2, stop.getRouteId());
-        statement.setObject(3, stop.getDirection());
-        return statement;
-    }
-
     @Override
-    public Collection<String> getFavoriteRouteIds()
+    public Collection<String> getRouteIds()
     {
         Collection<String> routeIds = new TreeSet<>();
         String sqlFile = "get_routes.sql";
@@ -120,7 +109,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         (
             Connection connection = createConnection();
             Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery(ResourceUtils.readFile(sqlFile))
+            ResultSet resultSet = statement.executeQuery(readFile(sqlFile))
         )
         {
             while (resultSet.next())
@@ -140,14 +129,14 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     }
 
     @Override
-    public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
+    public Collection<Integer> getStopIds(String routeId, Direction direction)
     {
         Collection<Integer> stopIds = new TreeSet<>();
         String sqlFile = "get_stops.sql";
         try
         (
             Connection conn = createConnection();
-            PreparedStatement statement = createGetStopsStatement(conn, sqlFile, route, direction);
+            PreparedStatement statement = createGetStopsStatement(conn, sqlFile, routeId, direction);
             ResultSet resultSet = statement.executeQuery()
         )
         {
@@ -171,7 +160,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         Connection connection, String sqlFile, String route, Direction direction)
         throws IOException, SQLException
     {
-        String sql = ResourceUtils.readFile(sqlFile);
+        String sql = readFile(sqlFile);
         PreparedStatement statement = connection.prepareStatement(sql);
         statement.setString(1, route);
         statement.setObject(2, direction);

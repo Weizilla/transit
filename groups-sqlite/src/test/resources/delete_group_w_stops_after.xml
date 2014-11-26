@@ -1,6 +1,6 @@
 <dataset>
     <groups _id="1" name="GROUP 0"/>
     <groups _id="3" name="GROUP 2"/>
-    <stops group_id="1" stop_id="100" stop_name="STOP A"/>
-    <stops group_id="3" stop_id="300" stop_name="STOP D"/>
+    <stops group_id="1" stop_id="100"/>
+    <stops group_id="3" stop_id="300"/>
 </dataset>

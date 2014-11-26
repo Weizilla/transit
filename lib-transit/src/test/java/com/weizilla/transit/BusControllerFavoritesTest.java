@@ -1,8 +1,6 @@
-package com.weizilla.transit.bus;
+package com.weizilla.transit;
 
-import com.weizilla.transit.BusController;
-import com.weizilla.transit.data.Route;
-import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.FavoritesStoreStub;
 import org.junit.Test;
@@ -16,22 +14,25 @@ import static org.mockito.Mockito.verify;
 
 public class BusControllerFavoritesTest
 {
+    private static final String ROUTE_ID = "22";
+    private static final int STOP_ID = 100;
+    private static final Direction DIRECTION = Direction.Eastbound;
+
     @Test
     public void storesFavoriteRoutes() throws Exception
     {
-        Route route = new Route("20");
         FavoritesStore favoriteStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoriteStore, null);
 
-        controller.saveFavorite(route);
+        controller.saveFavorite(ROUTE_ID);
 
-        verify(favoriteStore).saveFavorite(route);
+        verify(favoriteStore).saveFavorite(ROUTE_ID);
     }
 
     @Test
     public void getsAllFavoriteRouteIds() throws Exception
     {
-        Collection<String> routes = Collections.singletonList("20");
+        Collection<String> routes = Collections.singletonList(ROUTE_ID);
 
         FavoritesStore favoriteStore = FavoritesStoreStub.createWithRoutes(routes);
         BusController controller = new BusController(null, favoriteStore, null);
@@ -43,19 +44,18 @@ public class BusControllerFavoritesTest
     @Test
     public void storesFavoriteStops() throws Exception
     {
-        Stop stop = new Stop();
         FavoritesStore favoritesStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoritesStore, null);
 
-        controller.saveFavorite(stop);
+        controller.saveFavorite(STOP_ID, ROUTE_ID, DIRECTION);
 
-        verify(favoritesStore).saveFavorite(stop);
+        verify(favoritesStore).saveFavorite(STOP_ID, ROUTE_ID, DIRECTION);
     }
 
     @Test
     public void getsAllFavoriteStopIds() throws Exception
     {
-        Collection<Integer> stops = Collections.singletonList(100);
+        Collection<Integer> stops = Collections.singletonList(STOP_ID);
 
         FavoritesStore favoritesStore = FavoritesStoreStub.createWithStops(stops);
         BusController controller = new BusController(null, favoritesStore, null);

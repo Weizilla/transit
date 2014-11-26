@@ -6,8 +6,6 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
 import com.weizilla.transit.data.Direction;
-import com.weizilla.transit.data.Route;
-import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
@@ -27,7 +25,7 @@ public class AndroidFavoritesStore implements FavoritesStore
     }
 
     @Override
-    public void saveFavorite(Route route)
+    public void saveFavorite(String routeId)
     {
         try
         (
@@ -35,22 +33,21 @@ public class AndroidFavoritesStore implements FavoritesStore
         )
         {
             ContentValues values = new ContentValues();
-            values.put(RouteEntry.ID, route.getId());
-            values.put(RouteEntry.NAME, route.getName());
+            values.put(RouteEntry.ID, routeId);
             long newId = db.replace(RouteEntry.TABLE_NAME, null, values);
             if (newId != -1)
             {
-                Log.d(TAG, "Added new fav route. _ID: " + newId + " Route: " + route);
+                Log.d(TAG, "Added new fav route. _ID: " + newId + " Route: " + routeId);
             }
             else
             {
-                Log.d(TAG, "Failed to add new fav route for " + route);
+                Log.d(TAG, "Failed to add new fav route for " + routeId);
             }
         }
     }
 
     @Override
-    public Collection<String> getFavoriteRouteIds()
+    public Collection<String> getRouteIds()
     {
         Set<String> ids = new TreeSet<>();
         try
@@ -77,7 +74,7 @@ public class AndroidFavoritesStore implements FavoritesStore
     }
 
     @Override
-    public void saveFavorite(Stop stop)
+    public void saveFavorite(int stopId, String routeId, Direction direction)
     {
         try
         (
@@ -85,30 +82,30 @@ public class AndroidFavoritesStore implements FavoritesStore
         )
         {
             ContentValues values = new ContentValues();
-            values.put(StopEntry.ID, stop.getId());
-            values.put(StopEntry.ROUTE, stop.getRouteId());
-            values.put(StopEntry.DIRECTION, stop.getDirection().name());
+            values.put(StopEntry.ID, stopId);
+            values.put(StopEntry.ROUTE, routeId);
+            values.put(StopEntry.DIRECTION, direction.name());
             long newId = db.replace(StopEntry.TABLE_NAME, null, values);
             if (newId != -1)
             {
-                Log.d(TAG, "Added new fav route. _ID: " + newId + " Stop: " + stop);
+                Log.d(TAG, "Added new fav route. _ID: " + newId + " Stop: " + stopId);
             }
             else
             {
-                Log.d(TAG, "Failed to add new fav route for " + stop);
+                Log.d(TAG, "Failed to add new fav route for " + stopId);
             }
         }
 
     }
 
     @Override
-    public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
+    public Collection<Integer> getStopIds(String routeId, Direction direction)
     {
         Set<Integer> ids = new TreeSet<>();
         try
         (
             SQLiteDatabase db = dbHelper.getReadableDatabase();
-            Cursor cursor = queryForStopIds(db, route, direction);
+            Cursor cursor = queryForStopIds(db, routeId, direction);
         )
         {
             if (cursor != null && cursor.getCount() > 0)

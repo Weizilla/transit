@@ -3,9 +3,8 @@ package com.weizilla.transit.groups.sqlite;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
-import com.weizilla.transit.data.Stop;
-import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.Group;
+import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
@@ -107,10 +106,10 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         String dataSetFile = "add_stop.xml";
         deleteFromDb(dataSetFile);
 
-        store.addToGroup(2, new Stop(400, "STOP C"));
-        store.addToGroup(1, new Stop(100, "STOP A"));
-        store.addToGroup(2, new Stop(200, "STOP B"));
-        store.addToGroup(3, new Stop(300, "STOP D"));
+        store.addToGroup(2, 400);
+        store.addToGroup(1, 100);
+        store.addToGroup(2, 200);
+        store.addToGroup(3, 300);
 
         assertTablesEqualFile(dataSetFile, StopEntry.TABLE_NAME);
     }
@@ -122,13 +121,13 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         String dataSetFile = "add_stop.xml";
         deleteFromDb(dataSetFile);
 
-        store.addToGroup(3, new Stop(300, "STOP D1"));
-        store.addToGroup(2, new Stop(400, "STOP C"));
-        store.addToGroup(3, new Stop(300, "STOP D2"));
-        store.addToGroup(1, new Stop(100, "STOP A"));
-        store.addToGroup(2, new Stop(200, "STOP B"));
-        store.addToGroup(3, new Stop(300, "STOP D3"));
-        store.addToGroup(3, new Stop(300, "STOP D"));
+        store.addToGroup(3, 300);
+        store.addToGroup(2, 400);
+        store.addToGroup(3, 300);
+        store.addToGroup(1, 100);
+        store.addToGroup(2, 200);
+        store.addToGroup(3, 300);
+        store.addToGroup(3, 300);
 
         assertTablesEqualFile(dataSetFile, StopEntry.TABLE_NAME);
     }
@@ -140,7 +139,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         try
         {
 
-            store.addToGroup(invalidGroupId, new Stop(200, "STOP A"));
+            store.addToGroup(invalidGroupId, 200);
             fail("Exception expected for invalid group id");
         }
         catch (InvalidGroupException e)
@@ -161,12 +160,9 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     public void getStopsForGroup() throws Exception
     {
         loadIntoDb("get_stops.xml");
-        Set<Stop> expected = Sets.newHashSet(
-            new Stop(200, "STOP B"),
-            new Stop(400, "STOP C")
-        );
+        Set<Integer> expected = Sets.newHashSet(200, 400);
 
-        Collection<Stop> actual = store.getStops(2);
+        Collection<Integer> actual = store.getStopIds(2);
         assertEquals(expected, actual);
     }
 

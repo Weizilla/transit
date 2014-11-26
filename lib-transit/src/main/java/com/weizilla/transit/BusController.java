@@ -44,24 +44,24 @@ public class BusController
         return dataSource.getPredictions(routeId, stopId);
     }
 
-    public void saveFavorite(Route route)
+    public void saveFavorite(String routeId)
     {
-        favoritesStore.saveFavorite(route);
+        favoritesStore.saveFavorite(routeId);
     }
 
     public Collection<String> getFavoriteRouteIds()
     {
-        return favoritesStore.getFavoriteRouteIds();
+        return favoritesStore.getRouteIds();
     }
 
-    public void saveFavorite(Stop stop)
+    public void saveFavorite(int stopId, String routeId, Direction direction)
     {
-        favoritesStore.saveFavorite(stop);
+        favoritesStore.saveFavorite(stopId, routeId, direction);
     }
 
     public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
     {
-        return favoritesStore.getFavoriteStopIds(route, direction);
+        return favoritesStore.getStopIds(route, direction);
     }
 
     public Group createGroup(String name)
@@ -84,9 +84,9 @@ public class BusController
         groupsStore.deleteGroup(id);
     }
 
-    public void addStopToGroup(int groupId, Stop stop)
+    public void addStopToGroup(int groupId, int stopId)
     {
-        groupsStore.addToGroup(groupId, stop);
+        groupsStore.addToGroup(groupId, stopId);
     }
 
     public void removeStopFromGroup(int groupId, int stopId)
@@ -94,8 +94,8 @@ public class BusController
         groupsStore.removeFromGroup(groupId, stopId);
     }
 
-    public Collection<Stop> getStopsForGroup(int id)
+    public Collection<Integer> getStopIdsForGroup(int id)
     {
-        return groupsStore.getStops(id);
+        return groupsStore.getStopIds(id);
     }
 }

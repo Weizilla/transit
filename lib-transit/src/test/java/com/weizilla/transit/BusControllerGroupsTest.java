@@ -1,11 +1,9 @@
-package com.weizilla.transit.bus;
+package com.weizilla.transit;
 
 import com.google.common.collect.Lists;
-import com.weizilla.transit.BusController;
-import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.GroupsStoreStub;
-import com.weizilla.transit.groups.Group;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -23,7 +21,6 @@ public class BusControllerGroupsTest
     private static final String TEST_NAME = "GROUP NAME";
     private static final Group TEST_GROUP = new Group(TEST_GROUP_ID, TEST_NAME);
     private static final int TEST_STOP_ID = 12;
-    private static final Stop TEST_STOP = new Stop(TEST_STOP_ID);
 
     @Test
     public void createsGroupCallsGroupsStore() throws Exception
@@ -76,9 +73,9 @@ public class BusControllerGroupsTest
         GroupsStore mockStore = mock(GroupsStore.class);
         BusController controller = new BusController(null, null, mockStore);
 
-        controller.addStopToGroup(TEST_GROUP_ID, TEST_STOP);
+        controller.addStopToGroup(TEST_GROUP_ID, TEST_STOP_ID);
 
-        verify(mockStore).addToGroup(TEST_GROUP_ID, TEST_STOP);
+        verify(mockStore).addToGroup(TEST_GROUP_ID, TEST_STOP_ID);
     }
 
     @Test
@@ -95,12 +92,12 @@ public class BusControllerGroupsTest
     @Test
     public void getStops() throws Exception
     {
-        List<Stop> expected = Lists.newArrayList(TEST_STOP, TEST_STOP);
+        List<Integer> expected = Lists.newArrayList(TEST_STOP_ID, TEST_STOP_ID);
         GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP_ID, expected));
         BusController controller = new BusController(null, null, store);
 
-        Collection<Stop> actual = controller.getStopsForGroup(TEST_GROUP_ID);
-        verify(store).getStops(TEST_GROUP_ID);
+        Collection<Integer> actual = controller.getStopIdsForGroup(TEST_GROUP_ID);
+        verify(store).getStopIds(TEST_GROUP_ID);
         assertSame(expected, actual);
     }
 }

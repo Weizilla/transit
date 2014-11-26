@@ -1,8 +1,7 @@
 package com.weizilla.transit.groups.sqlite;
 
-import com.weizilla.transit.data.Stop;
-import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.Group;
+import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
 import com.weizilla.transit.sqlite.SqliteStore;
@@ -147,7 +146,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     }
 
     @Override
-    public void addToGroup(int groupId, Stop stop)
+    public void addToGroup(int groupId, int stopId)
     {
         String sqlFile = "add_stop.sql";
         try
@@ -157,12 +156,11 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
         )
         {
             stmt.setInt(1, groupId);
-            stmt.setInt(2, stop.getId());
-            stmt.setString(3, stop.getName());
+            stmt.setInt(2, stopId);
             int numUpdated = stmt.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when adding stop {} to group {}", stop, groupId);
+                logger.warn("No rows updated when adding stop {} to group {}", stopId, groupId);
             }
         }
         catch (IOException e)
@@ -174,7 +172,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
             if (isConstraintException(e)) {
                 throw new InvalidGroupException(groupId, e);
             }
-            logger.error("Sql error adding stop {} to group {}", stop, groupId, e);
+            logger.error("Sql error adding stop {} to group {}", stopId, groupId, e);
         }
     }
 
@@ -209,9 +207,9 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     }
 
     @Override
-    public Collection<Stop> getStops(int groupId)
+    public Collection<Integer> getStopIds(int groupId)
     {
-        Set<Stop> stops = new HashSet<>();
+        Collection<Integer> stops = new HashSet<>();
         String sqlFile = "get_stops.sql";
         try
         (
@@ -223,8 +221,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
             while (results.next())
             {
                 int stopId = results.getInt(StopEntry.STOP_ID);
-                String stopName = results.getString(StopEntry.STOP_NAME);
-                stops.add(new Stop(stopId, stopName));
+                stops.add(stopId);
             }
             return stops;
 

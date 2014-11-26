@@ -1,7 +1,6 @@
-package com.weizilla.transit.bus;
+package com.weizilla.transit;
 
 import com.google.common.collect.Lists;
-import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;

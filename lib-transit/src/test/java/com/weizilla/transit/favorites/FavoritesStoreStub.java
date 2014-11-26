@@ -1,8 +1,6 @@
 package com.weizilla.transit.favorites;
 
 import com.weizilla.transit.data.Direction;
-import com.weizilla.transit.data.Route;
-import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
@@ -28,25 +26,25 @@ public class FavoritesStoreStub implements FavoritesStore
     }
 
     @Override
-    public void saveFavorite(Route route)
+    public void saveFavorite(String routeId)
     {
         // do nothing
     }
 
     @Override
-    public Collection<String> getFavoriteRouteIds()
+    public Collection<String> getRouteIds()
     {
         return routes;
     }
 
     @Override
-    public void saveFavorite(Stop stop)
+    public void saveFavorite(int stopId, String routeId, Direction direction)
     {
         // do nothing
     }
 
     @Override
-    public Collection<Integer> getFavoriteStopIds(String route, Direction direction)
+    public Collection<Integer> getStopIds(String routeId, Direction direction)
     {
         return stops;
     }
