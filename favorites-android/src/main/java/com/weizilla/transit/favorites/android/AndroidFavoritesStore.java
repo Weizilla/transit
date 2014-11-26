@@ -5,10 +5,10 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 import android.util.Log;
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 
@@ -16,7 +16,7 @@ import java.util.Collection;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class AndroidFavoritesStore implements BusFavoritesStore
+public class AndroidFavoritesStore implements FavoritesStore
 {
     private static final String TAG = "AndroidFavoritesStore";
     private SQLiteOpenHelper dbHelper;

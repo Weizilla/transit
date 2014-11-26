@@ -1,6 +1,6 @@
-package com.weizilla.transit.bus.source.stream.http;
+package com.weizilla.transit.source.stream.http;
 
-import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.data.Direction;
 import org.junit.Test;
 
 import java.io.InputStream;

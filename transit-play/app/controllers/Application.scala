@@ -4,9 +4,9 @@ import java.nio.file.Files
 
 import com.typesafe.config.ConfigFactory
 import com.weizilla.transit.bus.BusController
-import com.weizilla.transit.bus.data.{Prediction, Direction}
-import com.weizilla.transit.bus.source.stream.StreamingBusDataSource
-import com.weizilla.transit.bus.source.stream.http.{HttpInputStreamProvider, HttpReader}
+import com.weizilla.transit.data.{Prediction, Direction}
+import com.weizilla.transit.source.stream.StreamingBusDataSource
+import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
 import play.api.mvc.{Action, Controller}

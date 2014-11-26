@@ -1,4 +1,4 @@
-package com.weizilla.transit.bus.data;
+package com.weizilla.transit.data;
 
 import com.weizilla.transit.utils.TimeConverter;
 import org.joda.time.DateTime;

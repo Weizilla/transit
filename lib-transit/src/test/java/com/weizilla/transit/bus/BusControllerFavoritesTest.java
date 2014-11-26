@@ -1,9 +1,10 @@
 package com.weizilla.transit.bus;
 
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.favorites.BusFavoritesStore;
-import com.weizilla.transit.favorites.BusFavoritesStoreStub;
+import com.weizilla.transit.BusController;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.favorites.FavoritesStore;
+import com.weizilla.transit.favorites.FavoritesStoreStub;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -19,7 +20,7 @@ public class BusControllerFavoritesTest
     public void storesFavoriteRoutes() throws Exception
     {
         Route route = new Route("20");
-        BusFavoritesStore favoriteStore = mock(BusFavoritesStore.class);
+        FavoritesStore favoriteStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoriteStore, null);
 
         controller.saveFavorite(route);
@@ -32,7 +33,7 @@ public class BusControllerFavoritesTest
     {
         Collection<String> routes = Collections.singletonList("20");
 
-        BusFavoritesStore favoriteStore = BusFavoritesStoreStub.createWithRoutes(routes);
+        FavoritesStore favoriteStore = FavoritesStoreStub.createWithRoutes(routes);
         BusController controller = new BusController(null, favoriteStore, null);
 
         Collection<String> actual = controller.getFavoriteRouteIds();
@@ -43,7 +44,7 @@ public class BusControllerFavoritesTest
     public void storesFavoriteStops() throws Exception
     {
         Stop stop = new Stop();
-        BusFavoritesStore favoritesStore = mock(BusFavoritesStore.class);
+        FavoritesStore favoritesStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoritesStore, null);
 
         controller.saveFavorite(stop);
@@ -56,7 +57,7 @@ public class BusControllerFavoritesTest
     {
         Collection<Integer> stops = Collections.singletonList(100);
 
-        BusFavoritesStore favoritesStore = BusFavoritesStoreStub.createWithStops(stops);
+        FavoritesStore favoritesStore = FavoritesStoreStub.createWithStops(stops);
         BusController controller = new BusController(null, favoritesStore, null);
 
         Collection<Integer> actual = controller.getFavoriteStopIds(null, null);

@@ -1,5 +1,5 @@
-@(routeId: String, direction: com.weizilla.transit.bus.data.Direction,
-        stops: Iterable[com.weizilla.transit.bus.data.Stop])
+@(routeId: String, direction: com.weizilla.transit.data.Direction,
+        stops: Iterable[com.weizilla.transit.data.Stop])
 @main("Stops")("Route " + routeId + " - " + direction) {
     <ul>
     @for(stop <- stops) {

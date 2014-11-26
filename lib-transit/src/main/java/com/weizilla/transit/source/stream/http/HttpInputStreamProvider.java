@@ -1,14 +1,14 @@
-package com.weizilla.transit.bus.source.stream.http;
+package com.weizilla.transit.source.stream.http;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.source.stream.BusInputStreamProvider;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.source.stream.InputStreamProvider;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
 
-public class HttpInputStreamProvider implements BusInputStreamProvider
+public class HttpInputStreamProvider implements InputStreamProvider
 {
     private static final String GET_ROUTES = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key={0}";
     private static final String GET_DIRECTIONS = "http://www.ctabustracker.com/bustime/api/v1/getdirections?rt={0}&key={1}";

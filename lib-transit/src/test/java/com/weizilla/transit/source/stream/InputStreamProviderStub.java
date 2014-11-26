@@ -1,11 +1,11 @@
-package com.weizilla.transit.bus.source.stream;
+package com.weizilla.transit.source.stream;
 
-import com.weizilla.transit.bus.data.Direction;
+import com.weizilla.transit.data.Direction;
 
 import java.io.IOException;
 import java.io.InputStream;
 
-public class BusInputStreamProviderStub implements BusInputStreamProvider
+public class InputStreamProviderStub implements InputStreamProvider
 {
     private InputStream stream;
 

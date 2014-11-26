@@ -1,13 +1,13 @@
-package com.weizilla.transit.bus.source;
+package com.weizilla.transit.source;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Prediction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
-public interface BusDataSource
+public interface DataSource
 {
     Collection<Route> getRoutes();
     Collection<Direction> getDirections(String routeId);

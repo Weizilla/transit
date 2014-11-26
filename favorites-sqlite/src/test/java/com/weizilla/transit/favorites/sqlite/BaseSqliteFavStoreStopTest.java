@@ -1,9 +1,9 @@
 package com.weizilla.transit.favorites.sqlite;
 
 import com.google.common.collect.Sets;
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
 import org.junit.Test;
 
@@ -17,7 +17,7 @@ import static org.junit.Assert.assertNotNull;
 
 public abstract class BaseSqliteFavStoreStopTest extends BaseSqliteTest
 {
-    protected BusFavoritesStore store;
+    protected FavoritesStore store;
 
     @Test
     public void storeIsSet() throws Exception

@@ -1,5 +1,5 @@
 @(routeId: String, stopId: Int,
-        predictions: Iterable[com.weizilla.transit.bus.data.Prediction],
+        predictions: Iterable[com.weizilla.transit.data.Prediction],
         message: Option[String])
 @main("Predictions")("Route " + routeId + " - " + stopId) {
     @message match {

@@ -1,28 +1,28 @@
 package com.weizilla.transit.groups;
 
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 import java.util.List;
 
-public class BusGroupsStoreStub implements BusGroupsStore
+public class GroupsStoreStub implements GroupsStore
 {
     private int groupId;
     private List<Stop> stops;
     private Group group;
     private List<Group> groups;
 
-    public BusGroupsStoreStub(Group group)
+    public GroupsStoreStub(Group group)
     {
         this.group = group;
     }
 
-    public BusGroupsStoreStub(List<Group> groups)
+    public GroupsStoreStub(List<Group> groups)
     {
         this.groups = groups;
     }
 
-    public BusGroupsStoreStub(int groupId, List<Stop> stops)
+    public GroupsStoreStub(int groupId, List<Stop> stops)
     {
         this.groupId = groupId;
         this.stops = stops;

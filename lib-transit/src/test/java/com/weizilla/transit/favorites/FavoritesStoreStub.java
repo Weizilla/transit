@@ -1,30 +1,30 @@
 package com.weizilla.transit.favorites;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
-public class BusFavoritesStoreStub implements BusFavoritesStore
+public class FavoritesStoreStub implements FavoritesStore
 {
     private Collection<String> routes;
     private Collection<Integer> stops;
 
-    private BusFavoritesStoreStub(Collection<String> routes, Collection<Integer> stops)
+    private FavoritesStoreStub(Collection<String> routes, Collection<Integer> stops)
     {
         this.routes = routes;
         this.stops = stops;
     }
 
-    public static BusFavoritesStoreStub createWithRoutes(Collection<String> routes)
+    public static FavoritesStoreStub createWithRoutes(Collection<String> routes)
     {
-        return new BusFavoritesStoreStub(routes, null);
+        return new FavoritesStoreStub(routes, null);
     }
 
-    public static BusFavoritesStoreStub createWithStops(Collection<Integer> stops)
+    public static FavoritesStoreStub createWithStops(Collection<Integer> stops)
     {
-        return new BusFavoritesStoreStub(null, stops);
+        return new FavoritesStoreStub(null, stops);
     }
 
     @Override

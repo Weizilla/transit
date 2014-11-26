@@ -1,13 +1,13 @@
-package com.weizilla.transit.bus.source;
+package com.weizilla.transit.source;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Prediction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
-public class BusDataSourceStub implements BusDataSource
+public class DataSourceStub implements DataSource
 {
     private Collection<Route> routes;
     private String routeKey;
@@ -17,25 +17,25 @@ public class BusDataSourceStub implements BusDataSource
     private Collection<Stop> stops;
     private Collection<Prediction> predictions;
 
-    public BusDataSourceStub(Collection<Route> routes)
+    public DataSourceStub(Collection<Route> routes)
     {
         this.routes = routes;
     }
 
-    public BusDataSourceStub(String routeId, Collection<Direction> directions)
+    public DataSourceStub(String routeId, Collection<Direction> directions)
     {
         routeKey = routeId;
         this.directions = directions;
     }
 
-    public BusDataSourceStub(String routeId, Direction direction, Collection<Stop> stops)
+    public DataSourceStub(String routeId, Direction direction, Collection<Stop> stops)
     {
         routeKey = routeId;
         directionKey = direction;
         this.stops = stops;
     }
 
-    public BusDataSourceStub(String routeId, int stopId, Collection<Prediction> predictions)
+    public DataSourceStub(String routeId, int stopId, Collection<Prediction> predictions)
     {
         routeKey = routeId;
         stopKey = stopId;

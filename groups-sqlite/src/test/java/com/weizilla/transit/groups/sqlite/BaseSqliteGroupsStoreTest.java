@@ -3,8 +3,8 @@ package com.weizilla.transit.groups.sqlite;
 import ch.qos.logback.classic.Level;
 import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Sets;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.groups.BusGroupsStore;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
@@ -21,7 +21,7 @@ import static org.junit.Assert.fail;
 
 public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
 {
-    protected BusGroupsStore store;
+    protected GroupsStore store;
 
     @Test
     public void storeIsSet() throws Exception

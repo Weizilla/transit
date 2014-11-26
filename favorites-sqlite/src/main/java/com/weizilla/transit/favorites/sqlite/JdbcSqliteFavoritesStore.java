@@ -1,9 +1,9 @@
 package com.weizilla.transit.favorites.sqlite;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.favorites.BusFavoritesStore;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 import com.weizilla.transit.sqlite.SqliteStore;
@@ -21,7 +21,7 @@ import java.sql.Statement;
 import java.util.Collection;
 import java.util.TreeSet;
 
-public class JdbcSqliteFavoritesStore extends SqliteStore implements BusFavoritesStore
+public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesStore
 {
     private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteFavoritesStore.class);
 

@@ -1,6 +1,6 @@
 @(groups: Iterable[com.weizilla.transit.groups.Group],
         favRouteIds: Iterable[String],
-        routes: Iterable[com.weizilla.transit.bus.data.Route])
+        routes: Iterable[com.weizilla.transit.data.Route])
 
 @main("Transit")("Transit") {
     <header>Groups</header>
@@ -23,7 +23,7 @@
     </ul>
 }
 @*
-@(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route], favRoutes: java.util.Collection[String])
+@(title: String, routes: java.util.Collection[com.weizilla.transit.data.Route], favRoutes: java.util.Collection[String])
 <!DOCTYPE html>
 
 <html>

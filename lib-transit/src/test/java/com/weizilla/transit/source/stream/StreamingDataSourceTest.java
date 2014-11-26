@@ -1,12 +1,12 @@
-package com.weizilla.transit.bus.source.stream;
+package com.weizilla.transit.source.stream;
 
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Prediction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.bus.source.BusDataSourceException;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.source.DataSourceException;
 import com.weizilla.transit.utils.TimeConverter;
 import org.joda.time.DateTime;
 import org.junit.After;
@@ -20,19 +20,19 @@ import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.fail;
 
-public class StreamingBusDataSourceTest
+public class StreamingDataSourceTest
 {
     private static final Direction DIRECTION = Direction.Northbound;
     private static final String ROUTE_ID = "22";
     private static final int STOP_ID = 1926;
-    private BusInputStreamProviderStub streamProvider;
-    private StreamingBusDataSource source;
+    private InputStreamProviderStub streamProvider;
+    private StreamingDataSource source;
 
     @Before
     public void setUp() throws Exception
     {
-        streamProvider = new BusInputStreamProviderStub();
-        source = new StreamingBusDataSource(streamProvider);
+        streamProvider = new InputStreamProviderStub();
+        source = new StreamingDataSource(streamProvider);
     }
 
     @After
@@ -135,7 +135,7 @@ public class StreamingBusDataSourceTest
             source.getRoutes();
             fail("Should have thrown error");
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             assertEquals(errorMsg, e.getMessage());
         }
@@ -151,7 +151,7 @@ public class StreamingBusDataSourceTest
             source.getDirections(ROUTE_ID);
             fail("Should have thrown error");
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             assertEquals(errorMsg, e.getMessage());
         }
@@ -167,7 +167,7 @@ public class StreamingBusDataSourceTest
             source.getPredictions(ROUTE_ID, STOP_ID);
             fail("Should have thrown error");
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             assertEquals(errorMsg, e.getMessage());
         }
@@ -183,7 +183,7 @@ public class StreamingBusDataSourceTest
             source.getStops(ROUTE_ID, DIRECTION);
             fail("Should have thrown error");
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             assertEquals(errorMsg, e.getMessage());
         }
@@ -215,7 +215,7 @@ public class StreamingBusDataSourceTest
         assertEquals(delayed, actual.isDelayed());
     }
 
-    @Test(expected = BusDataSourceException.class)
+    @Test(expected = DataSourceException.class)
     public void throwsExceptionIfNoStream() throws Exception
     {
         source.getRoutes();

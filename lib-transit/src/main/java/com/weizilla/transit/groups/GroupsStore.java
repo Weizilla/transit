@@ -1,10 +1,10 @@
 package com.weizilla.transit.groups;
 
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
-public interface BusGroupsStore
+public interface GroupsStore
 {
     Group createGroup(String name);
     void renameGroup(int id, String newName);

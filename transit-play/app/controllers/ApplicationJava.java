@@ -1,13 +1,13 @@
 package controllers;
 
 import com.weizilla.transit.bus.BusController;
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Prediction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.bus.source.stream.StreamingBusDataSource;
-import com.weizilla.transit.bus.source.stream.http.HttpInputStreamProvider;
-import com.weizilla.transit.bus.source.stream.http.HttpReader;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.source.stream.StreamingBusDataSource;
+import com.weizilla.transit.source.stream.http.HttpInputStreamProvider;
+import com.weizilla.transit.source.stream.http.HttpReader;
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore;
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore;
 import play.mvc.Result;

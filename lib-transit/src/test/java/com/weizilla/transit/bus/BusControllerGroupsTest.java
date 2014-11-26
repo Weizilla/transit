@@ -1,9 +1,10 @@
 package com.weizilla.transit.bus;
 
 import com.google.common.collect.Lists;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.groups.BusGroupsStore;
-import com.weizilla.transit.groups.BusGroupsStoreStub;
+import com.weizilla.transit.BusController;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.groups.GroupsStore;
+import com.weizilla.transit.groups.GroupsStoreStub;
 import com.weizilla.transit.groups.Group;
 import org.junit.Test;
 
@@ -27,7 +28,7 @@ public class BusControllerGroupsTest
     @Test
     public void createsGroupCallsGroupsStore() throws Exception
     {
-        BusGroupsStore store = spy(new BusGroupsStoreStub(TEST_GROUP));
+        GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP));
         BusController controller = new BusController(null, null, store);
 
         Group actual = controller.createGroup(TEST_NAME);
@@ -39,7 +40,7 @@ public class BusControllerGroupsTest
     @Test
     public void renameGroupCallsGroupStore() throws Exception
     {
-        BusGroupsStore mockStore = mock(BusGroupsStore.class);
+        GroupsStore mockStore = mock(GroupsStore.class);
         BusController controller = new BusController(null, null, mockStore);
 
         controller.renameGroup(TEST_GROUP_ID, TEST_NAME);
@@ -51,7 +52,7 @@ public class BusControllerGroupsTest
     public void getsAllGroupsFromGroupStore() throws Exception
     {
         List<Group> expected = Lists.newArrayList(TEST_GROUP, TEST_GROUP);
-        BusGroupsStoreStub stub = new BusGroupsStoreStub(expected);
+        GroupsStoreStub stub = new GroupsStoreStub(expected);
         BusController controller = new BusController(null, null, stub);
 
         Collection<Group> actual = controller.getAllGroups();
@@ -61,7 +62,7 @@ public class BusControllerGroupsTest
     @Test
     public void deleteGroupCallsGroupStore() throws Exception
     {
-        BusGroupsStore mockStore = mock(BusGroupsStore.class);
+        GroupsStore mockStore = mock(GroupsStore.class);
         BusController controller = new BusController(null, null, mockStore);
 
         controller.deleteGroup(TEST_GROUP_ID);
@@ -72,7 +73,7 @@ public class BusControllerGroupsTest
     @Test
     public void addStopToGroupCallsGroupStore() throws Exception
     {
-        BusGroupsStore mockStore = mock(BusGroupsStore.class);
+        GroupsStore mockStore = mock(GroupsStore.class);
         BusController controller = new BusController(null, null, mockStore);
 
         controller.addStopToGroup(TEST_GROUP_ID, TEST_STOP);
@@ -83,7 +84,7 @@ public class BusControllerGroupsTest
     @Test
     public void removeStopFromGroupCallsGroupStore() throws Exception
     {
-        BusGroupsStore mockStore = mock(BusGroupsStore.class);
+        GroupsStore mockStore = mock(GroupsStore.class);
         BusController controller = new BusController(null, null, mockStore);
 
         controller.removeStopFromGroup(TEST_GROUP_ID, TEST_STOP_ID);
@@ -95,7 +96,7 @@ public class BusControllerGroupsTest
     public void getStops() throws Exception
     {
         List<Stop> expected = Lists.newArrayList(TEST_STOP, TEST_STOP);
-        BusGroupsStore store = spy(new BusGroupsStoreStub(TEST_GROUP_ID, expected));
+        GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP_ID, expected));
         BusController controller = new BusController(null, null, store);
 
         Collection<Stop> actual = controller.getStopsForGroup(TEST_GROUP_ID);

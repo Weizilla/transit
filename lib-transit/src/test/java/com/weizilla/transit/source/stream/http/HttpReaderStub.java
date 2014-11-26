@@ -1,4 +1,4 @@
-package com.weizilla.transit.bus.source.stream.http;
+package com.weizilla.transit.source.stream.http;
 
 import java.io.IOException;
 import java.io.InputStream;

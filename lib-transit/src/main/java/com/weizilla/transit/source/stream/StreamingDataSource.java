@@ -1,12 +1,12 @@
-package com.weizilla.transit.bus.source.stream;
+package com.weizilla.transit.source.stream;
 
-import com.weizilla.transit.bus.data.BusResponse;
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Prediction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.bus.source.BusDataSource;
-import com.weizilla.transit.bus.source.BusDataSourceException;
+import com.weizilla.transit.data.BusResponse;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Prediction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.source.DataSource;
+import com.weizilla.transit.source.DataSourceException;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -16,13 +16,13 @@ import org.slf4j.LoggerFactory;
 import java.io.InputStream;
 import java.util.Collection;
 
-public class StreamingBusDataSource implements BusDataSource
+public class StreamingDataSource implements DataSource
 {
-    private static final Logger logger = LoggerFactory.getLogger(StreamingBusDataSource.class);
+    private static final Logger logger = LoggerFactory.getLogger(StreamingDataSource.class);
     private final Persister serializer;
-    private final BusInputStreamProvider streamProvider;
+    private final InputStreamProvider streamProvider;
 
-    public StreamingBusDataSource(BusInputStreamProvider streamProvider)
+    public StreamingDataSource(InputStreamProvider streamProvider)
     {
         Strategy strategy = new AnnotationStrategy();
         serializer = new Persister(strategy);
@@ -41,13 +41,13 @@ public class StreamingBusDataSource implements BusDataSource
             throwIfErrors(response);
             return response.getRoutes();
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             throw e;
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException("Error getting routes from stream", e);
+            throw new DataSourceException("Error getting routes from stream", e);
         }
     }
 
@@ -63,13 +63,13 @@ public class StreamingBusDataSource implements BusDataSource
             throwIfErrors(response);
             return response.getDirections();
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             throw e;
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException("Error getting direction for route id " + routeId, e);
+            throw new DataSourceException("Error getting direction for route id " + routeId, e);
         }
     }
 
@@ -91,13 +91,13 @@ public class StreamingBusDataSource implements BusDataSource
             }
             return stops;
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             throw e;
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException("Error getting stops for route id " + routeId +
+            throw new DataSourceException("Error getting stops for route id " + routeId +
                 " direction " + direction, e);
         }
     }
@@ -114,13 +114,13 @@ public class StreamingBusDataSource implements BusDataSource
             throwIfErrors(response);
             return response.getPredictions();
         }
-        catch (BusDataSourceException e)
+        catch (DataSourceException e)
         {
             throw e;
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException(
+            throw new DataSourceException(
                 "Error getting predictions for route id " + routeId + " stop id " + stopId, e);
         }
     }
@@ -130,7 +130,7 @@ public class StreamingBusDataSource implements BusDataSource
         String errorMsg = response.getErrorMsg();
         if (errorMsg != null)
         {
-            throw new BusDataSourceException(errorMsg);
+            throw new DataSourceException(errorMsg);
         }
     }
 }

@@ -1,12 +1,12 @@
 package com.weizilla.transit.favorites;
 
-import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Route;
+import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
 
-public interface BusFavoritesStore
+public interface FavoritesStore
 {
     void saveFavorite(Route route);
     Collection<String> getFavoriteRouteIds();

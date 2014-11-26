@@ -1,7 +1,7 @@
 package com.weizilla.transit.groups.sqlite;
 
-import com.weizilla.transit.bus.data.Stop;
-import com.weizilla.transit.groups.BusGroupsStore;
+import com.weizilla.transit.data.Stop;
+import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.sqlite.Groups.GroupEntry;
 import com.weizilla.transit.groups.sqlite.Groups.StopEntry;
@@ -23,7 +23,7 @@ import java.util.Set;
 
 import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
-public class JdbcSqliteGroupsStore extends SqliteStore implements BusGroupsStore
+public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
 {
     private static final Logger logger = LoggerFactory.getLogger(JdbcSqliteGroupsStore.class);
 

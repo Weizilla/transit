@@ -1,4 +1,4 @@
-package com.weizilla.transit.bus.source.stream.http;
+package com.weizilla.transit.source.stream.http;
 
 import org.junit.Test;
 
