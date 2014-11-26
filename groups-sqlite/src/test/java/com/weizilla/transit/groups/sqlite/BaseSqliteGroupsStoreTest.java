@@ -79,7 +79,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
         );
         loadIntoDb("get_all_groups.xml");
 
-        Set<Group> actualGroups = store.getAllGroups();
+        Collection<Group> actualGroups = store.getAllGroups();
         assertEquals(expected, actualGroups);
     }
 
