@@ -3,9 +3,9 @@ package controllers
 import java.nio.file.Files
 
 import com.typesafe.config.ConfigFactory
-import com.weizilla.transit.bus.BusController
+import com.weizilla.transit.BusController
 import com.weizilla.transit.data.{Prediction, Direction}
-import com.weizilla.transit.source.stream.StreamingBusDataSource
+import com.weizilla.transit.source.stream.StreamingDataSource
 import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
@@ -18,7 +18,7 @@ object Application extends Controller {
   val controller = {
     val reader: HttpReader = new HttpReader(new HttpReader.HttpURLConnectionFactory)
     val provider: HttpInputStreamProvider = new HttpInputStreamProvider(reader, apiKey)
-    val source: StreamingBusDataSource = new StreamingBusDataSource(provider)
+    val source: StreamingDataSource = new StreamingDataSource(provider)
 
     try {
       val file = Files.createTempFile("transit-play-", ".db")
@@ -47,7 +47,8 @@ object Application extends Controller {
   def stops(routeId: String, direction: String) = Action {
     val dir = Direction.valueOf(direction)
     val stops = controller.getStops(routeId, dir)
-    Ok(views.html.stops(routeId, dir, stops))
+    val favStopIds = controller.getFavoriteStopIds(routeId, dir)
+    Ok(views.html.stops(routeId, dir, stops, favStopIds))
   }
 
   def predictions(routeId: String, stopId: Int) = Action {
@@ -66,6 +67,12 @@ object Application extends Controller {
   }
 
   def saveFavRoute(routeId: String) = Action {
-    controller.saveFavorite()
+    controller.saveFavorite(routeId)
+    Redirect(routes.Application.index())
+  }
+
+  def saveFavStop(stopId: Int, routeId: String, direction: String) = Action {
+    controller.saveFavorite(stopId, routeId, Direction.valueOf(direction))
+    Redirect(routes.Application.stops(routeId, direction))
   }
 }

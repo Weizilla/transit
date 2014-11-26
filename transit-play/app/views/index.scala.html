@@ -12,13 +12,18 @@
     <header>Favorites</header>
     <ul>
         @for(favRouteId <- favRouteIds) {
-            <li>@favRouteId</li>
+            <li>
+                <a href="/directions/@favRouteId">@favRouteId</a>
+            </li>
         }
     </ul>
     <header>Predictions</header>
     <ul>
         @for(route <- routes) {
-            <li><a href="/directions/@route.getId">@route.getId - @route.getName</a></li>
+            <li>
+                <a href="/directions/@route.getId">@route.getId - @route.getName</a> |
+                <a href="/favorites/save/route/@route.getId">Save</a>
+            </li>
         }
     </ul>
 }

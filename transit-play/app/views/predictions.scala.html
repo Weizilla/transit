@@ -2,9 +2,7 @@
         predictions: Iterable[com.weizilla.transit.data.Prediction],
         message: Option[String])
 @main("Predictions")("Route " + routeId + " - " + stopId) {
-    @message match {
-        case Some(m) => {@m}
-    }
+    @message.getOrElse("")
     <ul>
     @for(prediction <- predictions) {
         <li>@prediction.getPrediction</li>
