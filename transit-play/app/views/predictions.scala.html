@@ -1,15 +1,13 @@
-@(title: String, predictions: java.util.Collection[com.weizilla.transit.bus.data.Prediction])
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>@title</title>
-    </head>
-    <body>
-        <ul>
-        @for(prediction <- predictions) {
-            <li>@prediction.getPrediction</li>
-        }
-        </ul>
-    </body>
-</html>
+@(routeId: String, stopId: Int,
+        predictions: Iterable[com.weizilla.transit.bus.data.Prediction],
+        message: Option[String])
+@main("Predictions")("Route " + routeId + " - " + stopId) {
+    @message match {
+        case Some(m) => {@m}
+    }
+    <ul>
+    @for(prediction <- predictions) {
+        <li>@prediction.getPrediction</li>
+    }
+    </ul>
+}

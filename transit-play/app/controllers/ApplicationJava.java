@@ -11,10 +11,7 @@ import com.weizilla.transit.bus.source.stream.http.HttpReader;
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore;
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore;
 import play.mvc.Result;
-import views.html.directions;
 import views.html.message;
-import views.html.predictions;
-import views.html.stops;
 
 import java.io.IOException;
 import java.nio.file.Files;
@@ -75,19 +72,16 @@ public class ApplicationJava
 
     public static Result directions(String routeId)
     {
-        //TODO generate route here using just id?
-        Route route = new Route(routeId);
-        Collection<Direction> dirs = createController().getDirections(route);
-        return ok(directions.render("Bus - directions", route, dirs));
+        Collection<Direction> dirs = createController().getDirections(routeId);
+//        return ok(directions.render("Bus - directions", routeId, dirs));
+        return ok();
     }
 
     public static Result stops(String routeId, String direction)
     {
         BusController controller = createController();
-        //TODO generate route here using just id?
-        Route route = new Route(routeId);
         Direction dir = Direction.valueOf(direction);
-        Collection<Stop> allStops = controller.getStops(route, dir);
+        Collection<Stop> allStops = controller.getStops(routeId, dir);
 
         Collection<Integer> favStopIds = controller.getFavoriteStopIds(routeId, dir);
         Collection<Stop> favStops = new ArrayList<>(favStopIds.size());
@@ -98,7 +92,8 @@ public class ApplicationJava
                 favStops.add(stop);
             }
         }
-        return ok(stops.render("Bus - stops", route, allStops, favStops));
+//        return ok(stops.render("Bus - stops", routeId, allStops, favStops));
+        return ok();
     }
 
     public static Result predictions(String routeId, int stopId)
@@ -106,13 +101,14 @@ public class ApplicationJava
         //TODO generate route here using just id?
         Route route = new Route(routeId);
         Stop stop = new Stop(stopId);
-        Collection<Prediction> prds = createController().getPredictions(route, stop);
+        Collection<Prediction> prds = createController().getPredictions(routeId, stopId);
         if (prds == null)
         {
             return ok(message.render("Bus - predictions", "No predictions"));
         }
         else {
-            return ok(predictions.render("Bus - predictions", prds));
+//            return ok(predictions.render("Bus - predictions", prds));
+            return ok();
         }
     }
 

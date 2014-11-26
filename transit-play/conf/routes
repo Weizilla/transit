@@ -3,10 +3,12 @@
 # ~~~~
 
 # Home page
-GET        /                                                       controllers.Application.index()
-#GET        /directions/:routeId                                    controllers.Application.directions(routeId: String)
-#GET        /stops/:routeId/:direction                              controllers.Application.stops(routeId: String, direction: String)
-#GET        /predictions/:stopId/:routeId                           controllers.Application.predictions(routeId: String, stopId: Integer)
+GET        /                                    controllers.Application.index()
+GET        /directions/:routeId                 controllers.Application.directions(routeId: String)
+GET        /stops/:routeId/:direction           controllers.Application.stops(routeId: String, direction: String)
+GET        /predictions/:stopId/:routeId        controllers.Application.predictions(routeId: String, stopId: Int)
+GET         /favorites/save/route/:routeId      controllers.Application.saveFavRoute(routeId: String)
+GET         /favorites/save/stop/:routeId/:direction/:stopId      controllers.Application.saveFavStop(routeId: String, direction:String, stopId: Int)
 #GET        /favorites/route/save/:routeId                          controllers.Application.saveFavoriteRoute(routeId: String)
 #GET        /favorites/stop/save/:routeId/:direction/:stopId        controllers.Application.saveFavoriteStop(routeId: String, direction:String, stopId: Integer)
 

@@ -2,7 +2,7 @@
         favRouteIds: Iterable[String],
         routes: Iterable[com.weizilla.transit.bus.data.Route])
 
-@main("Transit") {
+@main("Transit")("Transit") {
     <header>Groups</header>
     <ul>
         @for(group <- groups) {
@@ -18,7 +18,7 @@
     <header>Predictions</header>
     <ul>
         @for(route <- routes) {
-            <li>@route.getName</li>
+            <li><a href="/directions/@route.getId">@route.getId - @route.getName</a></li>
         }
     </ul>
 }

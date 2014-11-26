@@ -1,26 +1,32 @@
-@(title: String, route: com.weizilla.transit.bus.data.Route,
-        stops: java.util.Collection[com.weizilla.transit.bus.data.Stop],
-        favStops: java.util.Collection[com.weizilla.transit.bus.data.Stop])
-<!DOCTYPE html>
+@(routeId: String, direction: com.weizilla.transit.bus.data.Direction,
+        stops: Iterable[com.weizilla.transit.bus.data.Stop])
+@main("Stops")("Route " + routeId + " - " + direction) {
+    <ul>
+    @for(stop <- stops) {
+        <li>
+            <a href="/predictions/@stop.getId/@routeId">@stop.getName</a>
+        </li>
+    }
+    </ul>
+}
+@*<!--*@
+@*<!DOCTYPE html>*@
 
-<html>
-    <head>
-        <title>@title</title>
-    </head>
-    <body>
-        <ul>
-        @for(favStop <- favStops) {
-            <li>@favStop.getName</li>
-        }
-        </ul>
-        <ul>
-        @for(stop <- stops) {
-            <li>
-                <a href="/predictions/@stop.getId/@stop.getRouteId">@stop.getName</a>
-                |
-                <a href="/favorites/stop/save/@stop.getRouteId/@stop.getDirection/@stop.getId">Save</a>
-            </li>
-        }
-        </ul>
-    </body>
-</html>
+@*<html>*@
+    @*<body>*@
+        @*<ul>*@
+        @* @for(favStop <- favStops) {*@
+            @*<li>@favStop.getName</li>*@
+        @*}*@
+        @*</ul>*@
+        @*<ul>*@
+        @* @for(stop <- stops) {*@
+            @*<li>*@
+                @*<a href="/predictions/@stop.getId/@stop.getRouteId">@stop.getName</a>*@
+                @*|*@
+                @*<a href="/favorites/stop/save/@stop.getRouteId/@stop.getDirection/@stop.getId">Save</a>*@
+            @*</li>*@
+        @*}*@
+        @*</ul>*@
+    @*</body>*@
+@*</html>-->*@
