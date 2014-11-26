@@ -9,8 +9,3 @@ GET        /stops/:routeId/:direction           controllers.Application.stops(ro
 GET        /predictions/:stopId/:routeId        controllers.Application.predictions(routeId: String, stopId: Int)
 GET         /favorites/save/route/:routeId      controllers.Application.saveFavRoute(routeId: String)
 GET         /favorites/save/stop/:stopId/:routeId/:direction    controllers.Application.saveFavStop(stopId: Int, routeId: String, direction: String)
-#GET        /favorites/route/save/:routeId                          controllers.Application.saveFavoriteRoute(routeId: String)
-#GET        /favorites/stop/save/:routeId/:direction/:stopId        controllers.Application.saveFavoriteStop(routeId: String, direction:String, stopId: Integer)
-
-# Map static resources from the /public folder to the /assets URL path
-#GET        /assets/*file                                           controllers.Assets.at(path="/public", file)
