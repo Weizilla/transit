@@ -9,6 +9,8 @@ import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
 import com.weizilla.transit.source.stream.StreamingDataSource
 import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
+import play.api.data.Form
+import play.api.data.Forms._
 import play.api.mvc.{Action, Controller}
 
 import scala.collection.JavaConversions._
@@ -33,12 +35,14 @@ object Application extends Controller {
     }
   }
 
+  val createGroupForm = Form(mapping("name" -> nonEmptyText)(CreateGroupData.apply)(CreateGroupData.unapply))
+
   def index = Action {
     val groups = controller.getAllGroups
     val routes = controller.getRoutes
     val routeMap = routes.map(r => r.getId -> r).toMap
     val favRoutes = controller.getFavoriteRouteIds.map(routeMap(_))
-    Ok(views.html.index(groups, favRoutes, routes))
+    Ok(views.html.index(createGroupForm, groups, favRoutes, routes))
   }
 
   def directions(routeId: String) = Action {
@@ -78,4 +82,11 @@ object Application extends Controller {
     controller.saveFavorite(stopId, routeId, Direction.valueOf(direction))
     Redirect(routes.Application.stops(routeId, direction))
   }
+
+  def createGroup() = Action { implicit request =>
+    val groupName = createGroupForm.bindFromRequest.get.name
+    controller.createGroup(groupName)
+    Redirect(routes.Application.index())
+  }
+
 }

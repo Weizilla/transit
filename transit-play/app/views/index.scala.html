@@ -1,56 +1,43 @@
-@(groups: Iterable[com.weizilla.transit.groups.Group],
-        favRoutes: Iterable[com.weizilla.transit.data.Route],
-        routes: Iterable[com.weizilla.transit.data.Route])
+@(createGroupForm: Form[CreateGroupData],
+    groups: Iterable[com.weizilla.transit.groups.Group],
+    favRoutes: Iterable[com.weizilla.transit.data.Route],
+    transitRoutes: Iterable[com.weizilla.transit.data.Route])
 
 @main("Transit")("Transit") {
-    <header>Groups</header>
-    <ul>
+    <section>
+        <header>Groups</header>
+        <ul>
         @for(group <- groups) {
             <li>@group.getName</li>
         }
-    </ul>
-    <header>Favorites</header>
-    <ul>
+        </ul>
+        @helper.form(action = routes.Application.createGroup()) {
+            <label for="name">Name</label>
+            <input id="name" type="text" name="name">
+            <input type="submit" value="Create">
+        }
+    </section>
+
+    <section>
+        <header>Favorites</header>
+        <ul>
         @for(favRoute <- favRoutes) {
             <li>
                 <a href="/directions/@favRoute.getId">@favRoute.getId - @favRoute.getName</a>
             </li>
         }
-    </ul>
-    <header>Predictions</header>
-    <ul>
-        @for(route <- routes) {
+        </ul>
+    </section>
+
+    <section>
+        <header>Predictions</header>
+        <ul>
+        @for(route <- transitRoutes) {
             <li>
                 <a href="/directions/@route.getId">@route.getId - @route.getName</a> |
                 <a href="/favorites/save/route/@route.getId">Save</a>
             </li>
         }
-    </ul>
+        </ul>
+    </section>
 }
-@*
-@(title: String, routes: java.util.Collection[com.weizilla.transit.data.Route], favRoutes: java.util.Collection[String])
-<!DOCTYPE html>
-
-<html>
-    <head>
-        <title>@title</title>
-    </head>
-    <body>
-        <ul>
-            @for(favRoute <- favRoutes) {
-                <li>@favRoute</li>
-            }
-        </ul>
-        <ul>
-            @for(route <- routes) {
-                <li>
-                    <a href="/directions/@route.getId">@route.getId - @route.getName</a>
-                    |
-                    <a href="/favorites/route/save/@route.getId">Save</a>
-                </li>
-            }
-        </ul>
-    </body>
-</html>
-
-    *@

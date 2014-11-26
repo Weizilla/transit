@@ -19,24 +19,3 @@
     }
     </ul>
 }
-@*<!--*@
-@*<!DOCTYPE html>*@
-
-@*<html>*@
-    @*<body>*@
-        @*<ul>*@
-        @* @for(favStop <- favStops) {*@
-            @*<li>@favStop.getName</li>*@
-        @*}*@
-        @*</ul>*@
-        @*<ul>*@
-        @* @for(stop <- stops) {*@
-            @*<li>*@
-                @*<a href="/predictions/@stop.getId/@stop.getRouteId">@stop.getName</a>*@
-                @*|*@
-                @*<a href="/favorites/stop/save/@stop.getRouteId/@stop.getDirection/@stop.getId">Save</a>*@
-            @*</li>*@
-        @*}*@
-        @*</ul>*@
-    @*</body>*@
-@*</html>-->*@
