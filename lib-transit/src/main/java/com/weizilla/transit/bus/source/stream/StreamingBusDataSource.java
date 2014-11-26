@@ -52,11 +52,11 @@ public class StreamingBusDataSource implements BusDataSource
     }
 
     @Override
-    public Collection<Direction> getDirections(Route route)
+    public Collection<Direction> getDirections(String routeId)
     {
         try
         (
-            InputStream input = streamProvider.getDirections(route)
+            InputStream input = streamProvider.getDirections(routeId)
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
@@ -69,16 +69,16 @@ public class StreamingBusDataSource implements BusDataSource
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException("Error getting direction for route id " + route.getId(), e);
+            throw new BusDataSourceException("Error getting direction for route id " + routeId, e);
         }
     }
 
     @Override
-    public Collection<Stop> getStops(Route route, Direction direction)
+    public Collection<Stop> getStops(String routeId, Direction direction)
     {
         try
         (
-            InputStream input = streamProvider.getStops(route, direction)
+            InputStream input = streamProvider.getStops(routeId, direction)
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
@@ -86,7 +86,7 @@ public class StreamingBusDataSource implements BusDataSource
             Collection<Stop> stops = response.getStops();
             for (Stop stop : stops)
             {
-                stop.setRouteId(route.getId());
+                stop.setRouteId(routeId);
                 stop.setDirection(direction);
             }
             return stops;
@@ -97,17 +97,17 @@ public class StreamingBusDataSource implements BusDataSource
         }
         catch (Exception e)
         {
-            throw new BusDataSourceException("Error getting stops for route id " + route.getId() +
+            throw new BusDataSourceException("Error getting stops for route id " + routeId +
                 " direction " + direction, e);
         }
     }
 
     @Override
-    public Collection<Prediction> getPredictions(Route route, Stop stop)
+    public Collection<Prediction> getPredictions(String routeId, int stopId)
     {
         try
         (
-            InputStream input = streamProvider.getPredictions(route, stop)
+            InputStream input = streamProvider.getPredictions(routeId, stopId)
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
@@ -121,7 +121,7 @@ public class StreamingBusDataSource implements BusDataSource
         catch (Exception e)
         {
             throw new BusDataSourceException(
-                "Error getting predictions for route id " + route.getId() + " stop id " + stop.getId(), e);
+                "Error getting predictions for route id " + routeId + " stop id " + stopId, e);
         }
     }
 

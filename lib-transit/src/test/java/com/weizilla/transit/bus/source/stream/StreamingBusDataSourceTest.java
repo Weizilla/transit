@@ -22,6 +22,9 @@ import static org.junit.Assert.fail;
 
 public class StreamingBusDataSourceTest
 {
+    private static final Direction DIRECTION = Direction.Northbound;
+    private static final String ROUTE_ID = "22";
+    private static final int STOP_ID = 1926;
     private BusInputStreamProviderStub streamProvider;
     private StreamingBusDataSource source;
 
@@ -57,7 +60,7 @@ public class StreamingBusDataSourceTest
     {
         streamProvider.setStreamFromResource("/getdirections_22.xml");
 
-        Collection<Direction> directions = source.getDirections(new Route("22"));
+        Collection<Direction> directions = source.getDirections(ROUTE_ID);
 
         assertNotNull(directions);
         assertEquals(2, directions.size());
@@ -71,15 +74,13 @@ public class StreamingBusDataSourceTest
     {
         streamProvider.setStreamFromResource("/getstops_22_N.xml");
 
-        String routeId = "22";
-        Direction direction = Direction.Northbound;
-        Collection<Stop> stops = source.getStops(new Route(routeId), direction);
+        Collection<Stop> stops = source.getStops(ROUTE_ID, DIRECTION);
 
         assertNotNull(stops);
         assertEquals(86, stops.size());
 
         Stop actual = Iterables.get(stops, 0);
-        assertStop(1926, "Clark & Addison", 41.947, -87.656, routeId, direction, actual);
+        assertStop("Clark & Addison", 41.947, -87.656, actual);
     }
 
     @Test
@@ -89,21 +90,18 @@ public class StreamingBusDataSourceTest
 
         DateTime generated = TimeConverter.parse("20140702 18:04");
         String stopName = "Clark & Addison";
-        int stopId = 1926;
         int distanceFt = 840;
-        String route = "22";
-        Direction direction = Direction.Northbound;
         String destination = "Foster";
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = false;
 
-        Collection<Prediction> predictions = source.getPredictions(new Route(route), new Stop(stopId));
+        Collection<Prediction> predictions = source.getPredictions(ROUTE_ID, STOP_ID);
 
         assertNotNull(prediction);
         assertEquals(9, predictions.size());
 
         Prediction actual = Iterables.get(predictions, 0);
-        assertPrediction(generated, stopName, stopId, distanceFt, route, direction, destination, prediction, delayed, actual);
+        assertPrediction(generated, stopName, distanceFt, destination, prediction, delayed, actual);
     }
 
     @Test
@@ -113,21 +111,18 @@ public class StreamingBusDataSourceTest
 
         DateTime generated = TimeConverter.parse("20140702 18:04");
         String stopName = "Clark & Addison";
-        int stopId = 1926;
         int distanceFt = 840;
-        String route = "22";
-        Direction direction = Direction.Northbound;
         String destination = "Foster";
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = true;
 
-        Collection<Prediction> predictions = source.getPredictions(new Route(route), new Stop(stopId));
+        Collection<Prediction> predictions = source.getPredictions(ROUTE_ID, STOP_ID);
 
         assertNotNull(prediction);
         assertEquals(1, predictions.size());
 
         Prediction actual = Iterables.get(predictions, 0);
-        assertPrediction(generated, stopName, stopId, distanceFt, route, direction, destination, prediction, delayed, actual);
+        assertPrediction(generated, stopName, distanceFt, destination, prediction, delayed, actual);
     }
 
     @Test
@@ -153,7 +148,7 @@ public class StreamingBusDataSourceTest
         streamProvider.setStreamFromResource("/error.xml");
         try
         {
-            source.getDirections(new Route());
+            source.getDirections(ROUTE_ID);
             fail("Should have thrown error");
         }
         catch (BusDataSourceException e)
@@ -169,7 +164,7 @@ public class StreamingBusDataSourceTest
         streamProvider.setStreamFromResource("/error.xml");
         try
         {
-            source.getPredictions(new Route(), new Stop());
+            source.getPredictions(ROUTE_ID, STOP_ID);
             fail("Should have thrown error");
         }
         catch (BusDataSourceException e)
@@ -185,7 +180,7 @@ public class StreamingBusDataSourceTest
         streamProvider.setStreamFromResource("/error.xml");
         try
         {
-            source.getStops(new Route(), Direction.Eastbound);
+            source.getStops(ROUTE_ID, DIRECTION);
             fail("Should have thrown error");
         }
         catch (BusDataSourceException e)
@@ -194,28 +189,27 @@ public class StreamingBusDataSourceTest
         }
     }
 
-    private static void assertStop(int stopId, String stopName, double lat, double lon, String route,
-                                   Direction direction, Stop actual)
+    private static void assertStop(String stopName, double lat, double lon, Stop actual)
     {
         double delta = 0.01;
-        assertEquals(stopId, actual.getId());
+        assertEquals(STOP_ID, actual.getId());
         assertEquals(stopName, actual.getName());
         assertEquals(lat, actual.getLatitude(), delta);
         assertEquals(lon, actual.getLongitude(), delta);
-        assertEquals(route, actual.getRouteId());
-        assertEquals(direction, actual.getDirection());
+        assertEquals(ROUTE_ID, actual.getRouteId());
+        assertEquals(DIRECTION, actual.getDirection());
     }
 
-    private static void assertPrediction(DateTime generated, String stopName, int stopId, int distanceFt,
-                                         String route, Direction routeDirection, String destination,
-                                         DateTime prediction, boolean delayed, Prediction actual)
+    private static void assertPrediction(DateTime generated, String stopName, int distanceFt,
+                                         String destination, DateTime prediction,
+        boolean delayed, Prediction actual)
     {
         assertEquals(generated, actual.getGenerated());
         assertEquals(stopName, actual.getStopName());
-        assertEquals(stopId, actual.getStopId());
+        assertEquals(STOP_ID, actual.getStopId());
         assertEquals(distanceFt, actual.getDistanceFt());
-        assertEquals(route, actual.getRoute());
-        assertEquals(routeDirection, actual.getRouteDirection());
+        assertEquals(ROUTE_ID, actual.getRoute());
+        assertEquals(DIRECTION, actual.getRouteDirection());
         assertEquals(destination, actual.getDestination());
         assertEquals(prediction, actual.getPrediction());
         assertEquals(delayed, actual.isDelayed());

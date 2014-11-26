@@ -1,8 +1,6 @@
 package com.weizilla.transit.bus.source.stream.http;
 
 import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.stream.BusInputStreamProvider;
 
 import java.io.IOException;
@@ -34,23 +32,23 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
     }
 
     @Override
-    public InputStream getDirections(Route route) throws IOException
+    public InputStream getDirections(String routeId) throws IOException
     {
-        URL url = createGetDirectionsUrl(route, apiKey);
+        URL url = createGetDirectionsUrl(routeId, apiKey);
         return reader.connectAndReadStream(url);
     }
 
     @Override
-    public InputStream getStops(Route route, Direction direction) throws IOException
+    public InputStream getStops(String routeId, Direction direction) throws IOException
     {
-        URL url = createGetStopsUrl(route, direction, apiKey);
+        URL url = createGetStopsUrl(routeId, direction, apiKey);
         return reader.connectAndReadStream(url);
     }
 
     @Override
-    public InputStream getPredictions(Route route, Stop stop) throws IOException
+    public InputStream getPredictions(String routeId, int stopId) throws IOException
     {
-        URL url = createGetPredictionsUrl(route, stop, apiKey);
+        URL url = createGetPredictionsUrl(routeId, stopId, apiKey);
         return reader.connectAndReadStream(url);
     }
 
@@ -59,18 +57,18 @@ public class HttpInputStreamProvider implements BusInputStreamProvider
         return new URL(MessageFormat.format(GET_ROUTES, apiKey));
     }
 
-    protected static URL createGetDirectionsUrl(Route route, String apiKey) throws IOException
+    protected static URL createGetDirectionsUrl(String routeId, String apiKey) throws IOException
     {
-        return new URL(MessageFormat.format(GET_DIRECTIONS, route.getId(), apiKey));
+        return new URL(MessageFormat.format(GET_DIRECTIONS, routeId, apiKey));
     }
 
-    protected static URL createGetStopsUrl(Route route, Direction direction, String apiKey) throws IOException
+    protected static URL createGetStopsUrl(String routeId, Direction direction, String apiKey) throws IOException
     {
-        return new URL(MessageFormat.format(GET_STOPS, route.getId(), direction, apiKey));
+        return new URL(MessageFormat.format(GET_STOPS, routeId, direction, apiKey));
     }
 
-    protected static URL createGetPredictionsUrl(Route route, Stop stop, String apiKey) throws IOException
+    protected static URL createGetPredictionsUrl(String routeId, int stopId, String apiKey) throws IOException
     {
-        return new URL(MessageFormat.format(GET_PREDICTIONS, route.getId(), stop.getId(), apiKey));
+        return new URL(MessageFormat.format(GET_PREDICTIONS, routeId, stopId, apiKey));
     }
 }

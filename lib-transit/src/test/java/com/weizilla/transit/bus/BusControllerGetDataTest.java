@@ -15,13 +15,13 @@ import static org.junit.Assert.assertEquals;
 
 public class BusControllerGetDataTest
 {
-    private static final Route ROUTE = new Route("22");
-    private static final Stop STOP = new Stop(100);
+    private static final String ROUTE_ID = "22";
+    private static final int STOP_ID = 100;
 
     @Test
     public void getsRouteListFromSource() throws Exception
     {
-        Collection<Route> expected = Collections.singletonList(ROUTE);
+        Collection<Route> expected = Collections.singletonList(new Route(ROUTE_ID));
         BusController controller = new BusController(new BusDataSourceStub(expected), null, null);
 
         Collection<Route> actual = controller.getRoutes();
@@ -33,9 +33,9 @@ public class BusControllerGetDataTest
     public void getsDirectionsFromSource() throws Exception
     {
         Collection<Direction> expected = Lists.newArrayList(Direction.Northbound, Direction.Eastbound);
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, expected), null, null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE_ID, expected), null, null);
 
-        Collection<Direction> actual = controller.getDirections(ROUTE);
+        Collection<Direction> actual = controller.getDirections(ROUTE_ID);
 
         assertEquals(expected, actual);
     }
@@ -45,9 +45,9 @@ public class BusControllerGetDataTest
     {
         Direction direction = Direction.Eastbound;
         Collection<Stop> expected = Collections.singletonList(new Stop());
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, direction, expected), null, null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE_ID, direction, expected), null, null);
 
-        Collection<Stop> actual = controller.getStops(ROUTE, direction);
+        Collection<Stop> actual = controller.getStops(ROUTE_ID, direction);
 
         assertEquals(expected, actual);
     }
@@ -56,9 +56,9 @@ public class BusControllerGetDataTest
     public void getsPredictionsFromSource() throws Exception
     {
         Collection<Prediction> expected = Collections.singletonList(new Prediction());
-        BusController controller = new BusController(new BusDataSourceStub(ROUTE, STOP, expected), null, null);
+        BusController controller = new BusController(new BusDataSourceStub(ROUTE_ID, STOP_ID, expected), null, null);
 
-        Collection<Prediction> actual = controller.getPredictions(ROUTE, STOP);
+        Collection<Prediction> actual = controller.getPredictions(ROUTE_ID, STOP_ID);
 
         assertEquals(expected, actual);
     }

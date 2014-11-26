@@ -1,8 +1,26 @@
-@(body: String)
+@(groups: Iterable[com.weizilla.transit.groups.Group],
+        favRouteIds: Iterable[String],
+        routes: Iterable[com.weizilla.transit.bus.data.Route])
 
 @main("Transit") {
-    <h1>this template thing is working</h1>
-    @body
+    <header>Groups</header>
+    <ul>
+        @for(group <- groups) {
+            <li>@group.getName</li>
+        }
+    </ul>
+    <header>Favorites</header>
+    <ul>
+        @for(favRouteId <- favRouteIds) {
+            <li>@favRouteId</li>
+        }
+    </ul>
+    <header>Predictions</header>
+    <ul>
+        @for(route <- routes) {
+            <li>@route.getName</li>
+        }
+    </ul>
 }
 @*
 @(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route], favRoutes: java.util.Collection[String])

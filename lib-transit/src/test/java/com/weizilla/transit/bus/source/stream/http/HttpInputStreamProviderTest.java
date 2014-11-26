@@ -1,8 +1,6 @@
 package com.weizilla.transit.bus.source.stream.http;
 
 import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
 import org.junit.Test;
 
 import java.io.InputStream;
@@ -16,14 +14,14 @@ import static org.mockito.Mockito.verify;
 public class HttpInputStreamProviderTest
 {
     private static final String API_KEY = "API_KEY";
-    private static final Route ROUTE = new Route("22");
+    private static final String ROUTE_ID = "22";
     private static final Direction DIRECTION = Direction.Northbound;
-    private static final Stop STOP = new Stop(100);
+    private static final int STOP_ID = 100;
 
     @Test
     public void createsGetRoutesUrl() throws Exception
     {
-        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getroutes?key=API_KEY");
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getroutes?key=" + API_KEY);
         URL actual = HttpInputStreamProvider.createGetRoutesUrl(API_KEY);
         assertEquals(expected, actual);
     }
@@ -53,8 +51,9 @@ public class HttpInputStreamProviderTest
     @Test
     public void createsGetDirectionsUrl() throws Exception
     {
-        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getdirections?rt=" + ROUTE.getId() + "&key=API_KEY");
-        URL actual = HttpInputStreamProvider.createGetDirectionsUrl(ROUTE, API_KEY);
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getdirections?rt="
+            + ROUTE_ID + "&key=" + API_KEY);
+        URL actual = HttpInputStreamProvider.createGetDirectionsUrl(ROUTE_ID, API_KEY);
         assertEquals(expected, actual);
     }
 
@@ -65,26 +64,27 @@ public class HttpInputStreamProviderTest
         HttpReader connection = new HttpReaderStub(inputStream);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
 
-        InputStream actual = provider.getDirections(ROUTE);
+        InputStream actual = provider.getDirections(ROUTE_ID);
         assertSame(inputStream, actual);
     }
 
     @Test
     public void getDirectionsCallsReaderWithProperUrl() throws Exception
     {
-        URL url = HttpInputStreamProvider.createGetDirectionsUrl(ROUTE, API_KEY);
+        URL url = HttpInputStreamProvider.createGetDirectionsUrl(ROUTE_ID, API_KEY);
         HttpReader reader = mock(HttpReader.class);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
 
-        provider.getDirections(ROUTE);
+        provider.getDirections(ROUTE_ID);
         verify(reader).connectAndReadStream(url);
     }
 
     @Test
     public void createsGetStopsUrl() throws Exception
     {
-        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getstops?rt=" + ROUTE.getId() + "&dir=" + DIRECTION + "&key=API_KEY");
-        URL actual = HttpInputStreamProvider.createGetStopsUrl(ROUTE, DIRECTION, API_KEY);
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getstops?rt="
+            + ROUTE_ID + "&dir=" + DIRECTION + "&key=" + API_KEY);
+        URL actual = HttpInputStreamProvider.createGetStopsUrl(ROUTE_ID, DIRECTION, API_KEY);
         assertEquals(expected, actual);
     }
 
@@ -95,36 +95,37 @@ public class HttpInputStreamProviderTest
         HttpReader connection = new HttpReaderStub(inputStream);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
 
-        InputStream actual = provider.getStops(ROUTE, DIRECTION);
+        InputStream actual = provider.getStops(ROUTE_ID, DIRECTION);
         assertSame(inputStream, actual);
     }
 
     @Test
     public void getStopsCallsReaderWithProperUrl() throws Exception
     {
-        URL url = HttpInputStreamProvider.createGetStopsUrl(ROUTE, DIRECTION, API_KEY);
+        URL url = HttpInputStreamProvider.createGetStopsUrl(ROUTE_ID, DIRECTION, API_KEY);
         HttpReader reader = mock(HttpReader.class);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
 
-        provider.getStops(ROUTE, DIRECTION);
+        provider.getStops(ROUTE_ID, DIRECTION);
         verify(reader).connectAndReadStream(url);
     }
 
     @Test
     public void createsGetPredictionsUrl() throws Exception
     {
-        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt=" + ROUTE.getId() + "&stpid=" + STOP.getId() + "&key=API_KEY");
-        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, STOP, API_KEY);
+        URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt="
+            + ROUTE_ID + "&stpid=" + STOP_ID + "&key=" + API_KEY);
+        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE_ID, STOP_ID, API_KEY);
         assertEquals(exected, actual);
     }
 
     @Test
     public void predictionUrlDoesNotContainContainCommaSeparatorInStopId() throws Exception
     {
-        Stop stop = new Stop(10000);
+        int stopId = 10000;
         URL exected = new URL("http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt="
-            + ROUTE.getId() + "&stpid=" + stop.getId() + "&key=API_KEY");
-        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, stop, API_KEY);
+            + ROUTE_ID + "&stpid=" + stopId + "&key=" + API_KEY);
+        URL actual = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE_ID, stopId, API_KEY);
         assertEquals(exected, actual);
     }
 
@@ -135,18 +136,18 @@ public class HttpInputStreamProviderTest
         HttpReader connection = new HttpReaderStub(inputStream);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(connection, API_KEY);
 
-        InputStream actual = provider.getPredictions(ROUTE, STOP);
+        InputStream actual = provider.getPredictions(ROUTE_ID, STOP_ID);
         assertSame(inputStream, actual);
     }
 
     @Test
     public void callsGetPredictionWithProperUrl() throws Exception
     {
-        URL url = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE, STOP, API_KEY);
+        URL url = HttpInputStreamProvider.createGetPredictionsUrl(ROUTE_ID, STOP_ID, API_KEY);
         HttpReader reader = mock(HttpReader.class);
         HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
 
-        provider.getPredictions(ROUTE, STOP);
+        provider.getPredictions(ROUTE_ID, STOP_ID);
         verify(reader).connectAndReadStream(url);
     }
 }

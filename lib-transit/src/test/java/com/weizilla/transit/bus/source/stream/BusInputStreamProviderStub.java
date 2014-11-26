@@ -1,8 +1,6 @@
 package com.weizilla.transit.bus.source.stream;
 
 import com.weizilla.transit.bus.data.Direction;
-import com.weizilla.transit.bus.data.Route;
-import com.weizilla.transit.bus.data.Stop;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -18,19 +16,19 @@ public class BusInputStreamProviderStub implements BusInputStreamProvider
     }
 
     @Override
-    public InputStream getDirections(Route route) throws IOException
+    public InputStream getDirections(String routeId) throws IOException
     {
         return stream;
     }
 
     @Override
-    public InputStream getStops(Route route, Direction direction) throws IOException
+    public InputStream getStops(String routeId, Direction direction) throws IOException
     {
         return stream;
     }
 
     @Override
-    public InputStream getPredictions(Route route, Stop stop) throws IOException
+    public InputStream getPredictions(String routeId, int stopId) throws IOException
     {
         return stream;
     }

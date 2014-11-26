@@ -29,19 +29,19 @@ public class BusController
         return dataSource.getRoutes();
     }
 
-    public Collection<Direction> getDirections(Route route)
+    public Collection<Direction> getDirections(String routeId)
     {
-        return dataSource.getDirections(route);
+        return dataSource.getDirections(routeId);
     }
 
-    public Collection<Stop> getStops(Route route, Direction direction)
+    public Collection<Stop> getStops(String routeId, Direction direction)
     {
-        return dataSource.getStops(route, direction);
+        return dataSource.getStops(routeId, direction);
     }
 
-    public Collection<Prediction> getPredictions(Route route, Stop stop)
+    public Collection<Prediction> getPredictions(String routeId, int stopId)
     {
-        return dataSource.getPredictions(route, stop);
+        return dataSource.getPredictions(routeId, stopId);
     }
 
     public void saveFavorite(Route route)
