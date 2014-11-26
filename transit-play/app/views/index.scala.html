@@ -1,3 +1,10 @@
+@(body: String)
+
+@main("Transit") {
+    <h1>this template thing is working</h1>
+    @body
+}
+@*
 @(title: String, routes: java.util.Collection[com.weizilla.transit.bus.data.Route], favRoutes: java.util.Collection[String])
 <!DOCTYPE html>
 
@@ -22,3 +29,5 @@
         </ul>
     </body>
 </html>
+
+    *@

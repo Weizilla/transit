@@ -8,12 +8,10 @@ import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.stream.StreamingBusDataSource;
 import com.weizilla.transit.bus.source.stream.http.HttpInputStreamProvider;
 import com.weizilla.transit.bus.source.stream.http.HttpReader;
-import com.weizilla.transit.favorites.sqlite.SqliteFavoritesStore;
-import com.weizilla.transit.groups.sqlite.SqliteGroupsStore;
-import play.mvc.Controller;
+import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore;
+import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore;
 import play.mvc.Result;
 import views.html.directions;
-import views.html.index;
 import views.html.message;
 import views.html.predictions;
 import views.html.stops;
@@ -24,7 +22,9 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 
-public class Application extends Controller
+import static play.mvc.Results.ok;
+
+public class ApplicationJava
 {
     private static final Path favDbPath = createPath();
     private static final Path groupDbPath = createPath();
@@ -53,8 +53,8 @@ public class Application extends Controller
 
         try
         {
-            SqliteFavoritesStore favStore = SqliteFavoritesStore.createStore(favDbPath);
-            SqliteGroupsStore groupsStore = SqliteGroupsStore.createStore(groupDbPath);
+            JdbcSqliteFavoritesStore favStore = JdbcSqliteFavoritesStore.createStore(favDbPath);
+            JdbcSqliteGroupsStore groupsStore = JdbcSqliteGroupsStore.createStore(groupDbPath);
 
             return new BusController(source, favStore, groupsStore);
         }
@@ -68,8 +68,9 @@ public class Application extends Controller
     {
         BusController controller = createController();
         Collection<Route> routes = controller.getRoutes();
-        Collection<String> favRoutes = controller.getFavoriteRoutes();
-        return ok(index.render("Bus - routes",  routes, favRoutes));
+        Collection<String> favRoutes = controller.getFavoriteRouteIds();
+//        return ok(index.render("Bus - routes",  routes, favRoutes));
+        return null;
     }
 
     public static Result directions(String routeId)
@@ -88,7 +89,7 @@ public class Application extends Controller
         Direction dir = Direction.valueOf(direction);
         Collection<Stop> allStops = controller.getStops(route, dir);
 
-        Collection<Integer> favStopIds = controller.getFavoriteStops(routeId, dir);
+        Collection<Integer> favStopIds = controller.getFavoriteStopIds(routeId, dir);
         Collection<Stop> favStops = new ArrayList<>(favStopIds.size());
         for (Stop stop : allStops)
         {
