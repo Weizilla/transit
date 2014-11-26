@@ -98,7 +98,7 @@ public class BusControllerGroupsTest
         BusGroupsStore store = spy(new BusGroupsStoreStub(TEST_GROUP_ID, expected));
         BusController controller = new BusController(null, null, store);
 
-        Collection<Stop> actual = controller.getStops(TEST_GROUP_ID);
+        Collection<Stop> actual = controller.getStopsForGroup(TEST_GROUP_ID);
         verify(store).getStops(TEST_GROUP_ID);
         assertSame(expected, actual);
     }

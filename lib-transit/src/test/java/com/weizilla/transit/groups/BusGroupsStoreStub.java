@@ -72,7 +72,7 @@ public class BusGroupsStoreStub implements BusGroupsStore
         }
         else
         {
-            throw new RuntimeException("getStops() argument does not match stub input");
+            throw new RuntimeException("getStopsForGroup() argument does not match stub input");
         }
     }
 }

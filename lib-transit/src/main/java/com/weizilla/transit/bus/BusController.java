@@ -94,8 +94,8 @@ public class BusController
         groupsStore.removeFromGroup(groupId, stopId);
     }
 
-    public Collection<Stop> getStops(int groupId)
+    public Collection<Stop> getStopsForGroup(int id)
     {
-        return groupsStore.getStops(groupId);
+        return groupsStore.getStops(id);
     }
 }
