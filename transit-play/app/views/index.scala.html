@@ -1,5 +1,5 @@
 @(groups: Iterable[com.weizilla.transit.groups.Group],
-        favRouteIds: Iterable[String],
+        favRoutes: Iterable[com.weizilla.transit.data.Route],
         routes: Iterable[com.weizilla.transit.data.Route])
 
 @main("Transit")("Transit") {
@@ -11,9 +11,9 @@
     </ul>
     <header>Favorites</header>
     <ul>
-        @for(favRouteId <- favRouteIds) {
+        @for(favRoute <- favRoutes) {
             <li>
-                <a href="/directions/@favRouteId">@favRouteId</a>
+                <a href="/directions/@favRoute.getId">@favRoute.getId - @favRoute.getName</a>
             </li>
         }
     </ul>

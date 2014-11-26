@@ -4,12 +4,13 @@ import java.nio.file.Files
 
 import com.typesafe.config.ConfigFactory
 import com.weizilla.transit.BusController
-import com.weizilla.transit.data.{Prediction, Direction}
-import com.weizilla.transit.source.stream.StreamingDataSource
-import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
+import com.weizilla.transit.data.{Direction, Prediction}
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
+import com.weizilla.transit.source.stream.StreamingDataSource
+import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
 import play.api.mvc.{Action, Controller}
+
 import scala.collection.JavaConversions._
 
 object Application extends Controller {
@@ -34,9 +35,10 @@ object Application extends Controller {
 
   def index = Action {
     val groups = controller.getAllGroups
-    val favRouteIds = controller.getFavoriteRouteIds
     val routes = controller.getRoutes
-    Ok(views.html.index(groups, favRouteIds, routes))
+    val routeMap = routes.map(r => r.getId -> r).toMap
+    val favRoutes = controller.getFavoriteRouteIds.map(routeMap(_))
+    Ok(views.html.index(groups, favRoutes, routes))
   }
 
   def directions(routeId: String) = Action {
@@ -47,8 +49,9 @@ object Application extends Controller {
   def stops(routeId: String, direction: String) = Action {
     val dir = Direction.valueOf(direction)
     val stops = controller.getStops(routeId, dir)
-    val favStopIds = controller.getFavoriteStopIds(routeId, dir)
-    Ok(views.html.stops(routeId, dir, stops, favStopIds))
+    val stopsMap = stops.map(s => s.getId -> s).toMap
+    val favStops = controller.getFavoriteStopIds(routeId, dir).map(stopsMap(_))
+    Ok(views.html.stops(routeId, dir, stops, favStops))
   }
 
   def predictions(routeId: String, stopId: Int) = Action {
