@@ -1,26 +1,24 @@
 package com.weizilla.transit.bus.source.stream;
 
-import ch.qos.logback.classic.Level;
-import ch.qos.logback.classic.Logger;
 import com.google.common.collect.Iterables;
 import com.google.common.collect.Lists;
 import com.weizilla.transit.bus.data.Direction;
 import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
+import com.weizilla.transit.bus.source.BusDataSourceException;
 import com.weizilla.transit.utils.TimeConverter;
 import org.joda.time.DateTime;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
-import org.slf4j.LoggerFactory;
 
 import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.fail;
 
 public class StreamingBusDataSourceTest
 {
@@ -52,8 +50,6 @@ public class StreamingBusDataSourceTest
         Route first = routes.iterator().next();
         assertEquals("1", first.getId());
         assertEquals("Bronzeville/Union Station", first.getName());
-
-        streamProvider.closeStream();
     }
 
     @Test
@@ -134,6 +130,70 @@ public class StreamingBusDataSourceTest
         assertPrediction(generated, stopName, stopId, distanceFt, route, direction, destination, prediction, delayed, actual);
     }
 
+    @Test
+    public void throwsExceptionIfGetRoutesHasError() throws Exception
+    {
+        String errorMsg = "ERROR MESSAGE";
+        streamProvider.setStreamFromResource("/error.xml");
+        try
+        {
+            source.getRoutes();
+            fail("Should have thrown error");
+        }
+        catch (BusDataSourceException e)
+        {
+            assertEquals(errorMsg, e.getMessage());
+        }
+    }
+
+    @Test
+    public void throwsExceptionIfGetDirectionsHasError() throws Exception
+    {
+        String errorMsg = "ERROR MESSAGE";
+        streamProvider.setStreamFromResource("/error.xml");
+        try
+        {
+            source.getDirections(new Route());
+            fail("Should have thrown error");
+        }
+        catch (BusDataSourceException e)
+        {
+            assertEquals(errorMsg, e.getMessage());
+        }
+    }
+
+    @Test
+    public void throwsExceptionIfGetPredictionsHasError() throws Exception
+    {
+        String errorMsg = "ERROR MESSAGE";
+        streamProvider.setStreamFromResource("/error.xml");
+        try
+        {
+            source.getPredictions(new Route(), new Stop());
+            fail("Should have thrown error");
+        }
+        catch (BusDataSourceException e)
+        {
+            assertEquals(errorMsg, e.getMessage());
+        }
+    }
+
+    @Test
+    public void throwsExceptionIfGetStopsHasError() throws Exception
+    {
+        String errorMsg = "ERROR MESSAGE";
+        streamProvider.setStreamFromResource("/error.xml");
+        try
+        {
+            source.getStops(new Route(), Direction.Eastbound);
+            fail("Should have thrown error");
+        }
+        catch (BusDataSourceException e)
+        {
+            assertEquals(errorMsg, e.getMessage());
+        }
+    }
+
     private static void assertStop(int stopId, String stopName, double lat, double lon, String route,
                                    Direction direction, Stop actual)
     {
@@ -161,13 +221,9 @@ public class StreamingBusDataSourceTest
         assertEquals(delayed, actual.isDelayed());
     }
 
-    @Test
-    public void returnsEmptyIfNoStreamError() throws Exception
+    @Test(expected = BusDataSourceException.class)
+    public void throwsExceptionIfNoStream() throws Exception
     {
-        Logger logger = (Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
-        logger.setLevel(Level.OFF);
-
-        assertTrue(source.getRoutes().isEmpty());
-        assertTrue(source.getDirections(new Route("22")).isEmpty());
+        source.getRoutes();
     }
 }

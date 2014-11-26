@@ -6,6 +6,7 @@ import com.weizilla.transit.bus.data.Prediction;
 import com.weizilla.transit.bus.data.Route;
 import com.weizilla.transit.bus.data.Stop;
 import com.weizilla.transit.bus.source.BusDataSource;
+import com.weizilla.transit.bus.source.BusDataSourceException;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -14,7 +15,6 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.Collection;
-import java.util.Collections;
 
 public class StreamingBusDataSource implements BusDataSource
 {
@@ -38,14 +38,17 @@ public class StreamingBusDataSource implements BusDataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
+            throwIfErrors(response);
             return response.getRoutes();
+        }
+        catch (BusDataSourceException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
-            logger.error("Error getting routes from stream", e);
+            throw new BusDataSourceException("Error getting routes from stream", e);
         }
-
-        return Collections.emptyList();
     }
 
     @Override
@@ -57,14 +60,17 @@ public class StreamingBusDataSource implements BusDataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
+            throwIfErrors(response);
             return response.getDirections();
+        }
+        catch (BusDataSourceException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
-            logger.error("Error getting direction for route id {}", route.getId(), e);
+            throw new BusDataSourceException("Error getting direction for route id " + route.getId(), e);
         }
-
-        return Collections.emptyList();
     }
 
     @Override
@@ -76,6 +82,7 @@ public class StreamingBusDataSource implements BusDataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
+            throwIfErrors(response);
             Collection<Stop> stops = response.getStops();
             for (Stop stop : stops)
             {
@@ -84,12 +91,15 @@ public class StreamingBusDataSource implements BusDataSource
             }
             return stops;
         }
+        catch (BusDataSourceException e)
+        {
+            throw e;
+        }
         catch (Exception e)
         {
-            logger.error("Error getting stops for route id {} direction {}", route.getId(), direction, e);
+            throw new BusDataSourceException("Error getting stops for route id " + route.getId() +
+                " direction " + direction, e);
         }
-
-        return Collections.emptyList();
     }
 
     @Override
@@ -101,13 +111,26 @@ public class StreamingBusDataSource implements BusDataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
+            throwIfErrors(response);
             return response.getPredictions();
+        }
+        catch (BusDataSourceException e)
+        {
+            throw e;
         }
         catch (Exception e)
         {
-            logger.error("Error getting predictions for route id {} stop Id {}", route.getId(), stop.getId(), e);
+            throw new BusDataSourceException(
+                "Error getting predictions for route id " + route.getId() + " stop id " + stop.getId(), e);
         }
+    }
 
-        return Collections.emptyList();
+    private static void throwIfErrors(BusResponse response)
+    {
+        String errorMsg = response.getErrorMsg();
+        if (errorMsg != null)
+        {
+            throw new BusDataSourceException(errorMsg);
+        }
     }
 }

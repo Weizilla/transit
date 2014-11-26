@@ -1,0 +1,7 @@
+<bustime-response>
+    <error>
+        <rt>8</rt>
+        <dir>North Bound</dir>
+        <msg>ERROR MESSAGE</msg>
+    </error>
+</bustime-response>
