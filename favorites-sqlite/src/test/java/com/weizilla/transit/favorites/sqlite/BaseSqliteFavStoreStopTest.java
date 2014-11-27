@@ -1,7 +1,6 @@
 package com.weizilla.transit.favorites.sqlite;
 
 import com.google.common.collect.Sets;
-import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
 import org.junit.Test;
@@ -27,12 +26,10 @@ public abstract class BaseSqliteFavStoreStopTest extends BaseSqliteTest
     @Test
     public void getStopIdsReturnsDbData() throws Exception
     {
-        String route = "22";
-        Direction direction = Direction.Northbound;
-        Set<Integer> expected = Sets.newHashSet(100, 400);
+        Set<Integer> expected = Sets.newHashSet(100, 200, 300, 400);
         loadIntoDb("get_stops.xml");
 
-        Collection<Integer> actualIds = store.getStopIds(route, direction);
+        Collection<Integer> actualIds = store.getStopIds();
         assertEquals(expected, new HashSet<>(actualIds));
     }
 
@@ -42,10 +39,10 @@ public abstract class BaseSqliteFavStoreStopTest extends BaseSqliteTest
         String dataSetFile = "save_stops.xml";
         deleteFromDb(dataSetFile);
 
-        store.saveFavorite(100, "36", Direction.Northbound);
-        store.saveFavorite(200, "N22", Direction.Westbound);
-        store.saveFavorite(300, "156", Direction.Eastbound);
-        store.saveFavorite(400, "N22", Direction.Westbound);
+        store.saveStop(100);
+        store.saveStop(200);
+        store.saveStop(300);
+        store.saveStop(400);
 
         assertTablesEqualFile(dataSetFile, TABLE_NAME);
     }

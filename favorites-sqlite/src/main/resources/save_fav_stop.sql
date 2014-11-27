@@ -1,1 +1,1 @@
-INSERT INTO fav_stops (id, route, direction) VALUES (?, ?, ?)
+INSERT INTO fav_stops (id) VALUES (?)

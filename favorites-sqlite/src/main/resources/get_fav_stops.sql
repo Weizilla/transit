@@ -1,1 +1,1 @@
-SELECT id FROM fav_stops WHERE route = ? AND direction = ?
+SELECT id FROM fav_stops

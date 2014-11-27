@@ -43,7 +43,7 @@ public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
         Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");
         for (String routeId : routeIds)
         {
-            store.saveFavorite(routeId);
+            store.saveRoute(routeId);
         }
 
         assertTablesEqualFile(dataSetFile, TABLE_NAME);

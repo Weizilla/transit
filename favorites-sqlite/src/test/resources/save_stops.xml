@@ -1,6 +1,6 @@
 <dataset>
-    <fav_stops id="100" route="36" direction="Northbound"/>
-    <fav_stops id="200" route="N22" direction="Westbound"/>
-    <fav_stops id="300" route="156" direction="Eastbound"/>
-    <fav_stops id="400" route="N22" direction="Westbound"/>
+    <fav_stops id="100"/>
+    <fav_stops id="200"/>
+    <fav_stops id="300"/>
+    <fav_stops id="400"/>
 </dataset>

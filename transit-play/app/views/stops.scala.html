@@ -1,9 +1,8 @@
-@(routeId: String, routeName: Option[String],
-        direction: String,
+@(routeId: String, direction: String,
         stops: Iterable[com.weizilla.transit.data.Stop],
         favStops: Iterable[com.weizilla.transit.data.Stop],
         groups: Iterable[com.weizilla.transit.groups.Group])
-@main("Stops"){Route @routeId @routeName.map(" - " + _) - @direction} {
+@main("Stops"){Route @routeId - @direction} {
     <ul>
     @for(favStop <- favStops) {
         @display(favStop, true)
@@ -24,7 +23,6 @@
                 <input type="hidden" id="stopId" name="stopId" value="@stop.getId">
                 <input type="hidden" id="routeId" name="routeId" value="@routeId">
                 <input type="hidden" id="direction" name="direction" value="@direction">
-                <input type="hidden" id="routeName" name="routeName" value="@routeName">
                 <input type="submit" value="Save">
             }
         }
@@ -39,7 +37,6 @@
                 <input type="hidden" id="stopId" name="stopId" value="@stop.getId">
                 <input type="hidden" id="routeId" name="routeId" value="@routeId">
                 <input type="hidden" id="direction" name="direction" value="@direction">
-                <input type="hidden" id="routeName" name="routeName" value="@routeName">
                 <input type="submit" value="Add">
                 }
         }

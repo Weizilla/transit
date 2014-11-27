@@ -1,6 +1,5 @@
 package com.weizilla.transit.favorites.sqlite;
 
-import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
@@ -44,7 +43,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     }
 
     @Override
-    public void saveFavorite(String routeId)
+    public void saveRoute(String id)
     {
         String sqlFile = "save_fav_route.sql";
         try
@@ -53,11 +52,11 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
             PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
         )
         {
-            statement.setString(1, routeId);
+            statement.setString(1, id);
             int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when saving favorite route id {}", routeId);
+                logger.warn("No rows updated when saving favorite route id {}", id);
             }
         }
         catch (IOException e)
@@ -66,13 +65,13 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         }
         catch (SQLException e)
         {
-            logger.error("Sql error saving favorite route id {}: {}", routeId, e.getMessage(), e);
+            logger.error("Sql error saving favorite route id {}: {}", id, e.getMessage(), e);
         }
     }
 
 
     @Override
-    public void saveFavorite(int stopId, String routeId, Direction direction)
+    public void saveStop(int id)
     {
         String sqlFile = "save_fav_stop.sql";
         try
@@ -81,13 +80,11 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
             PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
         )
         {
-            statement.setInt(1, stopId);
-            statement.setString(2, routeId);
-            statement.setObject(3, direction);
+            statement.setInt(1, id);
             int numUpdated = statement.executeUpdate();
             if (numUpdated == 0)
             {
-                logger.warn("No rows updated when saving favorite stop id {}", stopId);
+                logger.warn("No rows updated when saving favorite stop id {}", id);
             }
         }
         catch (IOException e)
@@ -96,7 +93,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         }
         catch (SQLException e)
         {
-            logger.error("Sql error saving favorite stop id {}: {}", stopId, e.getMessage(), e);
+            logger.error("Sql error saving favorite stop id {}: {}", id, e.getMessage(), e);
         }
     }
 
@@ -129,14 +126,14 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     }
 
     @Override
-    public Collection<Integer> getStopIds(String routeId, Direction direction)
+    public Collection<Integer> getStopIds()
     {
         Collection<Integer> stopIds = new TreeSet<>();
         String sqlFile = "get_fav_stops.sql";
         try
         (
             Connection conn = createConnection();
-            PreparedStatement statement = createGetStopsStatement(conn, sqlFile, routeId, direction);
+            PreparedStatement statement = conn.prepareStatement(readFile(sqlFile));
             ResultSet resultSet = statement.executeQuery()
         )
         {
@@ -155,16 +152,4 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
         }
         return stopIds;
     }
-
-    private static PreparedStatement createGetStopsStatement(
-        Connection connection, String sqlFile, String route, Direction direction)
-        throws IOException, SQLException
-    {
-        String sql = readFile(sqlFile);
-        PreparedStatement statement = connection.prepareStatement(sql);
-        statement.setString(1, route);
-        statement.setObject(2, direction);
-        return statement;
-    }
-
 }

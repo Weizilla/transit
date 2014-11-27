@@ -1,6 +1,5 @@
 package com.weizilla.transit;
 
-import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.favorites.FavoritesStoreStub;
 import org.junit.Test;
@@ -16,7 +15,6 @@ public class BusControllerFavoritesTest
 {
     private static final String ROUTE_ID = "22";
     private static final int STOP_ID = 100;
-    private static final Direction DIRECTION = Direction.Eastbound;
 
     @Test
     public void storesFavoriteRoutes() throws Exception
@@ -24,9 +22,9 @@ public class BusControllerFavoritesTest
         FavoritesStore favoriteStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoriteStore, null);
 
-        controller.saveFavorite(ROUTE_ID);
+        controller.saveFavoriteRoute(ROUTE_ID);
 
-        verify(favoriteStore).saveFavorite(ROUTE_ID);
+        verify(favoriteStore).saveRoute(ROUTE_ID);
     }
 
     @Test
@@ -47,9 +45,9 @@ public class BusControllerFavoritesTest
         FavoritesStore favoritesStore = mock(FavoritesStore.class);
         BusController controller = new BusController(null, favoritesStore, null);
 
-        controller.saveFavorite(STOP_ID, ROUTE_ID, DIRECTION);
+        controller.saveFavoriteStop(STOP_ID);
 
-        verify(favoritesStore).saveFavorite(STOP_ID, ROUTE_ID, DIRECTION);
+        verify(favoritesStore).saveStop(STOP_ID);
     }
 
     @Test
@@ -60,7 +58,7 @@ public class BusControllerFavoritesTest
         FavoritesStore favoritesStore = FavoritesStoreStub.createWithStops(stops);
         BusController controller = new BusController(null, favoritesStore, null);
 
-        Collection<Integer> actual = controller.getFavoriteStopIds(null, null);
+        Collection<Integer> actual = controller.getFavoriteStopIds();
         assertSame(stops, actual);
     }
 }

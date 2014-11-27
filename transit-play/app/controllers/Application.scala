@@ -37,22 +37,20 @@ object Application extends Controller {
     }
   }
 
-  val createGroupForm = Form(mapping("name" -> nonEmptyText)(CreateGroupData.apply)(CreateGroupData.unapply))
+  val createGroupForm = Form(single("name" -> nonEmptyText))
 
-  val addStopToGroupForm = Form(mapping(
+  val addStopToGroupForm = Form(tuple(
     "stopId" -> number,
     "groupId" -> number,
-    "direction" -> nonEmptyText,
     "routeId" -> nonEmptyText,
-    "routeName" -> optional(text)
-  )(AddStopToGroupData.apply)(AddStopToGroupData.unapply))
+    "direction" -> nonEmptyText
+  ))
 
   val saveFavoriteRouteForm = Form(single("routeId" -> nonEmptyText))
   val saveFavoriteStopForm = Form(tuple(
     "stopId" -> number,
     "routeId" -> nonEmptyText,
-    "direction" -> nonEmptyText,
-    "routeName" -> optional(text)
+    "direction" -> nonEmptyText
   ))
 
   def index = Action {
@@ -63,18 +61,18 @@ object Application extends Controller {
     Ok(views.html.index(groups, favRoutes, routes))
   }
 
-  def directions(routeId: String, routeName: Option[String]) = Action {
+  def directions(routeId: String) = Action {
     val directions = controller.getDirections(routeId)
-    Ok(views.html.directions(routeId, routeName, directions))
+    Ok(views.html.directions(routeId, directions))
   }
 
-  def stops(routeId: String, direction: String, routeName: Option[String]) = Action {
+  def stops(routeId: String, direction: String) = Action {
     val dir = Direction.valueOf(direction)
     val stops = controller.getStops(routeId, dir)
     val stopsMap = stops.map(s => s.getId -> s).toMap
-    val favStops = controller.getFavoriteStopIds(routeId, dir).map(stopsMap(_))
+    val favStops = controller.getFavoriteStopIds.map(stopsMap(_))
     val groups = controller.getAllGroups
-    Ok(views.html.stops(routeId, routeName, direction, stops, favStops, groups))
+    Ok(views.html.stops(routeId, direction, stops, favStops, groups))
   }
 
   def predictions(stopIdsStr: String, routeIdsStr: Option[String]) = Action {
@@ -99,26 +97,26 @@ object Application extends Controller {
 
   def saveFavoriteRoute() = Action { implicit request =>
     val routeId = saveFavoriteRouteForm.bindFromRequest.get
-    controller.saveFavorite(routeId)
+    controller.saveFavoriteRoute(routeId)
     Redirect(routes.Application.index())
   }
 
   def saveFavoriteStop() = Action { implicit  request =>
-    val (stopId, routeId, direction, routeName) = saveFavoriteStopForm.bindFromRequest().get
-    controller.saveFavorite(stopId, routeId, Direction.valueOf(direction))
-    Redirect(routes.Application.stops(routeId, direction, routeName))
+    val (stopId, routeId, direction) = saveFavoriteStopForm.bindFromRequest().get
+    controller.saveFavoriteStop(stopId)
+    Redirect(routes.Application.stops(routeId, direction))
   }
 
   def createGroup() = Action { implicit request =>
-    val groupName = createGroupForm.bindFromRequest.get.name
+    val groupName = createGroupForm.bindFromRequest.get
     controller.createGroup(groupName)
     Redirect(routes.Application.index())
   }
 
   def addStopToGroup() = Action { implicit request =>
-    val data = addStopToGroupForm.bindFromRequest.get
-    controller.addStopToGroup(data.groupId, data.stopId)
-    Redirect(routes.Application.stops(data.routeId, data.direction, data.routeName))
+    val (stopId, groupId, routeId, direction) = addStopToGroupForm.bindFromRequest.get
+    controller.addStopToGroup(groupId, stopId)
+    Redirect(routes.Application.stops(routeId, direction))
   }
 
   def getGroup(groupId: Int) = Action {

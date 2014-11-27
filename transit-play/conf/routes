@@ -4,8 +4,8 @@
 
 # Home page
 GET         /                                 controllers.Application.index()
-GET         /directions/:routeId              controllers.Application.directions(routeId: String, routeName: Option[String])
-GET         /stops/:routeId/:direction        controllers.Application.stops(routeId: String, direction: String, routeName: Option[String])
+GET         /directions/:routeId              controllers.Application.directions(routeId: String)
+GET         /stops/:routeId/:direction        controllers.Application.stops(routeId: String, direction: String)
 GET         /predictions/:stopIdsStr          controllers.Application.predictions(stopIdsStr: String, routeIdsStr: Option[String])
 
 POST        /favorites/save/route             controllers.Application.saveFavoriteRoute()
