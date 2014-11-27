@@ -23,6 +23,12 @@ public class DataSourceStub implements DataSource
         this.routes = routes;
     }
 
+    public DataSourceStub(Collection<Route> routes, Collection<Stop> stops)
+    {
+        this.routes = routes;
+        this.stops = stops;
+    }
+
     public DataSourceStub(String routeId, Collection<Direction> directions)
     {
         routeKey = routeId;
@@ -58,7 +64,12 @@ public class DataSourceStub implements DataSource
     @Override
     public Collection<Stop> getStops(String routeId, Direction direction)
     {
-        return routeId.equals(routeKey) && direction == directionKey ? stops : null;
+        if (routeId == null && direction == null)
+        {
+            return stops;
+        } else {
+            return routeId.equals(routeKey) && direction == directionKey ? stops : null;
+        }
     }
 
     @Override

@@ -1,5 +1,6 @@
 package com.weizilla.transit;
 
+import com.weizilla.transit.cache.CacheStore;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
@@ -11,23 +12,32 @@ import com.weizilla.transit.source.DataSource;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 public class BusController
 {
     private final DataSource dataSource;
     private final FavoritesStore favoritesStore;
     private final GroupsStore groupsStore;
+    private final CacheStore cacheStore;
 
-    public BusController(DataSource dataSource, FavoritesStore favoritesStore, GroupsStore groupsStore)
+    public BusController(DataSource dataSource, FavoritesStore favoritesStore,
+        GroupsStore groupsStore, CacheStore cacheStore)
     {
         this.dataSource = dataSource;
         this.favoritesStore = favoritesStore;
         this.groupsStore = groupsStore;
+        this.cacheStore = cacheStore;
     }
 
     public Collection<Route> getRoutes()
     {
-        return dataSource.getRoutes();
+        Collection<Route> routes = dataSource.getRoutes();
+        if (cacheStore != null)
+        {
+            cacheStore.updateRoutes(routes);
+        }
+        return routes;
     }
 
     public Collection<Direction> getDirections(String routeId)
@@ -37,7 +47,12 @@ public class BusController
 
     public Collection<Stop> getStops(String routeId, Direction direction)
     {
-        return dataSource.getStops(routeId, direction);
+        Collection<Stop> stops = dataSource.getStops(routeId, direction);
+        if (cacheStore != null)
+        {
+            cacheStore.updateStops(stops);
+        }
+        return stops;
     }
 
     public Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds)
@@ -98,5 +113,15 @@ public class BusController
     public Collection<Integer> getStopIdsForGroup(int id)
     {
         return groupsStore.getStopIds(id);
+    }
+
+    public Map<String, Route> lookupRoutes(Collection<String> routeIds)
+    {
+        return cacheStore.getRoutes(routeIds);
+    }
+
+    public Map<Integer, Stop> lookupStops(Collection<Integer> stopIds)
+    {
+        return cacheStore.getStops(stopIds);
     }
 }

@@ -26,7 +26,7 @@ public class BusControllerGroupsTest
     public void createsGroupCallsGroupsStore() throws Exception
     {
         GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP));
-        BusController controller = new BusController(null, null, store);
+        BusController controller = new BusController(null, null, store, null);
 
         Group actual = controller.createGroup(TEST_NAME);
 
@@ -38,7 +38,7 @@ public class BusControllerGroupsTest
     public void renameGroupCallsGroupStore() throws Exception
     {
         GroupsStore mockStore = mock(GroupsStore.class);
-        BusController controller = new BusController(null, null, mockStore);
+        BusController controller = new BusController(null, null, mockStore, null);
 
         controller.renameGroup(TEST_GROUP_ID, TEST_NAME);
 
@@ -50,7 +50,7 @@ public class BusControllerGroupsTest
     {
         List<Group> expected = Lists.newArrayList(TEST_GROUP, TEST_GROUP);
         GroupsStoreStub stub = new GroupsStoreStub(expected);
-        BusController controller = new BusController(null, null, stub);
+        BusController controller = new BusController(null, null, stub, null);
 
         Collection<Group> actual = controller.getAllGroups();
         assertSame(expected, actual);
@@ -60,7 +60,7 @@ public class BusControllerGroupsTest
     public void deleteGroupCallsGroupStore() throws Exception
     {
         GroupsStore mockStore = mock(GroupsStore.class);
-        BusController controller = new BusController(null, null, mockStore);
+        BusController controller = new BusController(null, null, mockStore, null);
 
         controller.deleteGroup(TEST_GROUP_ID);
 
@@ -71,7 +71,7 @@ public class BusControllerGroupsTest
     public void addStopToGroupCallsGroupStore() throws Exception
     {
         GroupsStore mockStore = mock(GroupsStore.class);
-        BusController controller = new BusController(null, null, mockStore);
+        BusController controller = new BusController(null, null, mockStore, null);
 
         controller.addStopToGroup(TEST_GROUP_ID, TEST_STOP_ID);
 
@@ -82,7 +82,7 @@ public class BusControllerGroupsTest
     public void removeStopFromGroupCallsGroupStore() throws Exception
     {
         GroupsStore mockStore = mock(GroupsStore.class);
-        BusController controller = new BusController(null, null, mockStore);
+        BusController controller = new BusController(null, null, mockStore, null);
 
         controller.removeStopFromGroup(TEST_GROUP_ID, TEST_STOP_ID);
 
@@ -94,7 +94,7 @@ public class BusControllerGroupsTest
     {
         List<Integer> expected = Lists.newArrayList(TEST_STOP_ID, TEST_STOP_ID);
         GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP_ID, expected));
-        BusController controller = new BusController(null, null, store);
+        BusController controller = new BusController(null, null, store, null);
 
         Collection<Integer> actual = controller.getStopIdsForGroup(TEST_GROUP_ID);
         verify(store).getStopIds(TEST_GROUP_ID);

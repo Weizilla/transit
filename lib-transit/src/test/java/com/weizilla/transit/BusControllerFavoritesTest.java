@@ -20,7 +20,7 @@ public class BusControllerFavoritesTest
     public void storesFavoriteRoutes() throws Exception
     {
         FavoritesStore favoriteStore = mock(FavoritesStore.class);
-        BusController controller = new BusController(null, favoriteStore, null);
+        BusController controller = new BusController(null, favoriteStore, null, null);
 
         controller.saveFavoriteRoute(ROUTE_ID);
 
@@ -33,7 +33,7 @@ public class BusControllerFavoritesTest
         Collection<String> routes = Collections.singletonList(ROUTE_ID);
 
         FavoritesStore favoriteStore = FavoritesStoreStub.createWithRoutes(routes);
-        BusController controller = new BusController(null, favoriteStore, null);
+        BusController controller = new BusController(null, favoriteStore, null, null);
 
         Collection<String> actual = controller.getFavoriteRouteIds();
         assertSame(routes, actual);
@@ -43,7 +43,7 @@ public class BusControllerFavoritesTest
     public void storesFavoriteStops() throws Exception
     {
         FavoritesStore favoritesStore = mock(FavoritesStore.class);
-        BusController controller = new BusController(null, favoritesStore, null);
+        BusController controller = new BusController(null, favoritesStore, null, null);
 
         controller.saveFavoriteStop(STOP_ID);
 
@@ -56,7 +56,7 @@ public class BusControllerFavoritesTest
         Collection<Integer> stops = Collections.singletonList(STOP_ID);
 
         FavoritesStore favoritesStore = FavoritesStoreStub.createWithStops(stops);
-        BusController controller = new BusController(null, favoritesStore, null);
+        BusController controller = new BusController(null, favoritesStore, null, null);
 
         Collection<Integer> actual = controller.getFavoriteStopIds();
         assertSame(stops, actual);

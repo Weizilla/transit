@@ -23,7 +23,7 @@ public class BusControllerGetDataTest
     public void getsRouteListFromSource() throws Exception
     {
         Collection<Route> expected = Collections.singletonList(new Route());
-        BusController controller = new BusController(new DataSourceStub(expected), null, null);
+        BusController controller = new BusController(new DataSourceStub(expected), null, null, null);
 
         Collection<Route> actual = controller.getRoutes();
 
@@ -34,7 +34,7 @@ public class BusControllerGetDataTest
     public void getsDirectionsFromSource() throws Exception
     {
         Collection<Direction> expected = Lists.newArrayList(Direction.Northbound, Direction.Eastbound);
-        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, expected), null, null);
+        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, expected), null, null, null);
 
         Collection<Direction> actual = controller.getDirections(ROUTE_ID);
 
@@ -46,7 +46,7 @@ public class BusControllerGetDataTest
     {
         Direction direction = Direction.Eastbound;
         Collection<Stop> expected = Collections.singletonList(new Stop());
-        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, direction, expected), null, null);
+        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, direction, expected), null, null, null);
 
         Collection<Stop> actual = controller.getStops(ROUTE_ID, direction);
 
@@ -57,7 +57,7 @@ public class BusControllerGetDataTest
     public void getsPredictionsFromSource() throws Exception
     {
         Collection<Prediction> expected = Collections.singletonList(new Prediction());
-        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, STOP_ID, expected), null, null);
+        BusController controller = new BusController(new DataSourceStub(ROUTE_ID, STOP_ID, expected), null, null, null);
 
         List<Integer> stopIds = Collections.singletonList(STOP_ID);
         List<String> routeIds = Collections.singletonList(ROUTE_ID);
