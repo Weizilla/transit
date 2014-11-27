@@ -17,9 +17,10 @@ public class Route
         /// for simple xml
     }
 
-    public Route(String id)
+    public Route(String id, String name)
     {
         this.id = id;
+        this.name = name;
     }
 
     public String getId()

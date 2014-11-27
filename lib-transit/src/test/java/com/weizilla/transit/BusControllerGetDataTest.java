@@ -22,7 +22,7 @@ public class BusControllerGetDataTest
     @Test
     public void getsRouteListFromSource() throws Exception
     {
-        Collection<Route> expected = Collections.singletonList(new Route(ROUTE_ID));
+        Collection<Route> expected = Collections.singletonList(new Route());
         BusController controller = new BusController(new DataSourceStub(expected), null, null);
 
         Collection<Route> actual = controller.getRoutes();

@@ -26,22 +26,10 @@ public class Stop
         // for simple xml
     }
 
-    public Stop(int id)
-    {
-        this.id = id;
-    }
-
     public Stop(int id, String name)
     {
         this.id = id;
         this.name = name;
-    }
-
-    public Stop(int id, String routeId, Direction direction)
-    {
-        this.id = id;
-        this.routeId = routeId;
-        this.direction = direction;
     }
 
     public int getId()
