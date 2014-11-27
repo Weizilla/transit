@@ -16,7 +16,7 @@ public class JdbcSqliteGroupsStoreTest extends BaseSqliteGroupsStoreTest
         super.setUp();
         store = JdbcSqliteGroupsStore.createStore(dbPath);
         createTable(GroupEntry.TABLE_NAME, "create_groups_table.sql");
-        createTable(StopEntry.TABLE_NAME, "create_stops_table.sql");
+        createTable(StopEntry.TABLE_NAME, "create_groups_stops_table.sql");
     }
 
     @Test

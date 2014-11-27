@@ -29,7 +29,7 @@ public class AndroidFavoritesStoreStopTest extends BaseSqliteFavStoreStopTest
         ShadowLog.stream = System.out;
         database = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
         store = new AndroidFavoritesStore(new FileSqliteDbHelper(dbFile));
-        executeSqlFromFile("create_stops_table.sql");
+        executeSqlFromFile("create_fav_stops_table.sql");
         assertTrue(AndroidDbUtils.tableExists(database, TABLE_NAME));
     }
 

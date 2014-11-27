@@ -14,7 +14,7 @@ public class JdbcSqliteFavStoreRouteTest extends BaseSqliteFavStoreRouteTest
     {
         super.setUp();
         store = JdbcSqliteFavoritesStore.createStore(dbPath);
-        createTable(TABLE_NAME, "create_routes_table.sql");
+        createTable(TABLE_NAME, "create_fav_routes_table.sql");
     }
 
     @Test

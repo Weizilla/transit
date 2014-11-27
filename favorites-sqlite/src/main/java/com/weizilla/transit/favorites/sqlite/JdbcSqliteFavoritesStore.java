@@ -37,8 +37,8 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
             Connection connection = store.createConnection()
         )
         {
-            executeSqlFromFile(connection, "create_routes_table.sql");
-            executeSqlFromFile(connection, "create_stops_table.sql");
+            executeSqlFromFile(connection, "create_fav_routes_table.sql");
+            executeSqlFromFile(connection, "create_fav_stops_table.sql");
         }
         return store;
     }
@@ -46,7 +46,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     @Override
     public void saveFavorite(String routeId)
     {
-        String sqlFile = "save_route.sql";
+        String sqlFile = "save_fav_route.sql";
         try
         (
             Connection connection = createConnection();
@@ -74,7 +74,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     @Override
     public void saveFavorite(int stopId, String routeId, Direction direction)
     {
-        String sqlFile = "save_stop.sql";
+        String sqlFile = "save_fav_stop.sql";
         try
         (
             Connection connection = createConnection();
@@ -104,7 +104,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     public Collection<String> getRouteIds()
     {
         Collection<String> routeIds = new TreeSet<>();
-        String sqlFile = "get_routes.sql";
+        String sqlFile = "get_fav_routes.sql";
         try
         (
             Connection connection = createConnection();
@@ -132,7 +132,7 @@ public class JdbcSqliteFavoritesStore extends SqliteStore implements FavoritesSt
     public Collection<Integer> getStopIds(String routeId, Direction direction)
     {
         Collection<Integer> stopIds = new TreeSet<>();
-        String sqlFile = "get_stops.sql";
+        String sqlFile = "get_fav_stops.sql";
         try
         (
             Connection conn = createConnection();

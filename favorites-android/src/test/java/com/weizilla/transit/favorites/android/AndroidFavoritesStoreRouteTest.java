@@ -29,7 +29,7 @@ public class AndroidFavoritesStoreRouteTest extends BaseSqliteFavStoreRouteTest
         ShadowLog.stream = System.out;
         database = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
         store = new AndroidFavoritesStore(new FileSqliteDbHelper(dbFile));
-        executeSqlFromFile("create_routes_table.sql");
+        executeSqlFromFile("create_fav_routes_table.sql");
         assertTrue(AndroidDbUtils.tableExists(database, TABLE_NAME));
     }
 
