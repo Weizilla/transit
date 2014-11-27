@@ -4,6 +4,7 @@ import com.weizilla.transit.data.Direction;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.List;
 
 public class InputStreamProviderStub implements InputStreamProvider
 {
@@ -28,7 +29,7 @@ public class InputStreamProviderStub implements InputStreamProvider
     }
 
     @Override
-    public InputStream getPredictions(String routeId, int stopId) throws IOException
+    public InputStream getPredictions(List<Integer> stopIds, List<String> routeIds) throws IOException
     {
         return stream;
     }

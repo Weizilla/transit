@@ -15,6 +15,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.InputStream;
 import java.util.Collection;
+import java.util.List;
 
 public class StreamingDataSource implements DataSource
 {
@@ -103,11 +104,11 @@ public class StreamingDataSource implements DataSource
     }
 
     @Override
-    public Collection<Prediction> getPredictions(String routeId, int stopId)
+    public Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds)
     {
         try
         (
-            InputStream input = streamProvider.getPredictions(routeId, stopId)
+            InputStream input = streamProvider.getPredictions(stopIds, routeIds)
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
@@ -121,7 +122,7 @@ public class StreamingDataSource implements DataSource
         catch (Exception e)
         {
             throw new DataSourceException(
-                "Error getting predictions for route id " + routeId + " stop id " + stopId, e);
+                "Error getting predictions for route id " + routeIds + " stop ids " + stopIds, e);
         }
     }
 

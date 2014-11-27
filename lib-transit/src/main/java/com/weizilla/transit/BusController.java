@@ -4,12 +4,13 @@ import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
-import com.weizilla.transit.source.DataSource;
 import com.weizilla.transit.favorites.FavoritesStore;
-import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.groups.Group;
+import com.weizilla.transit.groups.GroupsStore;
+import com.weizilla.transit.source.DataSource;
 
 import java.util.Collection;
+import java.util.List;
 
 public class BusController
 {
@@ -39,9 +40,9 @@ public class BusController
         return dataSource.getStops(routeId, direction);
     }
 
-    public Collection<Prediction> getPredictions(String routeId, int stopId)
+    public Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds)
     {
-        return dataSource.getPredictions(routeId, stopId);
+        return dataSource.getPredictions(stopIds, routeIds);
     }
 
     public void saveFavorite(String routeId)

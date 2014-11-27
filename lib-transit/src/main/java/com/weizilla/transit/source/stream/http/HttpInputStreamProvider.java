@@ -1,5 +1,6 @@
 package com.weizilla.transit.source.stream.http;
 
+import com.google.common.base.Joiner;
 import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.source.stream.InputStreamProvider;
 
@@ -7,14 +8,15 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.MessageFormat;
+import java.util.List;
 
 public class HttpInputStreamProvider implements InputStreamProvider
 {
-    private static final String GET_ROUTES = "http://www.ctabustracker.com/bustime/api/v1/getroutes?key={0}";
-    private static final String GET_DIRECTIONS = "http://www.ctabustracker.com/bustime/api/v1/getdirections?rt={0}&key={1}";
-    private static final String GET_STOPS = "http://www.ctabustracker.com/bustime/api/v1/getstops?rt={0}&dir={1}&key={2}";
-    private static final String GET_PREDICTIONS =
-        "http://www.ctabustracker.com/bustime/api/v1/getpredictions?rt={0}&stpid={1,number,#}&key={2}";
+    private static final String BASE_URL = "http://www.ctabustracker.com/bustime/api/v1/";
+    private static final String GET_ROUTES = BASE_URL + "getroutes?key={0}";
+    private static final String GET_DIRECTIONS = BASE_URL + "getdirections?rt={0}&key={1}";
+    private static final String GET_STOPS = BASE_URL + "getstops?rt={0}&dir={1}&key={2}";
+    private static final String GET_PREDICTIONS = BASE_URL + "getpredictions?stpid={0}{1}&key={2}";
     private final HttpReader reader;
     private final String apiKey;
 
@@ -46,9 +48,9 @@ public class HttpInputStreamProvider implements InputStreamProvider
     }
 
     @Override
-    public InputStream getPredictions(String routeId, int stopId) throws IOException
+    public InputStream getPredictions(List<Integer> stopIds, List<String> routeIds) throws IOException
     {
-        URL url = createGetPredictionsUrl(routeId, stopId, apiKey);
+        URL url = createGetPredictionsUrl(stopIds, routeIds, apiKey);
         return reader.connectAndReadStream(url);
     }
 
@@ -67,8 +69,13 @@ public class HttpInputStreamProvider implements InputStreamProvider
         return new URL(MessageFormat.format(GET_STOPS, routeId, direction, apiKey));
     }
 
-    protected static URL createGetPredictionsUrl(String routeId, int stopId, String apiKey) throws IOException
+    protected static URL createGetPredictionsUrl(List<Integer> stopIds, List<String> routeIds, String apiKey) throws IOException
     {
-        return new URL(MessageFormat.format(GET_PREDICTIONS, routeId, stopId, apiKey));
+        String stopIdStr = Joiner.on(",").join(stopIds);
+        String routeIdStr = "";
+        if (routeIds != null && ! routeIds.isEmpty()) {
+            routeIdStr = "&rt=" + Joiner.on(",").join(routeIds);
+        }
+        return new URL(MessageFormat.format(GET_PREDICTIONS, stopIdStr, routeIdStr, apiKey));
     }
 }

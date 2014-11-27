@@ -6,11 +6,12 @@ import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
+import java.util.List;
 
 public interface DataSource
 {
     Collection<Route> getRoutes();
     Collection<Direction> getDirections(String routeId);
     Collection<Stop> getStops(String routeId, Direction direction);
-    Collection<Prediction> getPredictions(String routeId, int stopId);
+    Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds);
 }

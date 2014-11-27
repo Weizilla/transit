@@ -14,6 +14,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -24,7 +25,9 @@ public class StreamingDataSourceTest
 {
     private static final Direction DIRECTION = Direction.Northbound;
     private static final String ROUTE_ID = "22";
+    private static final List<String> ROUTE_IDS = Collections.singletonList(ROUTE_ID);
     private static final int STOP_ID = 1926;
+    private static final List<Integer> STOP_IDS = Collections.singletonList(STOP_ID);
     private InputStreamProviderStub streamProvider;
     private StreamingDataSource source;
 
@@ -95,7 +98,9 @@ public class StreamingDataSourceTest
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = false;
 
-        Collection<Prediction> predictions = source.getPredictions(ROUTE_ID, STOP_ID);
+        List<Integer> stopIds = STOP_IDS;
+        List<String> routeIds = ROUTE_IDS;
+        Collection<Prediction> predictions = source.getPredictions(stopIds, routeIds);
 
         assertNotNull(prediction);
         assertEquals(9, predictions.size());
@@ -116,7 +121,9 @@ public class StreamingDataSourceTest
         DateTime prediction = TimeConverter.parse("20140702 18:05");
         boolean delayed = true;
 
-        Collection<Prediction> predictions = source.getPredictions(ROUTE_ID, STOP_ID);
+        List<Integer> stopIds = STOP_IDS;
+        List<String> routeIds = ROUTE_IDS;
+        Collection<Prediction> predictions = source.getPredictions(stopIds, routeIds);
 
         assertNotNull(prediction);
         assertEquals(1, predictions.size());
@@ -164,7 +171,7 @@ public class StreamingDataSourceTest
         streamProvider.setStreamFromResource("/error.xml");
         try
         {
-            source.getPredictions(ROUTE_ID, STOP_ID);
+            source.getPredictions(STOP_IDS, ROUTE_IDS);
             fail("Should have thrown error");
         }
         catch (DataSourceException e)

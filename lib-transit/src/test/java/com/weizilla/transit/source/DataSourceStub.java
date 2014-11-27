@@ -6,6 +6,7 @@ import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 
 import java.util.Collection;
+import java.util.List;
 
 public class DataSourceStub implements DataSource
 {
@@ -61,8 +62,8 @@ public class DataSourceStub implements DataSource
     }
 
     @Override
-    public Collection<Prediction> getPredictions(String routeId, int stopId)
+    public Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds)
     {
-        return routeId.equals(routeKey) && stopId == stopKey ? predictions : null;
+        return routeIds.contains(routeKey) && stopIds.contains(stopKey) ? predictions : null;
     }
 }

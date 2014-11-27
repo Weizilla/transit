@@ -10,6 +10,7 @@ import org.junit.Test;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
@@ -58,7 +59,9 @@ public class BusControllerGetDataTest
         Collection<Prediction> expected = Collections.singletonList(new Prediction());
         BusController controller = new BusController(new DataSourceStub(ROUTE_ID, STOP_ID, expected), null, null);
 
-        Collection<Prediction> actual = controller.getPredictions(ROUTE_ID, STOP_ID);
+        List<Integer> stopIds = Collections.singletonList(STOP_ID);
+        List<String> routeIds = Collections.singletonList(ROUTE_ID);
+        Collection<Prediction> actual = controller.getPredictions(stopIds, routeIds);
 
         assertEquals(expected, actual);
     }
