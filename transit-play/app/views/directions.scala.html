@@ -1,8 +1,9 @@
-@(routeId: String, directions: Iterable[com.weizilla.transit.data.Direction])
-@main("Directions")("Route " + routeId){
+@(routeId: String, routeName: Option[String],
+        directions: Iterable[com.weizilla.transit.data.Direction])
+@main("Directions"){Route @routeId @routeName.map(" - " + _)}{
     <ul>
     @for(direction <- directions) {
-        <li><a href="/stops/@routeId/@direction">@direction</a></li>
+        <li><a href="/stops/@routeId/@direction?routeName=@routeName">@direction</a></li>
     }
     </ul>
 }

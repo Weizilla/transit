@@ -1,7 +1,9 @@
-@(stopIds: Iterable[Int], routeIds: Iterable[String],
+@(stopNames: Iterable[String], routeIds: Iterable[String],
         predictions: Iterable[com.weizilla.transit.data.Prediction],
         message: Option[String])
-@main("Predictions")("Stop " + stopIds.mkString(",") + " - " + routeIds.mkString(",")) {
+@main("Predictions"){
+    @(if (routeIds.nonEmpty) "Route " + routeIds.mkString(",") + " - ") @stopNames.mkString(", ")
+} {
     @message.getOrElse("")
     <ul>
     @for(prediction <- predictions) {

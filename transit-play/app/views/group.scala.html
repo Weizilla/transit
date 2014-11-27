@@ -1,5 +1,5 @@
 @(groupId: Integer, stopIds: Iterable[Integer])
-@main("Group")("Group " + groupId) {
+@main("Group"){Group @groupId} {
     <ul>
     @for(stopId <- stopIds) {
         <li>
@@ -7,5 +7,9 @@
         </li>
     }
     </ul>
-    <a href="/predictions/@stopIds.mkString(",")">Predictions</a>
+    @if(stopIds.nonEmpty) {
+        <a href="/predictions/@stopIds.mkString(",")">Predictions</a>
+    } else {
+        No stops for group @groupId
+    }
 }

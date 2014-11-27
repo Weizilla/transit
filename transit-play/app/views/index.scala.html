@@ -1,9 +1,8 @@
-@(createGroupForm: Form[CreateGroupData],
-    groups: Iterable[com.weizilla.transit.groups.Group],
+@( groups: Iterable[com.weizilla.transit.groups.Group],
     favRoutes: Iterable[com.weizilla.transit.data.Route],
     transitRoutes: Iterable[com.weizilla.transit.data.Route])
 
-@main("Transit")("Transit") {
+@main("Transit"){Transit} {
     <section>
         <header>Groups</header>
         <ul>
@@ -34,8 +33,11 @@
         <ul>
         @for(route <- transitRoutes) {
             <li>
-                <a href="/directions/@route.getId">@route.getId - @route.getName</a> |
-                <a href="/favorites/save/route/@route.getId">Save</a>
+                <a href="/directions/@route.getId?routeName=@route.getName">@route.getId - @route.getName</a> |
+                @helper.form(action = routes.Application.saveFavoriteRoute()) {
+                    <input type="hidden" id="routeId" name="routeId" value="@route.getId">
+                    <input type="submit" value="Save">
+                }
             </li>
         }
         </ul>

@@ -1,11 +1,9 @@
-@(routeId: String,  direction: com.weizilla.transit.data.Direction,
+@(routeId: String, routeName: Option[String],
+        direction: String,
         stops: Iterable[com.weizilla.transit.data.Stop],
         favStops: Iterable[com.weizilla.transit.data.Stop],
-        groups: Iterable[com.weizilla.transit.groups.Group],
-        addStopToGroupForm: Form[AddStopToGroupData])
-@main("Stops")("Route " + routeId + " - " + direction) {
-
-
+        groups: Iterable[com.weizilla.transit.groups.Group])
+@main("Stops"){Route @routeId @routeName.map(" - " + _) - @direction} {
     <ul>
     @for(favStop <- favStops) {
         @display(favStop, true)
@@ -22,11 +20,16 @@
     <li>
         <a href="/predictions/@stop.getId?routeIdsStr=@routeId">@stop.getName</a>
         @if(! fav) {
-            | <a href="/favorites/save/stop/@stop.getId/@routeId/@direction">Save</a>
+            | @helper.form(action = routes.Application.saveFavoriteStop()) {
+                <input type="hidden" id="stopId" name="stopId" value="@stop.getId">
+                <input type="hidden" id="routeId" name="routeId" value="@routeId">
+                <input type="hidden" id="direction" name="direction" value="@direction">
+                <input type="hidden" id="routeName" name="routeName" value="@routeName">
+                <input type="submit" value="Save">
+            }
         }
         @if(groups.nonEmpty) {
-            |
-            @helper.form(action = routes.Application.addStopToGroup()) {
+            | @helper.form(action = routes.Application.addStopToGroup()) {
                 <label for="groupId">Add to Group</label>
                 <select id="groupId" name="groupId">
                 @for(group <- groups) {
@@ -35,7 +38,8 @@
                 </select>
                 <input type="hidden" id="stopId" name="stopId" value="@stop.getId">
                 <input type="hidden" id="routeId" name="routeId" value="@routeId">
-                <input type="hidden" id="direction" name="direction" value="@direction.name()">
+                <input type="hidden" id="direction" name="direction" value="@direction">
+                <input type="hidden" id="routeName" name="routeName" value="@routeName">
                 <input type="submit" value="Add">
                 }
         }
