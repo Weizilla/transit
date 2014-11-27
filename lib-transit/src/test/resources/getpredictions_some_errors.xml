@@ -1,0 +1,78 @@
+<?xml version="1.0"?>
+<bustime-response>
+    <error>
+        <rt>36</rt>
+        <stpid>1832</stpid>
+        <msg>No service scheduled</msg>
+    </error>
+    <error>
+        <rt>36</rt>
+        <stpid>1828</stpid>
+        <msg>No service scheduled</msg>
+    </error>
+    <error>
+        <rt>36</rt>
+        <stpid>1856</stpid>
+        <msg>No service scheduled</msg>
+    </error>
+    <prd>
+        <tmstmp>20141126 20:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>1321</vid>
+        <dstp>1073</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20141126 20:25</prdtm>
+        <tablockid>36 -551</tablockid>
+        <tatripid>201</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20141126 20:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Fullerton</stpnm>
+        <stpid>1838</stpid>
+        <vid>1321</vid>
+        <dstp>3529</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20141126 20:28</prdtm>
+        <tablockid>36 -551</tablockid>
+        <tatripid>201</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20141126 20:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Schubert</stpnm>
+        <stpid>1833</stpid>
+        <vid>1325</vid>
+        <dstp>17051</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20141126 20:45</prdtm>
+        <tablockid>36 -514</tablockid>
+        <tatripid>205</tatripid>
+        <zone></zone>
+    </prd>
+    <prd>
+        <tmstmp>20141126 20:23</tmstmp>
+        <typ>A</typ>
+        <stpnm>Clark &amp; Fullerton</stpnm>
+        <stpid>1838</stpid>
+        <vid>1325</vid>
+        <dstp>19507</dstp>
+        <rt>36</rt>
+        <rtdir>Southbound</rtdir>
+        <des>LaSalle Metra Station</des>
+        <prdtm>20141126 20:48</prdtm>
+        <tablockid>36 -514</tablockid>
+        <tatripid>205</tatripid>
+        <zone></zone>
+    </prd>
+</bustime-response>

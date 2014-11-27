@@ -1,12 +1,12 @@
 package com.weizilla.transit.data;
 
-import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
-import org.simpleframework.xml.Path;
 import org.simpleframework.xml.Root;
 
 import java.util.Collections;
 import java.util.List;
+
+import static java.util.Collections.unmodifiableList;
 
 @Root(name = "bustime-response", strict = false)
 public class BusResponse
@@ -23,37 +23,41 @@ public class BusResponse
     @ElementList(inline = true, required = false)
     private List<Prediction> predictions;
 
+    @ElementList(inline = true, required = false)
+    private List<Error> errors;
 //    @Element(name = "tm", required = false)
 //    @Convert(TimeConverter.class)
 //    private Date currentTime;
 
-    @Element(name = "msg", required = false)
-    @Path("error")
-    private String errorMsg;
 
     public List<Prediction> getPredictions()
     {
-        return predictions;
+        return unmodifiable(predictions);
     }
 
     public List<Direction> getDirections()
     {
-        return Collections.unmodifiableList(directions);
+        return unmodifiable(directions);
     }
 
     public List<Route> getRoutes()
     {
-        return Collections.unmodifiableList(routes);
+        return unmodifiable(routes);
     }
 
     public List<Stop> getStops()
     {
-        return Collections.unmodifiableList(stops);
+        return unmodifiable(stops);
     }
 
-    public String getErrorMsg()
+    public List<Error> getErrors()
     {
-        return errorMsg;
+        return unmodifiable(errors);
+    }
+
+    private static <T> List<T> unmodifiable(List<T> data)
+    {
+        return data == null || data.isEmpty() ? Collections.<T>emptyList() : unmodifiableList(data);
     }
 
     //

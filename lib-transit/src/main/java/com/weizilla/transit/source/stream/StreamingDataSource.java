@@ -2,6 +2,7 @@ package com.weizilla.transit.source.stream;
 
 import com.weizilla.transit.data.BusResponse;
 import com.weizilla.transit.data.Direction;
+import com.weizilla.transit.data.Error;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
@@ -39,8 +40,9 @@ public class StreamingDataSource implements DataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
-            throwIfErrors(response);
-            return response.getRoutes();
+            List<Route> routes = response.getRoutes();
+            throwIfErrors(response, routes);
+            return routes;
         }
         catch (DataSourceException e)
         {
@@ -61,8 +63,9 @@ public class StreamingDataSource implements DataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
-            throwIfErrors(response);
-            return response.getDirections();
+            List<Direction> directions = response.getDirections();
+            throwIfErrors(response, directions);
+            return directions;
         }
         catch (DataSourceException e)
         {
@@ -83,8 +86,8 @@ public class StreamingDataSource implements DataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
-            throwIfErrors(response);
             Collection<Stop> stops = response.getStops();
+            throwIfErrors(response, stops);
             for (Stop stop : stops)
             {
                 stop.setRouteId(routeId);
@@ -112,8 +115,9 @@ public class StreamingDataSource implements DataSource
         )
         {
             BusResponse response = serializer.read(BusResponse.class, input);
-            throwIfErrors(response);
-            return response.getPredictions();
+            List<Prediction> predictions = response.getPredictions();
+            throwIfErrors(response, predictions);
+            return predictions;
         }
         catch (DataSourceException e)
         {
@@ -126,12 +130,12 @@ public class StreamingDataSource implements DataSource
         }
     }
 
-    private static void throwIfErrors(BusResponse response)
+    private static void throwIfErrors(BusResponse response, Collection<?> data)
     {
-        String errorMsg = response.getErrorMsg();
-        if (errorMsg != null)
+        List<Error> errors = response.getErrors();
+        if (errors != null && errors.size() == 1 && (data == null || data.isEmpty()))
         {
-            throw new DataSourceException(errorMsg);
+            throw new DataSourceException(errors.get(0).getMessage());
         }
     }
 }

@@ -133,7 +133,7 @@ public class StreamingDataSourceTest
     }
 
     @Test
-    public void throwsExceptionIfGetRoutesHasError() throws Exception
+    public void throwsExceptionIfGetRoutesOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
         streamProvider.setStreamFromResource("/error.xml");
@@ -149,7 +149,7 @@ public class StreamingDataSourceTest
     }
 
     @Test
-    public void throwsExceptionIfGetDirectionsHasError() throws Exception
+    public void throwsExceptionIfGetDirectionsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
         streamProvider.setStreamFromResource("/error.xml");
@@ -165,7 +165,7 @@ public class StreamingDataSourceTest
     }
 
     @Test
-    public void throwsExceptionIfGetPredictionsHasError() throws Exception
+    public void throwsExceptionIfGetPredictionsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
         streamProvider.setStreamFromResource("/error.xml");
@@ -181,7 +181,7 @@ public class StreamingDataSourceTest
     }
 
     @Test
-    public void throwsExceptionIfGetStopsHasError() throws Exception
+    public void throwsExceptionIfGetStopsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
         streamProvider.setStreamFromResource("/error.xml");
@@ -194,6 +194,20 @@ public class StreamingDataSourceTest
         {
             assertEquals(errorMsg, e.getMessage());
         }
+    }
+
+    @Test
+    public void returnsPredictionsIfMixedWithErrors() throws Exception
+    {
+        streamProvider.setStreamFromResource("/getpredictions_some_errors.xml");
+        Collection<Prediction> predictions = source.getPredictions(STOP_IDS, ROUTE_IDS);
+        assertEquals(4, predictions.size());
+    }
+
+    @Test(expected = DataSourceException.class)
+    public void throwsExceptionIfNoStream() throws Exception
+    {
+        source.getRoutes();
     }
 
     private static void assertStop(String stopName, double lat, double lon, Stop actual)
@@ -222,9 +236,4 @@ public class StreamingDataSourceTest
         assertEquals(delayed, actual.isDelayed());
     }
 
-    @Test(expected = DataSourceException.class)
-    public void throwsExceptionIfNoStream() throws Exception
-    {
-        source.getRoutes();
-    }
 }
