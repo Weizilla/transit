@@ -15,7 +15,7 @@
     <ul>
     @for(stop <- stops) {
         <li>
-            <a href="/predictions/@stop.getId/@routeId">@stop.getName</a> |
+            <a href="/predictions/@stop.getId?routeIdsStr=@routeId">@stop.getName</a> |
             <a href="/favorites/save/stop/@stop.getId/@routeId/@direction">Save</a>
             @if(groups.nonEmpty) {
             |

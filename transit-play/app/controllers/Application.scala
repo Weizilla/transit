@@ -68,19 +68,22 @@ object Application extends Controller {
     Ok(views.html.stops(routeId, dir, stops, favStops, groups, addStopToGroupForm))
   }
 
-  def predictions(routeId: String, stopId: Int) = Action {
+  def predictions(stopIdsStr: String, routeIdsStr: Option[String]) = Action {
+    val stopIds = stopIdsStr.split(",").map(_.toInt).toList
+    val routeIds = routeIdsStr.getOrElse("").split(",").toList
+
     var predictions: Iterable[Prediction] = List()
     var msg: Option[String] = None
 
     try {
-      predictions = controller.getPredictions(routeId, stopId)
+      predictions = controller.getPredictions(stopIds.map(i => i:java.lang.Integer), routeIds)
       msg = None
     } catch {
       case t: Throwable =>
         msg = Some(t.getMessage)
     }
 
-    Ok(views.html.predictions(routeId, stopId, predictions, msg))
+    Ok(views.html.predictions(stopIds, routeIds, predictions, msg))
   }
 
   def saveFavRoute(routeId: String) = Action {
