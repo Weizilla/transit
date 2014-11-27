@@ -1,0 +1,10 @@
+@(groupId: Integer, stopIds: Iterable[Integer])
+@main("Group")("Group " + groupId) {
+    <ul>
+    @for(stopId <- stopIds) {
+        <li>
+            @stopId
+        </li>
+    }
+    </ul>
+}

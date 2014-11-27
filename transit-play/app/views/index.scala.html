@@ -8,7 +8,7 @@
         <header>Groups</header>
         <ul>
         @for(group <- groups) {
-            <li>@group.getName</li>
+            <li><a href="/groups/@group.getId">@group.getName</a></li>
         }
         </ul>
         @helper.form(action = routes.Application.createGroup()) {

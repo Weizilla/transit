@@ -24,10 +24,12 @@ object Application extends Controller {
     val source: StreamingDataSource = new StreamingDataSource(provider)
 
     try {
-      val file = Files.createTempFile("transit-play-", ".db")
-      file.toFile.deleteOnExit()
-      val favStore: JdbcSqliteFavoritesStore = JdbcSqliteFavoritesStore.createStore(file)
-      val groupsStore: JdbcSqliteGroupsStore = JdbcSqliteGroupsStore.createStore(file)
+      val favDb = Files.createTempFile("transit-play-favorites-", ".db")
+      favDb.toFile.deleteOnExit()
+      val groupDb = Files.createTempFile("transit-play-groups-", ".db")
+      groupDb.toFile.deleteOnExit()
+      val favStore: JdbcSqliteFavoritesStore = JdbcSqliteFavoritesStore.createStore(favDb)
+      val groupsStore: JdbcSqliteGroupsStore = JdbcSqliteGroupsStore.createStore(groupDb)
       new BusController(source, favStore, groupsStore)
     } catch {
       case e: Exception =>
@@ -36,6 +38,13 @@ object Application extends Controller {
   }
 
   val createGroupForm = Form(mapping("name" -> nonEmptyText)(CreateGroupData.apply)(CreateGroupData.unapply))
+
+  val addStopToGroupForm = Form(mapping(
+    "stopId" -> number,
+    "groupId" -> number,
+    "direction" -> nonEmptyText,
+    "routeId" -> nonEmptyText
+  )(AddStopToGroupData.apply)(AddStopToGroupData.unapply))
 
   def index = Action {
     val groups = controller.getAllGroups
@@ -55,7 +64,8 @@ object Application extends Controller {
     val stops = controller.getStops(routeId, dir)
     val stopsMap = stops.map(s => s.getId -> s).toMap
     val favStops = controller.getFavoriteStopIds(routeId, dir).map(stopsMap(_))
-    Ok(views.html.stops(routeId, dir, stops, favStops))
+    val groups = controller.getAllGroups
+    Ok(views.html.stops(routeId, dir, stops, favStops, groups, addStopToGroupForm))
   }
 
   def predictions(routeId: String, stopId: Int) = Action {
@@ -89,4 +99,14 @@ object Application extends Controller {
     Redirect(routes.Application.index())
   }
 
+  def addStopToGroup() = Action { implicit request =>
+    val data = addStopToGroupForm.bindFromRequest.get
+    controller.addStopToGroup(data.groupId, data.stopId)
+    Redirect(routes.Application.stops(data.routeId, data.direction))
+  }
+
+  def getGroup(groupId: Int) = Action {
+    val stops = controller.getStopIdsForGroup(groupId)
+    Ok(views.html.group(groupId, stops))
+  }
 }

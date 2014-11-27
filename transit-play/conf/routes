@@ -3,10 +3,13 @@
 # ~~~~
 
 # Home page
-GET        /                                                       controllers.Application.index()
-GET        /directions/:routeId                                    controllers.Application.directions(routeId: String)
-GET        /stops/:routeId/:direction                              controllers.Application.stops(routeId: String, direction: String)
-GET        /predictions/:stopId/:routeId                           controllers.Application.predictions(routeId: String, stopId: Int)
-GET        /favorites/save/route/:routeId                          controllers.Application.saveFavRoute(routeId: String)
-GET        /favorites/save/stop/:stopId/:routeId/:direction        controllers.Application.saveFavStop(stopId: Int, routeId: String, direction: String)
-POST       /groups/create                                          controllers.Application.createGroup()
+GET  /                                                 controllers.Application.index()
+GET  /directions/:routeId                              controllers.Application.directions(routeId: String)
+GET  /stops/:routeId/:direction                        controllers.Application.stops(routeId: String, direction: String)
+GET  /predictions/:stopId/:routeId                     controllers.Application.predictions(routeId: String, stopId: Int)
+GET  /favorites/save/route/:routeId                    controllers.Application.saveFavRoute(routeId: String)
+GET  /favorites/save/stop/:stopId/:routeId/:direction  controllers.Application.saveFavStop(stopId: Int, routeId: String, direction: String)
+GET  /groups/:groupId                                  controllers.Application.getGroup(groupId: Int)
+POST /groups/create                                    controllers.Application.createGroup()
+POST /groups/addStop                                   controllers.Application.addStopToGroup()
+GET  /assets/*file                                     controllers.Assets.at(path="/public", file)
