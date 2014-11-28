@@ -48,6 +48,10 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     @Override
     public Map<Integer, Stop> getStops(Collection<Integer> stopIds)
     {
+        if (stopIds.isEmpty()) {
+            return Collections.emptyMap();
+        }
+
         String sqlFile= "cache/get_stops.sql";
         Map<Integer, Stop> stops = new HashMap<>(stopIds.size());
         try
@@ -78,6 +82,10 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     @Override
     public Map<String, Route> getRoutes(Collection<String> routeIds)
     {
+        if (routeIds.isEmpty())
+        {
+            return Collections.emptyMap();
+        }
         String sqlFile = "cache/get_routes.sql";
         Map<String, Route> routes = new HashMap<>(routeIds.size());
         try
@@ -123,6 +131,10 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     @Override
     public void updateRoutes(Collection<Route> routes)
     {
+        if (routes.isEmpty())
+        {
+            return;
+        }
         String sqlFile = "cache/update_routes.sql";
         try
         (
@@ -160,7 +172,7 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
         for (Route route : routes)
         {
             statement.setString(1, route.getId());
-            statement.setString(2, route.getName());
+            statement.setString(2, route.getName().trim());
             statement.addBatch();
             numBatched++;
             if (numBatched % 100 == 0)
@@ -175,6 +187,10 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     @Override
     public void updateStops(Collection<Stop> stops)
     {
+        if (stops.isEmpty())
+        {
+            return;
+        }
         String sqlFile = "cache/update_stops.sql";
         try
         (
@@ -210,7 +226,7 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
         for (Stop stop : stops)
         {
             statement.setInt(1, stop.getId());
-            statement.setString(2, stop.getName());
+            statement.setString(2, stop.getName().trim());
             statement.addBatch();
             numBatched++;
             if (numBatched % 100 == 0)
@@ -234,130 +250,4 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
         }
         return num;
     }
-
-    //
-//    @Override
-//    public void saveFavorite(String routeId)
-//    {
-//        String sqlFile = "save_fav_route.sql";
-//        try
-//        (
-//            Connection connection = createConnection();
-//            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
-//        )
-//        {
-//            statement.setString(1, routeId);
-//            int numUpdated = statement.executeUpdate();
-//            if (numUpdated == 0)
-//            {
-//                logger.warn("No rows updated when saving favorite route id {}", routeId);
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            logger.error("Error reading sql file {}", sqlFile, e);
-//        }
-//        catch (SQLException e)
-//        {
-//            logger.error("Sql error saving favorite route id {}: {}", routeId, e.getMessage(), e);
-//        }
-//    }
-//
-//
-//    @Override
-//    public void saveFavorite(int stopId, String routeId, Direction direction)
-//    {
-//        String sqlFile = "save_fav_stop.sql";
-//        try
-//        (
-//            Connection connection = createConnection();
-//            PreparedStatement statement = connection.prepareStatement(readFile(sqlFile))
-//        )
-//        {
-//            statement.setInt(1, stopId);
-//            statement.setString(2, routeId);
-//            statement.setObject(3, direction);
-//            int numUpdated = statement.executeUpdate();
-//            if (numUpdated == 0)
-//            {
-//                logger.warn("No rows updated when saving favorite stop id {}", stopId);
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            logger.error("Error reading sql file {}", sqlFile, e);
-//        }
-//        catch (SQLException e)
-//        {
-//            logger.error("Sql error saving favorite stop id {}: {}", stopId, e.getMessage(), e);
-//        }
-//    }
-//
-//    @Override
-//    public Collection<String> getRouteIds()
-//    {
-//        Collection<String> routeIds = new TreeSet<>();
-//        String sqlFile = "get_fav_routes.sql";
-//        try
-//        (
-//            Connection connection = createConnection();
-//            Statement statement = connection.createStatement();
-//            ResultSet resultSet = statement.executeQuery(readFile(sqlFile))
-//        )
-//        {
-//            while (resultSet.next())
-//            {
-//                routeIds.add(resultSet.getString(RouteEntry.ID));
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            logger.error("Error reading sql file {}", sqlFile, e);
-//        }
-//        catch (SQLException e)
-//        {
-//            logger.error("Sql error getting favorite routes: {}", e.getMessage(), e);
-//        }
-//        return routeIds;
-//    }
-//
-//    @Override
-//    public Collection<Integer> getStopIds(String routeId, Direction direction)
-//    {
-//        Collection<Integer> stopIds = new TreeSet<>();
-//        String sqlFile = "get_fav_stops.sql";
-//        try
-//        (
-//            Connection conn = createConnection();
-//            PreparedStatement statement = createGetStopsStatement(conn, sqlFile, routeId, direction);
-//            ResultSet resultSet = statement.executeQuery()
-//        )
-//        {
-//            while (resultSet.next())
-//            {
-//                stopIds.add(resultSet.getInt(StopEntry.ID));
-//            }
-//        }
-//        catch (IOException e)
-//        {
-//            logger.error("Error reading sql file {}", sqlFile, e);
-//        }
-//        catch (SQLException e)
-//        {
-//            logger.error("Sql error getting favorite stops: {}", e.getMessage(), e);
-//        }
-//        return stopIds;
-//    }
-//
-//    private static PreparedStatement createGetStopsStatement(
-//        Connection connection, String sqlFile, String route, Direction direction)
-//        throws IOException, SQLException
-//    {
-//        String sql = readFile(sqlFile);
-//        PreparedStatement statement = connection.prepareStatement(sql);
-//        statement.setString(1, route);
-//        statement.setObject(2, direction);
-//        return statement;
-//    }
-
 }

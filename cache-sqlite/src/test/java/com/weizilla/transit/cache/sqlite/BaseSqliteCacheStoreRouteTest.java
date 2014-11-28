@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
 import static com.weizilla.transit.cache.sqlite.Cache.RouteEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class BaseSqliteCacheStoreRouteTest extends BaseSqliteTest
 {
@@ -72,6 +74,22 @@ public abstract class BaseSqliteCacheStoreRouteTest extends BaseSqliteTest
 
         store.updateRoutes(newRoutes);
         assertTablesEqualFile("cache/update_routes_after.xml", TABLE_NAME);
+    }
+
+    @Test
+    public void returnsEmptyMapForEmptyInput() throws Exception
+    {
+        loadIntoDb("cache/update_routes_before.xml");
+        assertTrue(store.getRoutes(Collections.<String>emptyList()).isEmpty());
+    }
+
+    @Test
+    public void keepsDataIfUpdatingWithEmptyList() throws Exception
+    {
+        String dataSetFile = "cache/update_routes_before.xml";
+        loadIntoDb(dataSetFile);
+        store.updateRoutes(Collections.<Route>emptyList());
+        assertTablesEqualFile(dataSetFile, TABLE_NAME);
     }
 
     private static void assertRoute(String id, Map<String, Route> expected, Map<String, Route> actual)

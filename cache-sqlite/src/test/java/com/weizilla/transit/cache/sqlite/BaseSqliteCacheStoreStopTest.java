@@ -8,6 +8,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -15,6 +16,7 @@ import java.util.Map;
 import static com.weizilla.transit.cache.sqlite.Cache.StopEntry.TABLE_NAME;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertTrue;
 
 public abstract class BaseSqliteCacheStoreStopTest extends BaseSqliteTest
 {
@@ -73,6 +75,22 @@ public abstract class BaseSqliteCacheStoreStopTest extends BaseSqliteTest
 
         store.updateStops(newStops);
         assertTablesEqualFile("cache/update_stops_after.xml", TABLE_NAME);
+    }
+
+    @Test
+    public void returnsEmptyMapForEmptyInput() throws Exception
+    {
+        loadIntoDb("cache/update_stops_before.xml");
+        assertTrue(store.getStops(Collections.<Integer>emptyList()).isEmpty());
+    }
+
+    @Test
+    public void keepsDataIfUpdatingWithEmptyList() throws Exception
+    {
+        String dataSetFile = "cache/update_stops_before.xml";
+        loadIntoDb(dataSetFile);
+        store.updateStops(Collections.<Stop>emptyList());
+        assertTablesEqualFile(dataSetFile, TABLE_NAME);
     }
 
     private static void assertStop(int id, Map<Integer, Stop> expected, Map<Integer, Stop> actual)
