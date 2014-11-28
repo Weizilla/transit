@@ -1,34 +1,17 @@
-=======
-TODO 
+Features
+====
+- filter by buses on stops
+- filter by buses for stops in groups
+- handle delayed predictions
+
+Bugs
+====
+- use clock offset from cta data source for more accurate predictions
+
+Enhancements
+====
+- better ui for predictions from multiple stops
+
+Tech Debt
+===
 - find common logging framework
-- combine android favorites test
-- combine android favorites & sqlite projects
-
-=======
-OLD
-=======
-features
-------
-add stop to group from stop menu
-filter by buses on stops
-filter by buses for stops in groups
-better ui for predictions from multiple stops
-mark prediction as delayed
-use clock offset from cta data source for more accurate predictions
-find logging framework that works with junit and android
-
-=======
-use clock offset from cta data source for more real accurate predictions
--------
-maybe call clock first then keep the offset stored
-
-=======
-better ui for predictions from multiple stops
--------
-need to modify to show stop name for each prediction
-
-=======
-bugs
--------
-still concurrency issues with databases. an activity would appear (db opens) then calls a store to do some db work. if the activity disappears from the foreground, it would call onPause() which will close the db. if this happens before the store starts the db work, then that call will fail. added checks in fav store to return empty values but not sure that's the best way to handle this
-logging framework that works in android and junit
