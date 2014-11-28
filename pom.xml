@@ -110,6 +110,7 @@
     <modules>
         <module>lib-transit</module>
         <module>lib-sqlite</module>
+        <module>cache-sqlite</module>
         <module>favorites-sqlite</module>
         <module>groups-sqlite</module>
         <module>favorites-android</module>

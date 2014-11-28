@@ -1,0 +1,5 @@
+<dataset>
+    <cache_stops id="10" name="STOP A"/>
+    <cache_stops id="20" name="STOP B"/>
+    <cache_stops id="30" name="STOP C"/>
+</dataset>

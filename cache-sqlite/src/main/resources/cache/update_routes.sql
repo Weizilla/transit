@@ -1,0 +1,1 @@
+INSERT INTO cache_routes (id, name) VALUES (?, ?)

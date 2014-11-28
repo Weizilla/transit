@@ -1,0 +1,1 @@
+SELECT id, name FROM cache_stops WHERE id IN

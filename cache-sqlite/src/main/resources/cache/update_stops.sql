@@ -1,0 +1,1 @@
+INSERT INTO cache_stops(id, name) VALUES (?, ?)
