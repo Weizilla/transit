@@ -1,26 +1,25 @@
 package com.weizilla.transit.groups;
 
 import java.util.Collection;
-import java.util.List;
 
 public class GroupsStoreStub implements GroupsStore
 {
     private int groupId;
-    private List<Integer> stopIds;
+    private Collection<Integer> stopIds;
     private Group group;
-    private List<Group> groups;
+    private Collection<Group> groups;
 
     public GroupsStoreStub(Group group)
     {
         this.group = group;
     }
 
-    public GroupsStoreStub(List<Group> groups)
+    public GroupsStoreStub(Collection<Group> groups)
     {
         this.groups = groups;
     }
 
-    public GroupsStoreStub(int groupId, List<Integer> stopIds)
+    public GroupsStoreStub(int groupId, Collection<Integer> stopIds)
     {
         this.groupId = groupId;
         this.stopIds = stopIds;

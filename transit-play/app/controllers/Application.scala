@@ -56,8 +56,7 @@ object Application extends Controller {
   def index = Action {
     val groups = controller.getAllGroups
     val routes = controller.getRoutes
-    val routeMap = routes.map(r => r.getId -> r).toMap
-    val favRoutes = controller.getFavoriteRouteIds.map(routeMap(_))
+    val favRoutes = controller.getFavoriteRoutes
     Ok(views.html.index(groups, favRoutes, routes))
   }
 
@@ -71,7 +70,7 @@ object Application extends Controller {
     val dir = Direction.valueOf(direction)
     val stops = controller.getStops(routeId, dir)
     val stopsMap = stops.map(s => s.getId -> s).toMap
-    val favStops = controller.getFavoriteStopIds.map(stopsMap(_))
+    val favStops = controller.getFavoriteStops.map(s => stopsMap(s.getId))
     val groups = controller.getAllGroups
     val routeName = controller.lookupRoutes(List(routeId)).get(routeId).getName
     Ok(views.html.stops(routeId, routeName, direction, stops, favStops, groups))
@@ -123,8 +122,7 @@ object Application extends Controller {
   }
 
   def getGroup(groupId: Int) = Action {
-    val stopIds = controller.getStopIdsForGroup(groupId)
-    val stops = controller.lookupStops(stopIds)
-    Ok(views.html.group(groupId, stops.values()))
+    val stops = controller.getStopsForGroup(groupId)
+    Ok(views.html.group(groupId, stops))
   }
 }

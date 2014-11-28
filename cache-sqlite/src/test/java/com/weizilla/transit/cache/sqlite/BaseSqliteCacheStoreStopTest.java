@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.weizilla.transit.cache.CacheStore;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
+import com.weizilla.transit.utils.Asserts;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.weizilla.transit.cache.sqlite.Cache.StopEntry.TABLE_NAME;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -54,11 +54,8 @@ public abstract class BaseSqliteCacheStoreStopTest extends BaseSqliteTest
         Collection<Integer> stopIds = new ArrayList<>(expected.keySet());
         stopIds.add(1000);
 
-        Map<Integer, Stop> actual = store.getStops(stopIds);
-
-        assertEquals(expected.size(), actual.size());
-        assertStop(STOP_1.getId(), expected, actual);
-        assertStop(STOP_2.getId(), expected, actual);
+        Collection<Stop> actual = store.getStops(stopIds);
+        Asserts.assertEqualsStops(expected.values(), actual);
     }
 
     @Test
@@ -91,11 +88,5 @@ public abstract class BaseSqliteCacheStoreStopTest extends BaseSqliteTest
         loadIntoDb(dataSetFile);
         store.updateStops(Collections.<Stop>emptyList());
         assertTablesEqualFile(dataSetFile, TABLE_NAME);
-    }
-
-    private static void assertStop(int id, Map<Integer, Stop> expected, Map<Integer, Stop> actual)
-    {
-        assertEquals(expected.get(id).getId(), actual.get(id).getId());
-        assertEquals(expected.get(id).getName(), actual.get(id).getName());
     }
 }

@@ -9,6 +9,7 @@ import com.weizilla.transit.source.DataSourceStub;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.Collections;
 import java.util.List;
 
 import static org.mockito.Mockito.mock;
@@ -52,6 +53,14 @@ public class BusControllerCacheTest
         List<String> routeIds = Lists.newArrayList("10", "20");
         controller.lookupRoutes(routeIds);
         verify(mockCacheStore).getRoutes(routeIds);
+    }
+
+    @Test
+    public void singleRouteLookUpCallsCollection() throws Exception
+    {
+        String id = "10";
+        controller.lookupRoute(id);
+        verify(mockCacheStore).getRoutes(Collections.singletonList(id));
     }
 
     @Test

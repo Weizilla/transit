@@ -88,16 +88,4 @@ public class BusControllerGroupsTest
 
         verify(mockStore).removeFromGroup(TEST_GROUP_ID, TEST_STOP_ID);
     }
-
-    @Test
-    public void getStops() throws Exception
-    {
-        List<Integer> expected = Lists.newArrayList(TEST_STOP_ID, TEST_STOP_ID);
-        GroupsStore store = spy(new GroupsStoreStub(TEST_GROUP_ID, expected));
-        BusController controller = new BusController(null, null, store, null);
-
-        Collection<Integer> actual = controller.getStopIdsForGroup(TEST_GROUP_ID);
-        verify(store).getStopIds(TEST_GROUP_ID);
-        assertSame(expected, actual);
-    }
 }

@@ -40,6 +40,7 @@ public abstract class BaseSqliteTest
     {
         dbPath = Files.createTempFile(getClass().getSimpleName() + '-', ".db");
         dbFile = dbPath.toFile();
+        dbFile.deleteOnExit();
         logger.debug("Temp db file: {}", dbPath);
         databaseTester = new JdbcDatabaseTester("org.sqlite.JDBC", "jdbc:sqlite:" + dbPath);
     }
@@ -48,7 +49,6 @@ public abstract class BaseSqliteTest
     public void tearDown() throws Exception
     {
         databaseTester.onTearDown();
-        Files.delete(dbPath);
     }
 
     protected void executeSql(String sql) throws Exception

@@ -7,7 +7,7 @@ public class FavoritesStoreStub implements FavoritesStore
     private Collection<String> routes;
     private Collection<Integer> stops;
 
-    private FavoritesStoreStub(Collection<String> routes, Collection<Integer> stops)
+    public FavoritesStoreStub(Collection<String> routes, Collection<Integer> stops)
     {
         this.routes = routes;
         this.stops = stops;

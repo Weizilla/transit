@@ -3,24 +3,37 @@ package com.weizilla.transit.cache;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class MemoryCacheStore implements CacheStore
 {
-    private final Map<Integer, Stop> stops = new HashMap<>();
-    private final Map<String, Route> routes = new HashMap<>();
+    private final Map<String, Route> routes;
+    private final Map<Integer, Stop> stops;
+
+    public MemoryCacheStore()
+    {
+        this(new HashMap<String, Route>(), new HashMap<Integer, Stop>());
+    }
+
+    public MemoryCacheStore(Map<String, Route> routes, Map<Integer, Stop> stops)
+    {
+        this.routes = routes;
+        this.stops = stops;
+    }
 
     @Override
-    public Map<Integer, Stop> getStops(Collection<Integer> stopIds)
+    public Collection<Stop> getStops(Collection<Integer> stopIds)
     {
         return filter(stops, stopIds);
     }
 
     @Override
-    public Map<String, Route> getRoutes(Collection<String> routeIds)
+    public Collection<Route> getRoutes(Collection<String> routeIds)
     {
         return filter(routes, routeIds);
     }
@@ -43,13 +56,17 @@ public class MemoryCacheStore implements CacheStore
         }
     }
 
-    private static <K, V> Map<K, V> filter(Map<K, V> map, Collection<K> keys)
+    private static <K, V> Collection<V> filter(Map<K, V> map, Collection<K> keys)
     {
-        Map<K, V> filtered = new HashMap<>(keys.size());
+        List<V> filtered = new ArrayList<>(keys.size());
         for (K key : keys)
         {
-            filtered.put(key, map.get(key));
+            V value = map.get(key);
+            if (value != null)
+            {
+                filtered.add(value);
+            }
         }
-        return Collections.unmodifiableMap(filtered);
+        return Collections.unmodifiableList(filtered);
     }
 }

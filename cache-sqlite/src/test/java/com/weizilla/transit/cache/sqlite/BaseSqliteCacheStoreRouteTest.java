@@ -4,6 +4,7 @@ import com.google.common.collect.Lists;
 import com.weizilla.transit.cache.CacheStore;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.sqlite.BaseSqliteTest;
+import com.weizilla.transit.utils.Asserts;
 import org.junit.Test;
 
 import java.util.ArrayList;
@@ -14,7 +15,6 @@ import java.util.List;
 import java.util.Map;
 
 import static com.weizilla.transit.cache.sqlite.Cache.RouteEntry.TABLE_NAME;
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
@@ -54,11 +54,8 @@ public abstract class BaseSqliteCacheStoreRouteTest extends BaseSqliteTest
         Collection<String> routeIds = new ArrayList<>(expected.keySet());
         routeIds.add("NOT FOUND ID");
 
-        Map<String, Route> actual = store.getRoutes(routeIds);
-
-        assertEquals(expected.size(), actual.size());
-        assertRoute(ROUTE_1.getId(), expected, actual);
-        assertRoute(ROUTE_2.getId(), expected, actual);
+        Collection<Route> actual = store.getRoutes(routeIds);
+        Asserts.assertEqualsRoutes(expected.values(), actual);
     }
 
     @Test
@@ -90,11 +87,5 @@ public abstract class BaseSqliteCacheStoreRouteTest extends BaseSqliteTest
         loadIntoDb(dataSetFile);
         store.updateRoutes(Collections.<Route>emptyList());
         assertTablesEqualFile(dataSetFile, TABLE_NAME);
-    }
-
-    private static void assertRoute(String id, Map<String, Route> expected, Map<String, Route> actual)
-    {
-        assertEquals(expected.get(id).getId(), actual.get(id).getId());
-        assertEquals(expected.get(id).getName(), actual.get(id).getName());
     }
 }

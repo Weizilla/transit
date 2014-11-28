@@ -3,6 +3,7 @@ package com.weizilla.transit.cache.sqlite;
 import com.google.common.base.Joiner;
 import com.weizilla.transit.cache.CacheStore;
 import com.weizilla.transit.cache.sqlite.Cache.RouteEntry;
+import com.weizilla.transit.cache.sqlite.Cache.StopEntry;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.sqlite.SqliteStore;
@@ -15,10 +16,10 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.List;
 
 import static com.weizilla.transit.utils.ResourceUtils.readFile;
 
@@ -46,14 +47,14 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     }
 
     @Override
-    public Map<Integer, Stop> getStops(Collection<Integer> stopIds)
+    public Collection<Stop> getStops(Collection<Integer> stopIds)
     {
         if (stopIds.isEmpty()) {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
 
         String sqlFile= "cache/get_stops.sql";
-        Map<Integer, Stop> stops = new HashMap<>(stopIds.size());
+        List<Stop> stops = new ArrayList<>(stopIds.size());
         try
         (
             Connection connection = createConnection();
@@ -63,9 +64,13 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
         {
             while (resultSet.next())
             {
-                int stopId = resultSet.getInt(Cache.StopEntry.ID);
-                String stopName = resultSet.getString(Cache.StopEntry.NAME);
-                stops.put(stopId, new Stop(stopId, stopName));
+                int stopId = resultSet.getInt(StopEntry.ID);
+                String stopName = resultSet.getString(StopEntry.NAME);
+                stops.add(new Stop(stopId, stopName));
+            }
+            if (stops.size() != stopIds.size())
+            {
+                logger.warn("Number of stops retrieved does not match input. Input {} Retrieved {}", stopIds.size(), stops.size());
             }
         }
         catch (IOException e)
@@ -80,14 +85,14 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
     }
 
     @Override
-    public Map<String, Route> getRoutes(Collection<String> routeIds)
+    public Collection<Route> getRoutes(Collection<String> routeIds)
     {
         if (routeIds.isEmpty())
         {
-            return Collections.emptyMap();
+            return Collections.emptyList();
         }
         String sqlFile = "cache/get_routes.sql";
-        Map<String, Route> routes = new HashMap<>(routeIds.size());
+        List<Route> routes = new ArrayList(routeIds.size());
         try
         (
             Connection connection = createConnection();
@@ -99,7 +104,11 @@ public class JdbcSqliteCacheStore extends SqliteStore implements CacheStore
             {
                 String routeId = resultSet.getString(RouteEntry.ID);
                 String routeName = resultSet.getString(RouteEntry.NAME);
-                routes.put(routeId, new Route(routeId, routeName));
+                routes.add(new Route(routeId, routeName));
+            }
+            if (routes.size() != routeIds.size())
+            {
+                logger.warn("Number of routes retrieved does not match input. Input {} Retrieved {}", routeIds.size(), routes.size());
             }
         }
         catch (IOException e)
