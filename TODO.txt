@@ -3,6 +3,8 @@ Features
 - filter by buses on stops
 - filter by buses for stops in groups
 - handle delayed predictions
+- display alerts
+- link to cta bus tracker mobile site
 
 Bugs
 ====
@@ -11,6 +13,8 @@ Bugs
 Enhancements
 ====
 - better ui for predictions from multiple stops
+- better api for controller with less logic in scala
+- better navigation for play web ui
 
 Tech Debt
 ===
