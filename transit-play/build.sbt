@@ -14,6 +14,7 @@ libraryDependencies ++= Seq(
   cache,
   javaWs,
   "com.weizilla.transit" % "lib-transit" % "1.0.0-SNAPSHOT",
+  "com.weizilla.transit" % "cache-sqlite" % "1.0.0-SNAPSHOT",
   "com.weizilla.transit" % "favorites-sqlite" % "1.0.0-SNAPSHOT",
   "com.weizilla.transit" % "groups-sqlite" % "1.0.0-SNAPSHOT"
 )

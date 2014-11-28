@@ -7,6 +7,7 @@ import com.weizilla.transit.BusController
 import com.weizilla.transit.data.{Direction, Prediction}
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
+import com.weizilla.transit.cache.sqlite.JdbcSqliteCacheStore
 import com.weizilla.transit.source.stream.StreamingDataSource
 import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
 import play.api.data.Form
@@ -24,13 +25,12 @@ object Application extends Controller {
     val source: StreamingDataSource = new StreamingDataSource(provider)
 
     try {
-      val favDb = Files.createTempFile("transit-play-favorites-", ".db")
-      favDb.toFile.deleteOnExit()
-      val groupDb = Files.createTempFile("transit-play-groups-", ".db")
-      groupDb.toFile.deleteOnExit()
-      val favStore: JdbcSqliteFavoritesStore = JdbcSqliteFavoritesStore.createStore(favDb)
-      val groupsStore: JdbcSqliteGroupsStore = JdbcSqliteGroupsStore.createStore(groupDb)
-      new BusController(source, favStore, groupsStore)
+      val dbPath = Files.createTempFile("transit-play-", ".db")
+      dbPath.toFile.deleteOnExit()
+      val favStore: JdbcSqliteFavoritesStore = JdbcSqliteFavoritesStore.createStore(dbPath)
+      val groupsStore: JdbcSqliteGroupsStore = JdbcSqliteGroupsStore.createStore(dbPath)
+      val cacheStore: JdbcSqliteCacheStore = JdbcSqliteCacheStore.createStore(dbPath)
+      new BusController(source, favStore, groupsStore, cacheStore)
     } catch {
       case e: Exception =>
         throw new RuntimeException("Unable to create bus controller", e)
