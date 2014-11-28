@@ -15,6 +15,8 @@ Enhancements
 - better ui for predictions from multiple stops
 - better api for controller with less logic in scala
 - better navigation for play web ui
+- break data objs between ones from xml and ones used in app
+-- route is just id + name. stop is id and name. prediction contains a route and a stop obj
 
 Tech Debt
 ===
