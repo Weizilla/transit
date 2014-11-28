@@ -4,10 +4,10 @@ import java.nio.file.Files
 
 import com.typesafe.config.ConfigFactory
 import com.weizilla.transit.BusController
+import com.weizilla.transit.cache.sqlite.JdbcSqliteCacheStore
 import com.weizilla.transit.data.{Direction, Prediction}
 import com.weizilla.transit.favorites.sqlite.JdbcSqliteFavoritesStore
 import com.weizilla.transit.groups.sqlite.JdbcSqliteGroupsStore
-import com.weizilla.transit.cache.sqlite.JdbcSqliteCacheStore
 import com.weizilla.transit.source.stream.StreamingDataSource
 import com.weizilla.transit.source.stream.http.{HttpInputStreamProvider, HttpReader}
 import play.api.data.Form
@@ -63,7 +63,8 @@ object Application extends Controller {
 
   def directions(routeId: String) = Action {
     val directions = controller.getDirections(routeId)
-    Ok(views.html.directions(routeId, directions))
+    val routeName = controller.lookupRoutes(List(routeId)).get(routeId).getName
+    Ok(views.html.directions(routeId, routeName, directions))
   }
 
   def stops(routeId: String, direction: String) = Action {
@@ -72,12 +73,14 @@ object Application extends Controller {
     val stopsMap = stops.map(s => s.getId -> s).toMap
     val favStops = controller.getFavoriteStopIds.map(stopsMap(_))
     val groups = controller.getAllGroups
-    Ok(views.html.stops(routeId, direction, stops, favStops, groups))
+    val routeName = controller.lookupRoutes(List(routeId)).get(routeId).getName
+    Ok(views.html.stops(routeId, routeName, direction, stops, favStops, groups))
   }
 
   def predictions(stopIdsStr: String, routeIdsStr: Option[String]) = Action {
     val stopIds = stopIdsStr.split(",").map(_.toInt).toList
     val routeIds = routeIdsStr.map(_.split(",").toList).getOrElse(List())
+    val routes = controller.lookupRoutes(routeIds).values()
 
     var predictions: Iterable[Prediction] = List()
     var msg: Option[String] = None
@@ -92,7 +95,7 @@ object Application extends Controller {
 
     val stopNames = predictions.map(_.getStopName).toSet
 
-    Ok(views.html.predictions(stopNames, routeIds, predictions, msg))
+    Ok(views.html.predictions(stopNames, routes, predictions, msg))
   }
 
   def saveFavoriteRoute() = Action { implicit request =>
@@ -120,7 +123,8 @@ object Application extends Controller {
   }
 
   def getGroup(groupId: Int) = Action {
-    val stops = controller.getStopIdsForGroup(groupId)
-    Ok(views.html.group(groupId, stops))
+    val stopIds = controller.getStopIdsForGroup(groupId)
+    val stops = controller.lookupStops(stopIds)
+    Ok(views.html.group(groupId, stops.values()))
   }
 }

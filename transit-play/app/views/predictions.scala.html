@@ -1,8 +1,12 @@
-@(stopNames: Iterable[String], routeIds: Iterable[String],
+@(stopNames: Iterable[String], routes: Iterable[com.weizilla.transit.data.Route],
         predictions: Iterable[com.weizilla.transit.data.Prediction],
         message: Option[String])
 @main("Predictions"){
-    @(if (routeIds.nonEmpty) "Route " + routeIds.mkString(",") + " - ") @stopNames.mkString(", ")
+    @if(routes.nonEmpty) {
+        @routes.map(r => "Route " + r.getId + " - " + r.getName).mkString(",")
+        <br>
+    }
+    @stopNames.mkString(",")
 } {
     @message.getOrElse("")
     <ul>

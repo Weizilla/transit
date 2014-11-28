@@ -1,8 +1,8 @@
-@(routeId: String, direction: String,
+@(routeId: String, routeName: String, direction: String,
         stops: Iterable[com.weizilla.transit.data.Stop],
         favStops: Iterable[com.weizilla.transit.data.Stop],
         groups: Iterable[com.weizilla.transit.groups.Group])
-@main("Stops"){Route @routeId - @direction} {
+@main("Stops"){Route @routeId - @routeName - @direction} {
     <ul>
     @for(favStop <- favStops) {
         @display(favStop, true)

@@ -1,14 +1,14 @@
-@(groupId: Integer, stopIds: Iterable[Integer])
+@(groupId: Integer, stops: Iterable[com.weizilla.transit.data.Stop])
 @main("Group"){Group @groupId} {
     <ul>
-    @for(stopId <- stopIds) {
+    @for(stop <- stops) {
         <li>
-            @stopId
+            @stop.getName
         </li>
     }
     </ul>
-    @if(stopIds.nonEmpty) {
-        <a href="/predictions/@stopIds.mkString(",")">Predictions</a>
+    @if(stops.nonEmpty) {
+        <a href="/predictions/@stops.map(_.getId).mkString(",")">Predictions</a>
     } else {
         No stops for group @groupId
     }
