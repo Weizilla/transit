@@ -8,9 +8,9 @@
         <artifactId>transit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
     </parent>
-    <artifactId>favorites-android</artifactId>
+    <artifactId>stores-android</artifactId>
     <packaging>apklib</packaging>
-    <name>favorites-android</name>
+    <name>stores-android</name>
 
     <dependencies>
         <dependency>

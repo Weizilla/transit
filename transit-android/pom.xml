@@ -30,6 +30,11 @@
             <artifactId>lib-transit</artifactId>
             <version>${project.version}</version>
         </dependency>
+        <dependency>
+            <groupId>${project.groupId}</groupId>
+            <artifactId>stores-android</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
@@ -44,6 +49,11 @@
                         <platform>19</platform>
                     </sdk>
                     <undeployBeforeDeploy>true</undeployBeforeDeploy>
+                    <dex>
+                        <jvmArguments>
+                            <jvmArgument>-Xmx4096M</jvmArgument>
+                        </jvmArguments>
+                    </dex>
                 </configuration>
             </plugin>
         </plugins>

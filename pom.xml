@@ -113,7 +113,7 @@
         <module>cache-sqlite</module>
         <module>favorites-sqlite</module>
         <module>groups-sqlite</module>
-        <module>favorites-android</module>
+        <module>stores-android</module>
         <module>transit-android</module>
     </modules>
 
