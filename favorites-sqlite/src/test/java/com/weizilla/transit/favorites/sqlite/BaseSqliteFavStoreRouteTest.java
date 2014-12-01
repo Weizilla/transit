@@ -27,7 +27,7 @@ public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
     @Test
     public void getRouteIdsReturnsDbData() throws Exception
     {
-        loadIntoDb("get_routes.xml");
+        loadIntoDb("favorites/get_routes.xml");
         Set<String> expected = Sets.newHashSet("22", "36", "54A");
 
         Collection<String> actualIds = store.getRouteIds();
@@ -37,7 +37,7 @@ public abstract class BaseSqliteFavStoreRouteTest extends BaseSqliteTest
     @Test
     public void savesFavoriteRoutes() throws Exception
     {
-        String dataSetFile = "save_routes.xml";
+        String dataSetFile = "favorites/save_routes.xml";
         deleteFromDb(dataSetFile);
 
         Collection<String> routeIds = Lists.newArrayList("134", "156", "J14");

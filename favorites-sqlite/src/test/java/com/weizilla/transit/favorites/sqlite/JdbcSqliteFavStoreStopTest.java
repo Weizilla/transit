@@ -14,7 +14,7 @@ public class JdbcSqliteFavStoreStopTest extends BaseSqliteFavStoreStopTest
     {
         super.setUp();
         store = JdbcSqliteFavoritesStore.createStore(dbPath);
-        createTable(TABLE_NAME, "create_fav_stops_table.sql");
+        createTable(TABLE_NAME, "favorites/create_stops_table.sql");
     }
 
     @Test

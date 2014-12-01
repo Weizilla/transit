@@ -24,8 +24,8 @@ public class FavoritesDbHelper extends SQLiteOpenHelper
     {
         try
         {
-            db.execSQL(ResourceUtils.readFile("create_fav_routes_table.sql"));
-            db.execSQL(ResourceUtils.readFile("create_fav_stops_table.sql"));
+            db.execSQL(ResourceUtils.readFile("favorites/create_routes_table.sql"));
+            db.execSQL(ResourceUtils.readFile("favorites/create_stops_table.sql"));
         }
         catch (IOException e)
         {

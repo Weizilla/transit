@@ -39,8 +39,8 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
             Connection connection = store.createConnection()
         )
         {
-            executeSqlFromFile(connection, "create_groups_table.sql");
-            executeSqlFromFile(connection, "create_groups_stops_table.sql");
+            executeSqlFromFile(connection, "groups/create_groups_table.sql");
+            executeSqlFromFile(connection, "groups/create_groups_stops_table.sql");
             return store;
         }
     }
@@ -48,7 +48,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     @Override
     public Group createGroup(String name)
     {
-        String sqlFile = "create_group.sql";
+        String sqlFile = "groups/create_group.sql";
         try
         (
             Connection conn = createConnection();
@@ -90,7 +90,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     public Collection<Group> getAllGroups()
     {
         Set<Group> groups = new HashSet<>();
-        String sqlFile = "get_all_groups.sql";
+        String sqlFile = "groups/get_all_groups.sql";
         try
         (
             Connection conn = createConnection();
@@ -121,7 +121,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     @Override
     public void deleteGroup(int id)
     {
-        String sqlFile = "delete_group.sql";
+        String sqlFile = "groups/delete_group.sql";
         try
         (
             Connection connection = createConnection();
@@ -148,7 +148,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     @Override
     public void addToGroup(int groupId, int stopId)
     {
-        String sqlFile = "add_stop_to_group.sql";
+        String sqlFile = "groups/add_stop_to_group.sql";
         try
         (
             Connection conn = createConnection();
@@ -179,7 +179,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     @Override
     public void removeFromGroup(int groupId, int stopId)
     {
-        String sqlFile = "remove_stop_from_group.sql";
+        String sqlFile = "groups/remove_stop_from_group.sql";
         try
         (
             Connection connection = createConnection();
@@ -210,7 +210,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     public Collection<Integer> getStopIds(int groupId)
     {
         Collection<Integer> stops = new HashSet<>();
-        String sqlFile = "get_stops_for_group.sql";
+        String sqlFile = "groups/get_stops_for_group.sql";
         try
         (
             Connection connection = createConnection();
@@ -248,7 +248,7 @@ public class JdbcSqliteGroupsStore extends SqliteStore implements GroupsStore
     @Override
     public void renameGroup(int id, String newName)
     {
-        String sqlFile = "rename_group.sql";
+        String sqlFile = "groups/rename_group.sql";
         try
         (
             Connection connection = createConnection();

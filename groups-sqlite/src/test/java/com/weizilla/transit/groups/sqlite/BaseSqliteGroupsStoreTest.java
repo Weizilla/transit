@@ -31,7 +31,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void createsGroups() throws Exception
     {
-        String dataSetFile = "create_groups.xml";
+        String dataSetFile = "groups/create_groups.xml";
         deleteFromDb(dataSetFile);
 
         for (int i = 0; i < 3; i++)
@@ -49,7 +49,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     public void throwsErrorWhenDuplicateGroupName() throws Exception
     {
         Logger logger = (Logger) LoggerFactory.getLogger(store.getClass());
-        loadIntoDb("create_groups.xml");
+        loadIntoDb("groups/create_groups.xml");
 
         String dupGroupName = "GROUP 0";
         try
@@ -76,7 +76,7 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
             new Group(5, "GROUP 5"),
             new Group(6, "GROUP 6")
         );
-        loadIntoDb("get_all_groups.xml");
+        loadIntoDb("groups/get_all_groups.xml");
 
         Collection<Group> actualGroups = store.getAllGroups();
         assertEquals(expected, actualGroups);
@@ -85,25 +85,25 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void deleteGroupWithoutStop() throws Exception
     {
-        loadIntoDb("delete_group_before.xml");
+        loadIntoDb("groups/delete_group_before.xml");
         store.deleteGroup(8);
-        assertTablesEqualFile("delete_group_after.xml", GroupEntry.TABLE_NAME);
+        assertTablesEqualFile("groups/delete_group_after.xml", GroupEntry.TABLE_NAME);
     }
 
     @Test
     public void deleteGroupWithStops() throws Exception
     {
-        loadIntoDb("delete_group_w_stops_before.xml");
+        loadIntoDb("groups/delete_group_w_stops_before.xml");
         store.deleteGroup(2);
-        assertTablesEqualFile("delete_group_w_stops_after.xml",
+        assertTablesEqualFile("groups/delete_group_w_stops_after.xml",
             GroupEntry.TABLE_NAME, StopEntry.TABLE_NAME);
     }
 
     @Test
     public void addsStopsToGroup() throws Exception
     {
-        loadIntoDb("create_groups.xml");
-        String dataSetFile = "add_stop.xml";
+        loadIntoDb("groups/create_groups.xml");
+        String dataSetFile = "groups/add_stop.xml";
         deleteFromDb(dataSetFile);
 
         store.addToGroup(2, 400);
@@ -117,8 +117,8 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void replacesDuplicateStopWithNewestName() throws Exception
     {
-        loadIntoDb("create_groups.xml");
-        String dataSetFile = "add_stop.xml";
+        loadIntoDb("groups/create_groups.xml");
+        String dataSetFile = "groups/add_stop.xml";
         deleteFromDb(dataSetFile);
 
         store.addToGroup(3, 300);
@@ -151,15 +151,15 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void removeStopFromGroup() throws Exception
     {
-        loadIntoDb("remove_stop_before.xml");
+        loadIntoDb("groups/remove_stop_before.xml");
         store.removeFromGroup(2, 200);
-        assertTablesEqualFile("remove_stop_after.xml", StopEntry.TABLE_NAME);
+        assertTablesEqualFile("groups/remove_stop_after.xml", StopEntry.TABLE_NAME);
     }
 
     @Test
     public void getStopsForGroup() throws Exception
     {
-        loadIntoDb("get_stops.xml");
+        loadIntoDb("groups/get_stops.xml");
         Set<Integer> expected = Sets.newHashSet(200, 400);
 
         Collection<Integer> actual = store.getStopIds(2);
@@ -169,8 +169,8 @@ public abstract class BaseSqliteGroupsStoreTest extends BaseSqliteTest
     @Test
     public void renameGroup() throws Exception
     {
-        loadIntoDb("rename_group_before.xml");
+        loadIntoDb("groups/rename_group_before.xml");
         store.renameGroup(2, "NEW GROUP");
-        assertTablesEqualFile("rename_group_after.xml", GroupEntry.TABLE_NAME);
+        assertTablesEqualFile("groups/rename_group_after.xml", GroupEntry.TABLE_NAME);
     }
 }

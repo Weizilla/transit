@@ -27,7 +27,7 @@ public abstract class BaseSqliteFavStoreStopTest extends BaseSqliteTest
     public void getStopIdsReturnsDbData() throws Exception
     {
         Set<Integer> expected = Sets.newHashSet(100, 200, 300, 400);
-        loadIntoDb("get_stops.xml");
+        loadIntoDb("favorites/get_stops.xml");
 
         Collection<Integer> actualIds = store.getStopIds();
         assertEquals(expected, new HashSet<>(actualIds));
@@ -36,7 +36,7 @@ public abstract class BaseSqliteFavStoreStopTest extends BaseSqliteTest
     @Test
     public void savesFavoriteStops() throws Exception
     {
-        String dataSetFile = "save_stops.xml";
+        String dataSetFile = "favorites/save_stops.xml";
         deleteFromDb(dataSetFile);
 
         store.saveStop(100);

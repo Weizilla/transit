@@ -47,7 +47,7 @@ public class StreamingDataSourceTest
     @Test
     public void readsRoutesFromXmlStream() throws Exception
     {
-        streamProvider.setStreamFromResource("/getroutes.xml");
+        streamProvider.setStreamFromResource("/lib/getroutes.xml");
 
         Collection<Route> routes = source.getRoutes();
         assertNotNull(routes);
@@ -61,7 +61,7 @@ public class StreamingDataSourceTest
     @Test
     public void readsDirectionsFromXmlStream() throws Exception
     {
-        streamProvider.setStreamFromResource("/getdirections_22.xml");
+        streamProvider.setStreamFromResource("/lib/getdirections_22.xml");
 
         Collection<Direction> directions = source.getDirections(ROUTE_ID);
 
@@ -75,7 +75,7 @@ public class StreamingDataSourceTest
     @Test
     public void readsStopsFromXmlStream() throws Exception
     {
-        streamProvider.setStreamFromResource("/getstops_22_N.xml");
+        streamProvider.setStreamFromResource("/lib/getstops_22_N.xml");
 
         Collection<Stop> stops = source.getStops(ROUTE_ID, DIRECTION);
 
@@ -89,7 +89,7 @@ public class StreamingDataSourceTest
     @Test
     public void readsPredictionsFromXmlStream() throws Exception
     {
-        streamProvider.setStreamFromResource("/getpredictions_22_1926.xml");
+        streamProvider.setStreamFromResource("/lib/getpredictions_22_1926.xml");
 
         DateTime generated = TimeConverter.parse("20140702 18:04");
         String stopName = "Clark & Addison";
@@ -112,7 +112,7 @@ public class StreamingDataSourceTest
     @Test
     public void readsDelayedPredictionFromXmlStream() throws Exception
     {
-        streamProvider.setStreamFromResource("/getpredictions_22_1926_delay.xml");
+        streamProvider.setStreamFromResource("/lib/getpredictions_22_1926_delay.xml");
 
         DateTime generated = TimeConverter.parse("20140702 18:04");
         String stopName = "Clark & Addison";
@@ -136,7 +136,7 @@ public class StreamingDataSourceTest
     public void throwsExceptionIfGetRoutesOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
-        streamProvider.setStreamFromResource("/error.xml");
+        streamProvider.setStreamFromResource("/lib/error.xml");
         try
         {
             source.getRoutes();
@@ -152,7 +152,7 @@ public class StreamingDataSourceTest
     public void throwsExceptionIfGetDirectionsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
-        streamProvider.setStreamFromResource("/error.xml");
+        streamProvider.setStreamFromResource("/lib/error.xml");
         try
         {
             source.getDirections(ROUTE_ID);
@@ -168,7 +168,7 @@ public class StreamingDataSourceTest
     public void throwsExceptionIfGetPredictionsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
-        streamProvider.setStreamFromResource("/error.xml");
+        streamProvider.setStreamFromResource("/lib/error.xml");
         try
         {
             source.getPredictions(STOP_IDS, ROUTE_IDS);
@@ -184,7 +184,7 @@ public class StreamingDataSourceTest
     public void throwsExceptionIfGetStopsOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";
-        streamProvider.setStreamFromResource("/error.xml");
+        streamProvider.setStreamFromResource("/lib/error.xml");
         try
         {
             source.getStops(ROUTE_ID, DIRECTION);
@@ -199,7 +199,7 @@ public class StreamingDataSourceTest
     @Test
     public void returnsPredictionsIfMixedWithErrors() throws Exception
     {
-        streamProvider.setStreamFromResource("/getpredictions_some_errors.xml");
+        streamProvider.setStreamFromResource("/lib/getpredictions_some_errors.xml");
         Collection<Prediction> predictions = source.getPredictions(STOP_IDS, ROUTE_IDS);
         assertEquals(4, predictions.size());
     }
