@@ -1,16 +1,17 @@
-package com.weizilla.transit.favorites.android.db;
+package com.weizilla.transit.android.db;
 
 import android.database.sqlite.SQLiteDatabase;
 
 import java.io.File;
+import java.util.Collections;
 
-public class FileSqliteDbHelper extends FavoritesDbHelper
+public class FileDatabaseHelper extends DatabaseHelper
 {
     private File file;
 
-    public FileSqliteDbHelper(File file)
+    public FileDatabaseHelper(File file)
     {
-        super(null);
+        super(null, Collections.<String>emptyList());
         this.file = file;
     }
 

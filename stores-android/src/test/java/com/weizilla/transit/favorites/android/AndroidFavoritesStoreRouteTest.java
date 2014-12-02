@@ -2,7 +2,7 @@ package com.weizilla.transit.favorites.android;
 
 import android.database.sqlite.SQLiteDatabase;
 import com.weizilla.transit.android.db.AndroidDbUtils;
-import com.weizilla.transit.favorites.android.db.FileSqliteDbHelper;
+import com.weizilla.transit.android.db.FileDatabaseHelper;
 import com.weizilla.transit.favorites.sqlite.BaseSqliteFavStoreRouteTest;
 import com.weizilla.transit.utils.ResourceUtils;
 import org.junit.After;
@@ -28,7 +28,7 @@ public class AndroidFavoritesStoreRouteTest extends BaseSqliteFavStoreRouteTest
         super.setUp();
         ShadowLog.stream = System.out;
         database = SQLiteDatabase.openOrCreateDatabase(dbFile, null);
-        store = new AndroidFavoritesStore(new FileSqliteDbHelper(dbFile));
+        store = new AndroidFavoritesStore(new FileDatabaseHelper(dbFile));
         executeSqlFromFile("favorites/create_routes_table.sql");
         assertTrue(AndroidDbUtils.tableExists(database, TABLE_NAME));
     }
