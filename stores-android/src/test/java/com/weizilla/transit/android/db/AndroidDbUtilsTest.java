@@ -1,4 +1,4 @@
-package com.weizilla.transit.favorites.android.db;
+package com.weizilla.transit.android.db;
 
 import org.junit.Test;
 import org.robolectric.annotation.Config;
@@ -7,7 +7,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @Config(manifest = Config.NONE)
-public class AndroidUtilsTest extends AndroidSqliteTest
+public class AndroidDbUtilsTest extends AndroidSqliteTest
 {
     private static final String DB_NAME = "AndroidUtilsTest";
 

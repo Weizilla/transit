@@ -1,12 +1,13 @@
 package com.weizilla.transit.favorites.android.db;
 
+import com.weizilla.transit.android.db.AndroidSqliteTest;
 import com.weizilla.transit.favorites.sqlite.Favorites.RouteEntry;
 import com.weizilla.transit.favorites.sqlite.Favorites.StopEntry;
 import org.junit.Before;
 import org.junit.Test;
 import org.robolectric.annotation.Config;
 
-import static com.weizilla.transit.favorites.android.db.AndroidDbUtils.tableExists;
+import static com.weizilla.transit.android.db.AndroidDbUtils.tableExists;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 

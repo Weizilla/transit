@@ -1,4 +1,4 @@
-package com.weizilla.transit.favorites.android.db;
+package com.weizilla.transit.android.db;
 
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;

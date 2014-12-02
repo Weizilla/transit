@@ -1,7 +1,7 @@
 package com.weizilla.transit.favorites.android;
 
 import android.database.sqlite.SQLiteDatabase;
-import com.weizilla.transit.favorites.android.db.AndroidDbUtils;
+import com.weizilla.transit.android.db.AndroidDbUtils;
 import com.weizilla.transit.favorites.android.db.FileSqliteDbHelper;
 import com.weizilla.transit.favorites.sqlite.BaseSqliteFavStoreStopTest;
 import com.weizilla.transit.utils.ResourceUtils;
