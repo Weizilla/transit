@@ -62,7 +62,7 @@ object Application extends Controller {
 
   def directions(routeId: String) = Action {
     val directions = controller.getDirections(routeId)
-    val routeName = controller.lookupRoutes(List(routeId)).get(routeId).getName
+    val routeName = controller.lookupRoute(routeId).getName
     Ok(views.html.directions(routeId, routeName, directions))
   }
 
@@ -72,14 +72,14 @@ object Application extends Controller {
     val stopsMap = stops.map(s => s.getId -> s).toMap
     val favStops = controller.getFavoriteStops.map(s => stopsMap(s.getId))
     val groups = controller.getAllGroups
-    val routeName = controller.lookupRoutes(List(routeId)).get(routeId).getName
+    val routeName = controller.lookupRoute(routeId).getName
     Ok(views.html.stops(routeId, routeName, direction, stops, favStops, groups))
   }
 
   def predictions(stopIdsStr: String, routeIdsStr: Option[String]) = Action {
     val stopIds = stopIdsStr.split(",").map(_.toInt).toList
     val routeIds = routeIdsStr.map(_.split(",").toList).getOrElse(List())
-    val routes = controller.lookupRoutes(routeIds).values()
+    val routes = controller.lookupRoutes(routeIds)
 
     var predictions: Iterable[Prediction] = List()
     var msg: Option[String] = None
