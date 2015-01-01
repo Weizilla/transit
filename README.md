@@ -6,10 +6,10 @@ CTA Bus/Train Tracker
 
 ### Set up:
 
-1. Download maven android sdk deployer [https://github.com/mosabua/maven-android-sdk-deployer]
+1. Download maven android sdk deployer [https://github.com/mosabua/maven-android-sdk-deployer]()
 2. Follow instructions for deployer and install appropriate platform
 3. Set `ANDROID_HOME` to root android sdk installation directory 
-4. Install android-support-v4 using maven from [https://github.com/robolectric/robolectric]
+4. Install android-support-v4 using maven from [https://github.com/robolectric/robolectric]()
 ```
 mvn install:install-file -DgroupId=com.android.support \
   -DartifactId=support-v4 \
