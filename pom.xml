@@ -107,14 +107,31 @@
         </plugins>
     </build>
 
-    <modules>
-        <module>lib-transit</module>
-        <module>lib-sqlite</module>
-        <module>cache-sqlite</module>
-        <module>favorites-sqlite</module>
-        <module>groups-sqlite</module>
-        <module>stores-android</module>
-        <module>transit-android</module>
-    </modules>
-
+    <profiles>
+        <profile>
+            <id>default</id>
+            <activation>
+                <activeByDefault>true</activeByDefault>
+            </activation>
+            <modules>
+                <module>lib-transit</module>
+                <module>lib-sqlite</module>
+                <module>cache-sqlite</module>
+                <module>favorites-sqlite</module>
+                <module>groups-sqlite</module>
+            </modules>
+        </profile>
+        <profile>
+            <id>android</id>
+            <modules>
+                <module>lib-transit</module>
+                <module>lib-sqlite</module>
+                <module>cache-sqlite</module>
+                <module>favorites-sqlite</module>
+                <module>groups-sqlite</module>
+                <module>stores-android</module>
+                <module>transit-android</module>
+            </modules>
+        </profile>
+    </profiles>
 </project>

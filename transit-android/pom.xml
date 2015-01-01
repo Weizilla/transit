@@ -54,6 +54,10 @@
                             <jvmArgument>-Xmx4096M</jvmArgument>
                         </jvmArguments>
                     </dex>
+                    <excludes>
+                        <exclude>**/logback.txt</exclude>
+                    </excludes>
+                    <extractDuplicates>true</extractDuplicates>
                 </configuration>
             </plugin>
         </plugins>
