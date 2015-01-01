@@ -8,7 +8,7 @@ CTA Bus/Train Tracker
 
 1. Download maven android sdk deployer [https://github.com/mosabua/maven-android-sdk-deployer]
 2. Follow instructions for deployer and install appropriate platform
-3. Set `ANDROID_HOME` to root android sdk installation directory for intellij
+3. Set `ANDROID_HOME` to root android sdk installation directory 
 4. Install android-support-v4 using maven from [https://github.com/robolectric/robolectric]
 ```
 mvn install:install-file -DgroupId=com.android.support \
@@ -31,5 +31,3 @@ mvn install:install-file -DgroupId=com.android.support \
 2. Copy the newly built zip file at `transit-play/target/universal/transit-play-[version].zip`
 to destination
 3. Extract and run `bin/transit-play`
-
-Wei
