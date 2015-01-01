@@ -2,21 +2,31 @@
         stops: Iterable[com.weizilla.transit.data.Stop],
         favStops: Iterable[com.weizilla.transit.data.Stop],
         groups: Iterable[com.weizilla.transit.groups.Group])
-@main("Stops"){Route @routeId - @routeName - @direction} {
-    <ul>
-    @for(favStop <- favStops) {
-        @display(favStop, true)
-    }
-    </ul>
+@main("Stops"){
+    <ol class="breadcrumb">
+        <li><a href="/">Predictions</a></li>
+        <li><a href="/directions/@routeId?routeName=@routeName">@routeId - @routeName</a></li>
+        <li class="active">@direction</li>
+    </ol>
+} {
+    <div class="container-fluid">
+        <ul class="list-group">
+        @for(favStop <- favStops) {
+            @display(favStop, true)
+        }
+        </ul>
+    </div>
 
-    <ul>
-    @for(stop <- stops) {
-        @display(stop, false)
-    }
-    </ul>
+    <div class="container-fluid">
+        <ul class="list-group">
+        @for(stop <- stops) {
+            @display(stop, false)
+        }
+        </ul>
+    </div>
 }
 @display(stop: com.weizilla.transit.data.Stop, fav: Boolean) = {
-    <li>
+    <li class="list-group-item">
         <a href="/predictions/@stop.getId?routeIdsStr=@routeId">@stop.getName</a>
         @if(! fav) {
             | @helper.form(action = routes.Application.saveFavoriteStop()) {

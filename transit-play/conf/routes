@@ -11,6 +11,7 @@ GET         /predictions/:stopIdsStr          controllers.Application.prediction
 POST        /favorites/save/route             controllers.Application.saveFavoriteRoute()
 POST        /favorites/save/stop              controllers.Application.saveFavoriteStop()
 
+GET         /groups                           controllers.Application.groupsIndex()
 GET         /groups/:groupId                  controllers.Application.getGroup(groupId: Int)
 POST        /groups/create                    controllers.Application.createGroup()
 POST        /groups/addStop                   controllers.Application.addStopToGroup()

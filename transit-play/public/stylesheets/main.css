@@ -2,7 +2,6 @@ form {
     display: inline;
 }
 
-.nav li {
-    display: inline;
-    list-style-type: none;
+#createGroupForm {
+    width: 300px;
 }

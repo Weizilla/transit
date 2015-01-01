@@ -1,8 +1,15 @@
 @(routeId: String, routeName:String, directions: Iterable[com.weizilla.transit.data.Direction])
-@main("Directions"){Route @routeId - @routeName}{
-    <ul>
-    @for(direction <- directions) {
-        <li><a href="/stops/@routeId/@direction">@direction</a></li>
-    }
-    </ul>
+@main("Directions"){
+    <ol class="breadcrumb">
+        <li><a href="/">Predictions</a></li>
+        <li class="active">@routeId - @routeName</li>
+    </ol>
+}{
+    <div class="container-fluid">
+        <ul class="list-group">
+        @for(direction <- directions) {
+            <li class="list-group-item"><a href="/stops/@routeId/@direction">@direction</a></li>
+        }
+        </ul>
+    </div>
 }
