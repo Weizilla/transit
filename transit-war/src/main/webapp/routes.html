@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <link rel="stylesheet" href="css/transit.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.3.15/angular.min.js"></script>
+    <script src="js/routes.js"></script>
+    <title>Transit</title>
+</head>
+<body ng-app="transit">
+<div ng-controller="RoutesController as routesCtrl">
+    <div ng-repeat="route in routesCtrl.routes">
+        {{ route.id }} - {{ route.name }}
+    </div>
+</div>
+</body>
+</html>
