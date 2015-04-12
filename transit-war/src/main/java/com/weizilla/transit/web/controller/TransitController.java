@@ -7,24 +7,19 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import java.util.Collections;
+import java.util.Map;
+
 @Controller
 public class TransitController
 {
     private static final Logger logger = LoggerFactory.getLogger(TransitController.class);
 
-    @RequestMapping("/")
-    @ResponseBody
-    public String index()
-    {
-        logger.info("Index site");
-        return "API";
-    }
-
     @RequestMapping("/now")
     @ResponseBody
-    public String now()
+    public Map<String, String> now()
     {
         logger.info("Now");
-        return new DateTime().toString();
+        return Collections.singletonMap("now", new DateTime().toString());
     }
 }
