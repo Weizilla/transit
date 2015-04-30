@@ -1,0 +1,3 @@
+rm -rf transit.war
+cp $1 . && docker build --rm -t weizilla/transit .
+rm -rf transit.war
