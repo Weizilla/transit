@@ -2,18 +2,12 @@ package com.weizilla.transit.web.controller;
 
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
-import com.weizilla.transit.web.config.WebMvcConfig;
+import com.weizilla.transit.web.config.BusControllerFactory;
 import com.weizilla.transit.web.utils.TestUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
-import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -21,39 +15,30 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = WebMvcConfig.class)
-@WebAppConfiguration
 public class TransitControllerTest
 {
-    private MockMvc mockMvc;
-
-    @Mock
     private BusController busController;
-
-    private TransitController transitController;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception
     {
-        MockitoAnnotations.initMocks(this);
-        transitController = new TransitController();
-        transitController.setBusController(busController);
+        //TODO
+        // should be able to use a spring test context to set all this up
+        // but can't get it working because it's always using the real implementations
+        busController = mock(BusController.class);
+        BusControllerFactory busControllerFactory = mock(BusControllerFactory.class);
+        when(busControllerFactory.create()).thenReturn(busController);
+        TransitController transitController = new TransitController(busControllerFactory);
         mockMvc = MockMvcBuilders.standaloneSetup(transitController).build();
-    }
-
-    @Test
-    public void postConstructCreatesBusController() throws Exception
-    {
-        transitController.init();
-        assertNotNull(transitController.busController);
+        transitController.init(); // called by spring as a post-construct
     }
 
     @Test
