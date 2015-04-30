@@ -1,5 +1,6 @@
 package com.weizilla.transit.web.controller;
 
+import com.google.common.base.Strings;
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.source.DataSource;
@@ -22,14 +23,15 @@ import java.util.Map;
 @Controller
 public class TransitController
 {
+    public static final String CTA_API_KEY = "CTA_API_KEY";
     private static final Logger logger = LoggerFactory.getLogger(TransitController.class);
-
     protected BusController busController;
 
     @PostConstruct
     public void init()
     {
-        String apiKey = System.getProperty("CTA_API_KEY");
+        String apiKey = System.getProperty(CTA_API_KEY);
+        checkForKey(apiKey);
         HttpReader httpReader = new HttpReader(new HttpReader.HttpURLConnectionFactory());
         InputStreamProvider inputStreamProvider = new HttpInputStreamProvider(httpReader, apiKey);
         DataSource dataSource = new StreamingDataSource(inputStreamProvider);
@@ -54,5 +56,13 @@ public class TransitController
     public void setBusController(BusController busController)
     {
         this.busController = busController;
+    }
+
+    private static void checkForKey(String apiKey)
+    {
+        if (Strings.isNullOrEmpty(apiKey))
+        {
+            throw new NoCtaApiKeyException();
+        }
     }
 }

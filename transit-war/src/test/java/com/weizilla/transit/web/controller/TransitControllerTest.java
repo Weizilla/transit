@@ -6,8 +6,10 @@ import com.weizilla.transit.web.config.WebMvcConfig;
 import com.weizilla.transit.web.utils.TestUtils;
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeUtils;
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.BeforeClass;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -40,6 +42,12 @@ public class TransitControllerTest
 
     private TransitController transitController;
 
+    @BeforeClass
+    public static void beforeClass()
+    {
+        System.setProperty(TransitController.CTA_API_KEY, "CTA_API_KEY");
+    }
+
     @Before
     public void setUp() throws Exception
     {
@@ -47,6 +55,19 @@ public class TransitControllerTest
         transitController = new TransitController();
         transitController.setBusController(busController);
         mockMvc = MockMvcBuilders.standaloneSetup(transitController).build();
+    }
+
+    @After
+    public void tearDown() throws Exception
+    {
+        System.setProperty(TransitController.CTA_API_KEY, "CTA_API_KEY");
+    }
+
+    @Test(expected = NoCtaApiKeyException.class)
+    public void throwsExceptionIfNoCtaKeySet() throws Exception
+    {
+        System.getProperties().remove(TransitController.CTA_API_KEY);
+        transitController.init();
     }
 
     @Test
