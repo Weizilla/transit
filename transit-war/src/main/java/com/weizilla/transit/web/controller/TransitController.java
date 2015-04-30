@@ -29,7 +29,7 @@ public class TransitController
     @PostConstruct
     public void init()
     {
-        String apiKey = "API KEY GOES HERE";
+        String apiKey = System.getProperty("CTA_API_KEY");
         HttpReader httpReader = new HttpReader(new HttpReader.HttpURLConnectionFactory());
         InputStreamProvider inputStreamProvider = new HttpInputStreamProvider(httpReader, apiKey);
         DataSource dataSource = new StreamingDataSource(inputStreamProvider);

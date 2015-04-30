@@ -20,6 +20,15 @@ mvn install:install-file -DgroupId=com.android.support \
 5. Add cta api key to `transit-android/res/values/keys.xml` with key of `ctaApiKey`
 6. Build
 
+## Tomcat
+
+### Build and deploy
+
+1. Build project using maven
+2. Build the image using the `transit/transit-war/docker/docker-build` script, passing in the path to the built war file. Example: `transit/transit-war/docker/docker-build`
+3. Set the env var CTA_API_KEY to the cta api key
+4. Run the image using the `transit/transit-war/docker/docker-run` script 
+
 ## Play
 
 ### Set up:
