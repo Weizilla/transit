@@ -1,4 +1,4 @@
-package com.weizilla.transit.web.controller;
+package com.weizilla.transit.web.config;
 
 public class NoCtaApiKeyException extends RuntimeException
 {

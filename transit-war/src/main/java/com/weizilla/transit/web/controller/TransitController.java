@@ -8,9 +8,11 @@ import com.weizilla.transit.source.stream.InputStreamProvider;
 import com.weizilla.transit.source.stream.StreamingDataSource;
 import com.weizilla.transit.source.stream.http.HttpInputStreamProvider;
 import com.weizilla.transit.source.stream.http.HttpReader;
+import com.weizilla.transit.web.config.Environment;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -23,14 +25,17 @@ import java.util.Map;
 @Controller
 public class TransitController
 {
-    public static final String CTA_API_KEY = "CTA_API_KEY";
     private static final Logger logger = LoggerFactory.getLogger(TransitController.class);
+
+    @Autowired
+    private Environment environment;
+
     protected BusController busController;
 
     @PostConstruct
     public void init()
     {
-        String apiKey = System.getProperty(CTA_API_KEY);
+        String apiKey = environment.getCtaApiKey();
         checkForKey(apiKey);
         HttpReader httpReader = new HttpReader(new HttpReader.HttpURLConnectionFactory());
         InputStreamProvider inputStreamProvider = new HttpInputStreamProvider(httpReader, apiKey);
@@ -62,7 +67,7 @@ public class TransitController
     {
         if (Strings.isNullOrEmpty(apiKey))
         {
-            throw new NoCtaApiKeyException();
+//            throw new NoCtaApiKeyException();
         }
     }
 }
