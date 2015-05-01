@@ -3,6 +3,7 @@ package com.weizilla.transit.web.controller;
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.web.config.BusControllerFactory;
+import com.weizilla.transit.web.config.TestConfig;
 import com.weizilla.transit.web.config.WebMvcConfig;
 import com.weizilla.transit.web.utils.TestUtils;
 import org.joda.time.DateTime;
@@ -11,7 +12,6 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
@@ -33,7 +33,8 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = {WebMvcConfig.class, TransitControllerTest.TestConfig.class})
+@ContextConfiguration(classes = {WebMvcConfig.class, TestConfig.class})
+//@ContextConfiguration(classes = {TestConfig.class, WebMvcConfig.class})
 @WebAppConfiguration
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransitControllerTest
@@ -42,14 +43,17 @@ public class TransitControllerTest
     private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private BusController busController;
+    private BusControllerFactory busControllerFactory;
 
+    private BusController busController;
     private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception
     {
         mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
+        busController = mock(BusController.class);
+        when(busControllerFactory.create()).thenReturn(busController);
     }
 
     @Test
@@ -79,26 +83,18 @@ public class TransitControllerTest
             .andExpect(jsonPath("$[0].name", is(name)));
     }
 
-    protected static class TestConfig
-    {
-        @Bean
-        public BusController busController()
-        {
-            return mock(BusController.class);
-        }
-
-        @Bean
-        public BusControllerFactory busControllerFactory()
-        {
-            BusControllerFactory factory = mock(BusControllerFactory.class);
-            when(factory.create()).thenReturn(busController());
-            return factory;
-        }
-
-        @Bean
-        public String ctaApiKey()
-        {
-            return "CTA_API_KEY";
-        }
-    }
+//    protected static class TestConfig
+//    {
+//        @Bean
+//        public BusControllerFactory busControllerFactory()
+//        {
+//            return mock(BusControllerFactory.class);
+//        }
+//
+//        @Bean
+//        public String ctaApiKey()
+//        {
+//            return "CTA_API_KEY";
+//        }
+//    }
 }

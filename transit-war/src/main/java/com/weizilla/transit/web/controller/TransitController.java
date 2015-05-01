@@ -1,10 +1,8 @@
 package com.weizilla.transit.web.controller;
 
-import com.google.common.base.Strings;
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.web.config.BusControllerFactory;
-import com.weizilla.transit.web.config.NoCtaApiKeyException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,18 +45,5 @@ public class TransitController
     public Collection<Route> routes()
     {
         return busController.getRoutes();
-    }
-
-    public void setBusController(BusController busController)
-    {
-        this.busController = busController;
-    }
-
-    private static void checkForKey(String apiKey)
-    {
-        if (Strings.isNullOrEmpty(apiKey))
-        {
-            throw new NoCtaApiKeyException();
-        }
     }
 }
