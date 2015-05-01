@@ -3,12 +3,8 @@ package com.weizilla.transit.web.controller;
 import com.google.common.base.Strings;
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
-import com.weizilla.transit.source.DataSource;
-import com.weizilla.transit.source.stream.InputStreamProvider;
-import com.weizilla.transit.source.stream.StreamingDataSource;
-import com.weizilla.transit.source.stream.http.HttpInputStreamProvider;
-import com.weizilla.transit.source.stream.http.HttpReader;
-import com.weizilla.transit.web.config.Environment;
+import com.weizilla.transit.web.config.BusControllerFactory;
+import com.weizilla.transit.web.config.NoCtaApiKeyException;
 import org.joda.time.DateTime;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -28,19 +24,14 @@ public class TransitController
     private static final Logger logger = LoggerFactory.getLogger(TransitController.class);
 
     @Autowired
-    private Environment environment;
+    private BusControllerFactory busControllerFactory;
 
-    protected BusController busController;
+    private BusController busController;
 
     @PostConstruct
     public void init()
     {
-        String apiKey = environment.getCtaApiKey();
-        checkForKey(apiKey);
-        HttpReader httpReader = new HttpReader(new HttpReader.HttpURLConnectionFactory());
-        InputStreamProvider inputStreamProvider = new HttpInputStreamProvider(httpReader, apiKey);
-        DataSource dataSource = new StreamingDataSource(inputStreamProvider);
-        busController = new BusController(dataSource, null, null, null);
+        busController = busControllerFactory.create();
     }
 
     @RequestMapping("/now")
@@ -67,7 +58,7 @@ public class TransitController
     {
         if (Strings.isNullOrEmpty(apiKey))
         {
-//            throw new NoCtaApiKeyException();
+            throw new NoCtaApiKeyException();
         }
     }
 }

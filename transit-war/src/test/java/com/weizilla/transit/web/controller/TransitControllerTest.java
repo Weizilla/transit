@@ -2,8 +2,7 @@ package com.weizilla.transit.web.controller;
 
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
-import com.weizilla.transit.web.config.Environment;
-import com.weizilla.transit.web.config.NoCtaApiKeyException;
+import com.weizilla.transit.web.config.BusControllerFactory;
 import com.weizilla.transit.web.config.WebMvcConfig;
 import com.weizilla.transit.web.utils.TestUtils;
 import org.joda.time.DateTime;
@@ -11,8 +10,6 @@ import org.joda.time.DateTimeUtils;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-import org.mockito.Mock;
-import org.mockito.MockitoAnnotations;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.test.annotation.DirtiesContext;
@@ -21,12 +18,13 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.context.WebApplicationContext;
 
+import javax.annotation.Resource;
 import java.util.Collections;
 import java.util.List;
 
 import static org.hamcrest.Matchers.is;
-import static org.junit.Assert.assertNotNull;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -40,37 +38,18 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class TransitControllerTest
 {
-    private MockMvc mockMvc;
-
-    @Mock
-    private BusController busController;
+    @Resource
+    private WebApplicationContext webApplicationContext;
 
     @Autowired
-    private Environment environment;
+    private BusController busController;
 
-    private TransitController transitController;
+    private MockMvc mockMvc;
 
     @Before
     public void setUp() throws Exception
     {
-        MockitoAnnotations.initMocks(this);
-        transitController = new TransitController();
-        transitController.setBusController(busController);
-        mockMvc = MockMvcBuilders.standaloneSetup(transitController).build();
-    }
-
-    @Test(expected = NoCtaApiKeyException.class)
-    public void throwsExceptionIfNoCtaKeySet() throws Exception
-    {
-        when(environment.getCtaApiKey()).thenReturn(null);
-        transitController.init();
-    }
-
-    @Test
-    public void postConstructCreatesBusController() throws Exception
-    {
-        transitController.init();
-        assertNotNull(transitController.busController);
+        mockMvc = MockMvcBuilders.webAppContextSetup(webApplicationContext).build();
     }
 
     @Test
@@ -103,11 +82,23 @@ public class TransitControllerTest
     protected static class TestConfig
     {
         @Bean
-        public Environment environment()
+        public BusController busController()
         {
-            Environment environment = mock(Environment.class);
-            when(environment.getCtaApiKey()).thenReturn("CTA API KEY");
-            return environment;
+            return mock(BusController.class);
+        }
+
+        @Bean
+        public BusControllerFactory busControllerFactory()
+        {
+            BusControllerFactory factory = mock(BusControllerFactory.class);
+            when(factory.create()).thenReturn(busController());
+            return factory;
+        }
+
+        @Bean
+        public String ctaApiKey()
+        {
+            return "CTA_API_KEY";
         }
     }
 }
