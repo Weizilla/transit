@@ -1,1 +1,1 @@
-docker run --rm -p 8080:8080 -e CTA_API_KEY weizilla/transit
+docker run --rm --name transit-app -p 8080:8080 -e CTA_API_KEY weizilla/transit
