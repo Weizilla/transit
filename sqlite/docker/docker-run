@@ -1,0 +1,1 @@
+docker run --rm weizilla/transit-data echo "Data volume container for transit-data"
