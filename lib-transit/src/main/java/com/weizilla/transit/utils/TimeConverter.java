@@ -11,7 +11,9 @@ import org.simpleframework.xml.stream.OutputNode;
 public class TimeConverter implements Converter<DateTime>
 {
     private static final String PATTERN = "yyyyMMdd H:mm";
+    private static final String PATTERN_SECONDS = "yyyyMMdd H:mm:ss";
     private static final DateTimeFormatter FORMATTER = DateTimeFormat.forPattern(PATTERN);
+    private static final DateTimeFormatter FORMATTER_SECONDS = DateTimeFormat.forPattern(PATTERN_SECONDS);
 
     @Override
     public DateTime read(InputNode inputNode) throws Exception
@@ -22,7 +24,24 @@ public class TimeConverter implements Converter<DateTime>
 
     public static DateTime parse(String dateTime)
     {
-        return FORMATTER.parseDateTime(dateTime).withZoneRetainFields(DateTimeZone.forID("America/Chicago"));
+        DateTimeFormatter formatter = isWithSeconds(dateTime) ? FORMATTER_SECONDS : FORMATTER;
+        return formatter.parseDateTime(dateTime).withZoneRetainFields(DateTimeZone.forID("America/Chicago"));
+    }
+
+    private static boolean isWithSeconds(String dateTime)
+    {
+        int found = 0;
+        for (int i = dateTime.length() - 1; i >= 0; i--)
+        {
+            if (dateTime.charAt(i) == ':') {
+                found++;
+                if (found == 2)
+                {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     @Override
