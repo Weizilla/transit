@@ -8,6 +8,7 @@ import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.source.DataSource;
 import com.weizilla.transit.source.DataSourceException;
+import org.joda.time.DateTime;
 import org.simpleframework.xml.convert.AnnotationStrategy;
 import org.simpleframework.xml.core.Persister;
 import org.simpleframework.xml.strategy.Strategy;
@@ -127,6 +128,28 @@ public class StreamingDataSource implements DataSource
         {
             throw new DataSourceException(
                 "Error getting predictions for route id " + routeIds + " stop ids " + stopIds, e);
+        }
+    }
+
+    @Override
+    public DateTime getCurrentTime()
+    {
+        try
+        (
+            InputStream input = streamProvider.getCurrentTime();
+        )
+        {
+            BusResponse response = serializer.read(BusResponse.class, input);
+//            throwIfErrors(response, predictions);
+            return response.getCurrentTime();
+        }
+        catch (DataSourceException e)
+        {
+            throw e;
+        }
+        catch (Exception e)
+        {
+            throw new DataSourceException("Error getting current time", e);
         }
     }
 

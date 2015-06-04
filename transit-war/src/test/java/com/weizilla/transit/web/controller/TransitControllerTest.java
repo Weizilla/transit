@@ -42,15 +42,19 @@ public class TransitControllerTest
     }
 
     @Test
-    public void returnsCurrentTime() throws Exception
+    public void returnsCurrentTimeServerAndCta() throws Exception
     {
         long now = System.currentTimeMillis();
         DateTimeUtils.setCurrentMillisFixed(now);
 
+        DateTime ctaTime = new DateTime().plusHours(10);
+        when(busController.getCurrentTime()).thenReturn(ctaTime);
+
         mockMvc.perform(get("/now"))
             .andExpect(status().isOk())
             .andExpect(content().contentType(TestUtils.APPLICATION_JSON_UTF_8))
-            .andExpect(jsonPath("$.now", is(new DateTime().toString())));
+            .andExpect(jsonPath("$.cta", is(ctaTime.getMillis())))
+            .andExpect(jsonPath("$.server", is(now)));
     }
 
     @Test

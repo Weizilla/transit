@@ -34,6 +34,12 @@ public class InputStreamProviderStub implements InputStreamProvider
         return stream;
     }
 
+    @Override
+    public InputStream getCurrentTime() throws IOException
+    {
+        return stream;
+    }
+
     public void setStreamFromResource(String resourceName)
     {
         stream = getClass().getResourceAsStream(resourceName);

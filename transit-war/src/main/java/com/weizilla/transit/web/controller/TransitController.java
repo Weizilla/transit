@@ -1,5 +1,6 @@
 package com.weizilla.transit.web.controller;
 
+import com.google.common.collect.ImmutableMap;
 import com.weizilla.transit.BusController;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.web.config.BusControllerFactory;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.annotation.PostConstruct;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 
 @Controller
@@ -37,10 +37,13 @@ public class TransitController
 
     @RequestMapping("/now")
     @ResponseBody
-    public Map<String, String> now()
+    public Map<String, Long> now()
     {
         logger.info("Now");
-        return Collections.singletonMap("now", new DateTime().toString());
+        return ImmutableMap.<String, Long>builder()
+            .put("cta", busController.getCurrentTime().getMillis())
+            .put("server", new DateTime().getMillis())
+            .build();
     }
 
     @RequestMapping("/routes")

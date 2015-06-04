@@ -6,6 +6,7 @@ import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
 import com.weizilla.transit.source.DataSourceStub;
+import org.joda.time.DateTime;
 import org.junit.Test;
 
 import java.util.Collection;
@@ -13,11 +14,21 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertSame;
 
 public class BusControllerGetDataTest
 {
     private static final String ROUTE_ID = "22";
     private static final int STOP_ID = 100;
+
+    @Test
+    public void getsCurrentTimeFromSource() throws Exception
+    {
+        DateTime expected = new DateTime();
+        BusController controller = new BusController(new DataSourceStub(expected), null, null, null);
+        DateTime actual = controller.getCurrentTime();
+        assertSame(expected, actual);
+    }
 
     @Test
     public void getsRouteListFromSource() throws Exception

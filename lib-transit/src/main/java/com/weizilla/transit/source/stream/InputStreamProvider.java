@@ -12,4 +12,5 @@ public interface InputStreamProvider
     InputStream getDirections(String routeId) throws IOException;
     InputStream getStops(String routeId, Direction direction) throws IOException;
     InputStream getPredictions(List<Integer> stopIds, List<String> routeIds) throws IOException;
+    InputStream getCurrentTime() throws IOException;
 }

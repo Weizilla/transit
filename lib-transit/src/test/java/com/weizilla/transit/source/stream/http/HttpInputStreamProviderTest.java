@@ -61,6 +61,36 @@ public class HttpInputStreamProviderTest
     }
 
     @Test
+    public void createsGetTimeUrl() throws Exception
+    {
+        URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/gettime?key=" + API_KEY);
+        URL actual = HttpInputStreamProvider.createGetTimeUrl(API_KEY);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    public void getTimeCallsReaderWithProperUrl() throws Exception
+    {
+        URL url = HttpInputStreamProvider.createGetTimeUrl(API_KEY);
+        HttpReader reader = mock(HttpReader.class);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
+
+        provider.getCurrentTime();
+        verify(reader).connectAndReadStream(url);
+    }
+
+    @Test
+    public void getTimeReturnsInputStreamFromProperUrl() throws Exception
+    {
+        InputStream inputStream = mock(InputStream.class);
+        HttpReader reader = new HttpReaderStub(inputStream);
+        HttpInputStreamProvider provider = new HttpInputStreamProvider(reader, API_KEY);
+
+        InputStream actual = provider.getCurrentTime();
+        assertSame(inputStream, actual);
+    }
+
+    @Test
     public void createsGetDirectionsUrl() throws Exception
     {
         URL expected = new URL("http://www.ctabustracker.com/bustime/api/v1/getdirections?" +

@@ -1,7 +1,11 @@
 package com.weizilla.transit.data;
 
+import com.weizilla.transit.utils.TimeConverter;
+import org.joda.time.DateTime;
+import org.simpleframework.xml.Element;
 import org.simpleframework.xml.ElementList;
 import org.simpleframework.xml.Root;
+import org.simpleframework.xml.convert.Convert;
 
 import java.util.Collections;
 import java.util.List;
@@ -25,9 +29,10 @@ public class BusResponse
 
     @ElementList(inline = true, required = false)
     private List<Error> errors;
-//    @Element(name = "tm", required = false)
-//    @Convert(TimeConverter.class)
-//    private Date currentTime;
+
+    @Element(name = "tm", required = false)
+    @Convert(TimeConverter.class)
+    private DateTime currentTime;
 
 
     public List<Prediction> getPredictions()
@@ -60,9 +65,8 @@ public class BusResponse
         return data == null || data.isEmpty() ? Collections.<T>emptyList() : unmodifiableList(data);
     }
 
-    //
-//    public Date getCurrentTime()
-//    {
-//        return currentTime;
-//    }
+    public DateTime getCurrentTime()
+    {
+        return currentTime;
+    }
 }

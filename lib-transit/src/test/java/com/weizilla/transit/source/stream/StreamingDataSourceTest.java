@@ -133,6 +133,16 @@ public class StreamingDataSourceTest
     }
 
     @Test
+    public void readsCurrentTimeFromXmlStream() throws Exception
+    {
+        streamProvider.setStreamFromResource("/lib/gettime.xml");
+
+        DateTime expected = TimeConverter.parse("20140702 18:22");
+        DateTime actual = source.getCurrentTime();
+        assertEquals(expected, actual);
+    }
+
+    @Test
     public void throwsExceptionIfGetRoutesOnlyHasError() throws Exception
     {
         String errorMsg = "ERROR MESSAGE";

@@ -10,6 +10,7 @@ import com.weizilla.transit.favorites.FavoritesStore;
 import com.weizilla.transit.groups.Group;
 import com.weizilla.transit.groups.GroupsStore;
 import com.weizilla.transit.source.DataSource;
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -132,5 +133,10 @@ public class BusController
     public Collection<Stop> lookupStops(Collection<Integer> stopIds)
     {
         return cacheStore.getStops(stopIds);
+    }
+
+    public DateTime getCurrentTime()
+    {
+        return dataSource.getCurrentTime();
     }
 }

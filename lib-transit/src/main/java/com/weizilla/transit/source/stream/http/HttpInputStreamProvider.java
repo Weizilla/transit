@@ -17,6 +17,7 @@ public class HttpInputStreamProvider implements InputStreamProvider
     private static final String GET_DIRECTIONS = BASE_URL + "getdirections?rt={0}&key={1}";
     private static final String GET_STOPS = BASE_URL + "getstops?rt={0}&dir={1}&key={2}";
     private static final String GET_PREDICTIONS = BASE_URL + "getpredictions?stpid={0}{1}&key={2}";
+    private static final String GET_TIME = BASE_URL + "gettime?key={0}";
     private final HttpReader reader;
     private final String apiKey;
 
@@ -54,6 +55,13 @@ public class HttpInputStreamProvider implements InputStreamProvider
         return reader.connectAndReadStream(url);
     }
 
+    @Override
+    public InputStream getCurrentTime() throws IOException
+    {
+        URL url = createGetTimeUrl(apiKey);
+        return reader.connectAndReadStream(url);
+    }
+
     protected static URL createGetRoutesUrl(String apiKey) throws IOException
     {
         return new URL(MessageFormat.format(GET_ROUTES, apiKey));
@@ -77,5 +85,10 @@ public class HttpInputStreamProvider implements InputStreamProvider
             routeIdStr = "&rt=" + Joiner.on(",").join(routeIds);
         }
         return new URL(MessageFormat.format(GET_PREDICTIONS, stopIdStr, routeIdStr, apiKey));
+    }
+
+    protected static URL createGetTimeUrl(String apiKey) throws IOException
+    {
+        return new URL(MessageFormat.format(GET_TIME, apiKey));
     }
 }

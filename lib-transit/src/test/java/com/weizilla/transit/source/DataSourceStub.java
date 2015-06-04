@@ -4,6 +4,7 @@ import com.weizilla.transit.data.Direction;
 import com.weizilla.transit.data.Prediction;
 import com.weizilla.transit.data.Route;
 import com.weizilla.transit.data.Stop;
+import org.joda.time.DateTime;
 
 import java.util.Collection;
 import java.util.List;
@@ -17,6 +18,12 @@ public class DataSourceStub implements DataSource
     private Collection<Direction> directions;
     private Collection<Stop> stops;
     private Collection<Prediction> predictions;
+    private DateTime currentTime;
+
+    public DataSourceStub(DateTime currentTime)
+    {
+        this.currentTime = currentTime;
+    }
 
     public DataSourceStub(Collection<Route> routes)
     {
@@ -76,5 +83,11 @@ public class DataSourceStub implements DataSource
     public Collection<Prediction> getPredictions(List<Integer> stopIds, List<String> routeIds)
     {
         return routeIds.contains(routeKey) && stopIds.contains(stopKey) ? predictions : null;
+    }
+
+    @Override
+    public DateTime getCurrentTime()
+    {
+        return currentTime;
     }
 }
